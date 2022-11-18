@@ -738,5 +738,18 @@
     "null": "",
     "bibo:draft": "Draft",
     "bibo:published": "Published"
+  },
+  "ARP": {
+    "Exported": "Exported",
+    "ExportTemplate": "Export to Dataverse",
+    "ExportResult": {
+      "success": "The template <b>{{title}}</b> has been exported to Dataverse.",
+      "error": "There was an error while exporting the template to Dataverse!<br /><br />VIEW TECHNICAL DETAILS!"
+    },
+    "ERROR": {
+      "templateExportTitle": "Template export error details",
+      "templateExport": "<pre><b>Unprocessable elements</b>: {{unprocessableElements}}</br><b>Invalid names</b>: {{invalidNames}}<br/><b>Incompatible pairs</b>: {{incompatiblePairs}}<br/></pre>",
+      "unavailable": "ARP Service is unavailable"
+    }
   }
 }

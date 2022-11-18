@@ -236,7 +236,46 @@ define([
       });
     }
 
+    service.showArpError = function (messageKey, response) {
+      toasty.error({
+        title  : $translate.instant('ARP.ERROR.templateExportTitle'),
+        msg    : $translate.instant(messageKey),
+        onClick: function () {
+          let content
+          if (response.data == null) {
+            content = '<pre>' + $translate.instant('ARP.ERROR.unavailable') + '</pre>'
+          } else if (response.data.message) {
+            let resp = response.data.message
+            let incompPairs = ''
+            if (resp.incompatiblePairs) {
+              for (const [key, value] of Object.entries(resp.incompatiblePairs)) {
+                let values = ''
+                for (const [k, v] of Object.entries(JSON.parse(JSON.stringify(value)))) {
+                  values += '\n\t\t' + k + ': ' + v
+                }
+                incompPairs = incompPairs.concat(key, values)
+              }
+            }
+            content = $translate.instant('ARP.ERROR.templateExport', {
+              unprocessableElements: resp.unprocessableElements ? '\n\t' + resp.unprocessableElements.join('\n\t') : 'N/A',
+              invalidNames: resp.invalidNames ? '\n\t' + resp.invalidNames.join('\n\t') : 'N/A',
+              incompatiblePairs: incompPairs ? '\n\t' + incompPairs : 'N/A'
+            })
+          } else {
+            content = '<pre>' + response.data + '</pre>'
+          }
+          swal({
+            title:   $translate.instant('ARP.ERROR.templateExportTitle'),
+            customClass: "arpErrorDetails",
+            text:   content,
+            type:   "error",
+            html:   true
+          })
+        }
+      });
+    }
+
     return service;
-  };
+  }
 
 });

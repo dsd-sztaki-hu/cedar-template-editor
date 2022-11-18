@@ -20,6 +20,9 @@ define([
     let submissionService = null;
     let messagingService = null;
     let impexService = null;
+    let arpService = null;
+    let arpAPIKey = null;
+    let dvCollection = null;
     const paging = function (page, size, defaultPage, defaultSize, pageString, sizeString) {
       const p = page > 0 ? page : defaultPage;
       const s = size > 0 ? size : defaultSize;
@@ -40,9 +43,16 @@ define([
       submissionService = config.submissionRestAPI;
       messagingService = config.messagingRestAPI;
       impexService = config.impexRestAPI;
+      arpService = config.arpAPI;
+      arpAPIKey = config.arpAPIKey;
+      dvCollection = config.dvCollection;
     };
 
-
+    //TODO: now the dataverse collection is stored in the conf, add option to modify it
+    //TODO: api key is stored in the conf fix it after the demo
+    service.exportTemplateJson = function () {
+      return arpService + "/cedarToMdb/" + dvCollection + "?key=" + arpAPIKey;
+    };
 
     service.base = function () {
       return resourceService;

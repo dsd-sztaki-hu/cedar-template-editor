@@ -47,6 +47,9 @@ define([
 
         $scope.isTemplate = true;
 
+        $scope.exportButtonDisabled = function() {
+          return UIUtilService.isDirty() || $routeParams.id === undefined;
+        };
 
         $scope.checkLocking = function () {
           if ($scope.details) {
@@ -296,6 +299,18 @@ define([
           }
         };
 
+        $scope.exportTemplate = function () {
+          AuthorizedBackendService.doCall(
+              TemplateService.exportTemplate($scope.form),
+              function (response) {
+                UIMessageService.flashSuccess('ARP.ExportResult.success',
+                    {"title": schemaService.getTitle($scope.form)}, 'ARP.Exported');
+              },
+              function (err) {
+                UIMessageService.showArpError('ARP.ExportResult.error', err);
+              }
+          );
+        };
 
         // Stores the template into the database
         $scope.doSaveTemplate = function () {
