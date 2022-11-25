@@ -1046,6 +1046,13 @@ define([
           }
         };
 
+        // get the arpHunLabel out of this node
+        service.getArpHunLabel = function (node) {
+          if (node) {
+            return service.schemaOf(node)['hunLabel'];
+          }
+        };
+
 
         //
         //  children

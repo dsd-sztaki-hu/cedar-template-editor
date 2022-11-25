@@ -1257,14 +1257,18 @@ define([
         if (dms.isRootNode($scope.parentElement, $scope.field)) {
           $scope.fieldLabelKey = CONST.model.NAME;
           $scope.fieldDescriptionKey = CONST.model.DESCRIPTION;
+          $scope.arpHunLabelKey = CONST.model.ARPHUNLABEL;
           $scope.fieldLabel = $scope.field;
           $scope.fieldDescription = $scope.field;
+          $scope.arpHunLabel = $scope.field;
 
         } else {
           $scope.fieldLabelKey = $scope.fieldKey;
           $scope.fieldDescriptionKey = $scope.fieldKey;
+          $scope.arpHunLabelKey = $scope.fieldKey;
           $scope.fieldLabel = dms.getPropertyLabels($scope.parentElement);
           $scope.fieldDescription = dms.getPropertyDescriptions($scope.parentElement);
+          $scope.arpHunLabel = dms.getArpHunLabel($scope.parentElement);
         }
 
       };

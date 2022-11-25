@@ -66,12 +66,28 @@ define([
       if (node) service.schemaOf(node)['schema:description'] = value;
     };
 
+    service.getArpHunLabel = function (node) {
+      if (node) return service.schemaOf(node)['hunLabel'];
+    };
+
+    service.hasArpHunLabel = function (node) {
+      return service.getArpHunLabel(node) && service.getArpHunLabel(node).length > 0;
+    };
+
+    service.setArpHunLabel = function (node, value) {
+      if (node) service.schemaOf(node)['hunLabel'] = value;
+    };
+
     service.titleLocation = function () {
       return 'schema:name';
     };
 
     service.descriptionLocation = function () {
       return 'schema:description';
+    };
+
+    service.arpHunLabelLocation = function () {
+      return 'hunLabel';
     };
 
     // node title and description
@@ -325,6 +341,9 @@ define([
         if (field['skos:prefLabel']) {
           field.items['skos:prefLabel'] = field['skos:prefLabel'];
         }
+        if (field['hunLabel']) {
+          field.items['hunLabel'] = field['hunLabel'];
+        }
 
         field.type = 'array';
 
@@ -346,6 +365,7 @@ define([
         delete field['schema:schemaVersion'];
         delete field['schema:name'];
         delete field['schema:description'];
+        delete field['hunLabel'];
         delete field['skos:prefLabel'];
         delete field['pav:version'];
         delete field['bibo:status'];
@@ -386,6 +406,10 @@ define([
         }
         if (field.items['skos:prefLabel']) {
           field['skos:prefLabel'] = field.items['skos:prefLabel'];
+        }
+
+        if (field.items['hunLabel']) {
+          field['hunLabel'] = field.items['hunLabel'];
         }
 
         delete field.items;

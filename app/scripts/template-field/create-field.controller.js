@@ -41,6 +41,7 @@ define([
     $scope.saveButtonDisabled = false;
     $scope.fieldTitle = null;
     $scope.fieldDescription = null;
+    $scope.arpHunLabel = null;
     $scope.fieldIdentifier = null;
 
     // for the field type picker
@@ -394,6 +395,10 @@ define([
 
     $scope.$watch('field["schema:description"]', function (description) {
       $scope.fieldDescription = description;
+    });
+
+    $scope.$watch('field["hunLabel"]', function (arpHunLabel) {
+      $scope.arpHunLabel = arpHunLabel;
     });
 
 

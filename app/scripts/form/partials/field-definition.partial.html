@@ -62,6 +62,20 @@
     </div>
   </div>
 
+  <!-- arpHunLabel text -->
+  <div class="form-group floating-label-wrapper">
+    <input type="text"
+           class="form-control field-description-definition"
+           id="arp-hun-label-{{getId().substring(getId().lastIndexOf('/')+1)}}"
+           placeholder="{{'ARP.hunLabel' | translate}}"
+           aria-label="{{'ARP.hunLabel' | translate}}"
+           ng-model="arpHunLabel[arpHunLabelKey]"
+           ng-model-options="{ debounce: 1000, allowInvalid:true }"
+           autocomplete="off"
+           ng-disabled="isPublished()"
+           with-floating-label>
+  </div>
+
   <!-- help text -->
   <div class="form-group floating-label-wrapper">
     <input type="text"

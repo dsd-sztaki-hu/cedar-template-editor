@@ -57,6 +57,7 @@ define([
         "model"        : {
           "NAME"               : "schema:name",
           "DESCRIPTION"        : "schema:description",
+          "ARPHUNLABEL"        : "hunLabel",
           "IDENTIFIER"         : "schema:identifier",
           "ISBASEDON"          : "schema:isBasedOn",
           "NUMBEROFINSTANCES"  : 'numberOfInstances',
