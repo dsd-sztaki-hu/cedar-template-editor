@@ -185,6 +185,13 @@ define([
           }
         };
 
+        service.removeArpHunLabel = function (node) {
+          var schema = service.schemaOf(node);
+          if (schema) {
+            delete schema[CONST.model.ARPHUNLABEL];
+          }
+        };
+
         service.titleLocation = function () {
           return CONST.model.NAME;
         };

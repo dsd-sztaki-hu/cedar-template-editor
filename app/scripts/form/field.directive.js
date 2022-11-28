@@ -1251,6 +1251,12 @@ define([
         }
       });
 
+      $scope.$watch('fieldSchema["hunLabel"]', function (prefLabel) {
+        if (prefLabel == '') {
+          dms.removePreferredLabel($scope.field);
+        }
+      });
+
       $scope.init = function () {
 
         $scope.fieldSchema = dms.schemaOf($scope.field);
