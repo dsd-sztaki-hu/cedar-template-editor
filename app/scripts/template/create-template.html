@@ -77,6 +77,38 @@
         <!-- Template Header and Footer -->
         <div ng-hide="!additionalInfoPanelIsOpen">
           <div class="left-sidebar col-sm-10 col-sm-offset-1">
+            <div id="template-hungarian-title-container">
+              <form>
+                <div class="form-group floating-label-wrapper">
+                    <textarea rows="1" class="form-control" style="margin-top: 10px"
+                              ng-change="schemaService.deleteStringFieldIfEmpty(elementSchema, 'hunTitle')"
+                              id="template-hungarian-title"
+                              placeholder="{{'ARP.hunTitle' | translate}}"
+                              aria-label="{{'ARP.hunTitle' | translate}}"
+                              ng-model="form.hunTitle"
+                              tooltip-placement="bottom"
+                              with-floating-label></textarea>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="left-sidebar col-sm-10 col-sm-offset-1">
+            <div id="template-hungarian-description-container">
+              <form>
+                <div class="form-group floating-label-wrapper">
+                    <textarea rows="1" class="form-control" style="margin-top: 10px"
+                              ng-change="schemaService.deleteStringFieldIfEmpty(elementSchema, 'hunDescription')"
+                              id="template-hungarian-description"
+                              placeholder="{{'ARP.hunDescription' | translate}}"
+                              aria-label="{{'ARP.hunDescription' | translate}}"
+                              ng-model="form.hunDescription"
+                              tooltip-placement="bottom"
+                              with-floating-label></textarea>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="left-sidebar col-sm-10 col-sm-offset-1">
             <div id="template-header-text-container">
               <form>
                 <div class="form-group floating-label-wrapper">
