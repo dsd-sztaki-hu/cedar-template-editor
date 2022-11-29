@@ -328,6 +328,9 @@ define([
         if (field.items['hunTitle']) {
           field['hunTitle'] = field.items['hunTitle'];
         }
+        if (field.items['hunDescription']) {
+          field['hunDescription'] = field.items['hunDescription'];
+        }
 
         field.type = 'array';
 
@@ -392,6 +395,9 @@ define([
         }
         if (field.items['hunTitle']) {
           field['hunTitle'] = field.items['hunTitle'];
+        }
+        if (field.items['hunDescription']) {
+          field['hunDescription'] = field.items['hunDescription'];
         }
 
         delete field.items;

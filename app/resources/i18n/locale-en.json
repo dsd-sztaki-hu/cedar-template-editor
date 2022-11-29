@@ -740,6 +740,7 @@
     "bibo:published": "Published"
   },
   "ARP": {
-    "hunTitle": "Hungarian Title"
+    "hunTitle": "Hungarian Title",
+    "hunDescription": "Hungarian Description"
   }
 }
