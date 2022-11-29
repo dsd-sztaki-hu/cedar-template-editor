@@ -738,5 +738,8 @@
     "null": "",
     "bibo:draft": "Draft",
     "bibo:published": "Published"
+  },
+  "ARP": {
+    "hunTitle": "Hungarian Title"
   }
 }

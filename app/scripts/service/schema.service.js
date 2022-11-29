@@ -325,6 +325,9 @@ define([
         if (field['skos:prefLabel']) {
           field.items['skos:prefLabel'] = field['skos:prefLabel'];
         }
+        if (field.items['hunTitle']) {
+          field['hunTitle'] = field.items['hunTitle'];
+        }
 
         field.type = 'array';
 
@@ -386,6 +389,9 @@ define([
         }
         if (field.items['skos:prefLabel']) {
           field['skos:prefLabel'] = field.items['skos:prefLabel'];
+        }
+        if (field.items['hunTitle']) {
+          field['hunTitle'] = field.items['hunTitle'];
         }
 
         delete field.items;
