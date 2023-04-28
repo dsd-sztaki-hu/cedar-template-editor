@@ -33,6 +33,12 @@
           ng-click="setTab('hidden');  $event.stopPropagation();">
         <span>Hidden</span>
       </div>
+      <div ng-if="allowArpAdditions()" class="element-toggle table-cell-style dataverse-tab"
+           ng-class="{active: isTabActive('dataverse')}"
+           ng-click="setTab('dataverse');  $event.stopPropagation();">
+        <span>DV</span>
+      </div>
+
     </div>
   </div>
 
@@ -408,6 +414,37 @@
     </div>
 
   </div>
+
+  <!-- Dataverse tab  -->
+  <div id="dataverse" ng-show="isTabActive('dataverse')">
+    Searchable?
+    <div class="type-toggle date">
+      <div class="single-date d-option yesno-arp-dataverse-searchable-no"
+           ng-click="setDirty();setArpDataverseSearchable(false); $event.stopPropagation();"
+           ng-class="{active: !isArpDataverseSearchable()}">
+        <span>No</span>
+      </div>
+      <div class="date-range d-option yesno-arp-dataverse-searchable-yes"
+           ng-click="setDirty();setArpDataverseSearchable(true);   $event.stopPropagation();"
+           ng-class="{active: isArpDataverseSearchable()}">
+        <span>Yes</span>
+      </div>
+    </div>
+    Facatable?
+    <div class="type-toggle date">
+      <div class="single-date d-option yesno-arp-dataverse-facetable-no"
+           ng-click="setDirty(); setArpDataverseFacetable(false); $event.stopPropagation();"
+           ng-class="{active: !isArpDataverseFacetable()}">
+        <span>No</span>
+      </div>
+      <div class="date-range d-option yesno-arp-dataverse-facetable-yes"
+           ng-click="setDirty(); setArpDataverseFacetable(true);   $event.stopPropagation();"
+           ng-class="{active: isArpDataverseFacetable()}">
+        <span>Yes</span>
+      </div>
+    </div>
+
+
 </div>
 
 <div class="clearfix"></div>

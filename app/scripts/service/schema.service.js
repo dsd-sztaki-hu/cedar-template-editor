@@ -317,6 +317,8 @@ define([
           'schema:schemaVersion': field['schema:schemaVersion'],
           'schema:name'         : field['schema:name'],
           'schema:description'  : field['schema:description'],
+          // ARP specific
+          '_arp'                 : field._arp,
         };
         if (hasVersion) {
           field.items['pav:version'] = field['pav:version'];
@@ -796,6 +798,23 @@ define([
       if (!node[fieldName] || node[fieldName].trim().length == 0) {
         delete node[fieldName];
       }
+    };
+
+    // ARP specific
+    service.setArpDataverseFacetable = function (node, value) {
+      service.schemaOf(node)._arp.dataverse.facetable = value;
+    };
+
+    service.isArpDataverseFacetable = function (node) {
+      return service.schemaOf(node)._arp.dataverse.facetable || false;
+    };
+
+    service.setArpDataverseSearchable = function (node, value) {
+      service.schemaOf(node)._arp.dataverse.searchable= value;
+    };
+
+    service.isArpDataverseSearchable = function (node) {
+      return service.schemaOf(node)._arp.dataverse.searchable || false;
     };
 
     return service;

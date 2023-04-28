@@ -21,7 +21,7 @@ define([
 
       $scope.termsModalVisible = false;
       $scope.errorMessages = null;
-      const tabSet = ["options", "values", "cardinality", "range", "required", "value-recommendation", "hidden", "field"];
+      const tabSet = ["options", "values", "cardinality", "range", "required", "value-recommendation", "hidden", "field", "dataverse"];
       $scope.activeTab = null;
       $scope.viewType = 'table';
       $scope.uuid = DataManipulationService.generateTempGUID();
@@ -1268,6 +1268,28 @@ define([
         }
 
       };
+
+      // ARP specific
+      $scope.allowArpAdditions = function () {
+        return true;
+      };
+
+      $scope.setArpDataverseFacetable = function (value) {
+        schemaService.setArpDataverseFacetable($scope.field, value);
+      };
+
+      $scope.isArpDataverseFacetable = function (value) {
+        return schemaService.isArpDataverseFacetable($scope.field);
+      };
+
+      $scope.setArpDataverseSearchable = function (value) {
+        schemaService.setArpDataverseSearchable($scope.field, value);
+      };
+
+      $scope.isArpDataverseSearchable = function (value) {
+        return schemaService.isArpDataverseSearchable($scope.field);
+      };
+
 
       $scope.init();
     };

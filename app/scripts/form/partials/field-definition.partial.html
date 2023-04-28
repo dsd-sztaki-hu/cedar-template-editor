@@ -2,7 +2,7 @@
   <div class="flex field-title">
     <!-- field title -->
     <div class="form-group floating-label-wrapper">
-      <input type="text" auto-focus
+     <input type="text" auto-focus
           class="form-control select field-title-definition"
           id="placeholder-{{getId().substring(getId().lastIndexOf('/')+1)}}"
           placeholder="{{'CREATOR.enterFieldKey' | translate}}"
@@ -75,6 +75,31 @@
         ng-disabled="isPublished()"
         with-floating-label>
   </div>
+
+
+  <div ng-if="allowArpAdditions()" class="form-group floating-label-wrapper">
+    <!-- TODO: Is arp:prefLabel OK? -->
+    <input type="text"
+           class="form-control"
+           placeholder="{{'ARP.enterPrefLabelHun' | translate}}"
+           aria-label="{{'ARP.enterPrefLabelHun' | translate}}"
+           ng-model="$root.schemaOf(field)['arp:prefLabel']"
+           with-floating-label>
+  </div>
+
+  <div ng-if="allowArpAdditions()" class="form-group floating-label-wrapper">
+    <input type="text"
+           class="form-control field-description-definition"
+           id="help-text-hun-{{getId().substring(getId().lastIndexOf('/')+1)}}"
+           placeholder="{{'ARP.enterFieldDescriptionHun' | translate}}"
+           aria-label="{{'ARP.enterFieldDescriptionHun' | translate}}"
+           ng-model="fieldDescription[fieldDescriptionKey+'_hun']"
+           ng-model-options="{ debounce: 1000, allowInvalid:true }"
+           autocomplete="off"
+           ng-disabled="isPublished()"
+           with-floating-label>
+  </div>
+
 
 </div>
 

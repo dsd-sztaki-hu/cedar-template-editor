@@ -50,7 +50,7 @@ define([
 
     //TODO: now the dataverse collection is stored in the conf, add option to modify it
     //TODO: api key is stored in the conf fix it after the demo
-    service.exportTemplateJson = function () {
+    service.arpExportTemplateJson = function () {
       return arpService + "/cedarToMdb/" + dvCollection + "?key=" + arpAPIKey;
     };
 

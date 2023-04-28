@@ -299,9 +299,9 @@ define([
           }
         };
 
-        $scope.exportTemplate = function () {
+        $scope.arpExportTemplate = function () {
           AuthorizedBackendService.doCall(
-              TemplateService.exportTemplate($scope.form),
+              TemplateService.arpExportTemplate($scope.form),
               function (response) {
                 UIMessageService.flashSuccess('ARP.ExportResult.success',
                     {"title": schemaService.getTitle($scope.form)}, 'ARP.Exported');

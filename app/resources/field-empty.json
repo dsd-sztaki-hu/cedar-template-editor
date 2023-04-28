@@ -43,6 +43,12 @@
   "_valueConstraints": {
     "requiredValue": false
   },
+  "_arp": {
+    "dataverse": {
+      "facetable": false,
+      "searchable": false
+    }
+  },
   "properties": {
     "@type": {
       "oneOf": [

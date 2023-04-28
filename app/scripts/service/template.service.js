@@ -30,8 +30,8 @@ define([
       return HttpBuilderService.put(UrlService.getTemplate(id), angular.toJson(template));
     };
 
-    service.exportTemplate = function (template) {
-      return HttpBuilderService.post(UrlService.exportTemplateJson(), angular.toJson(template));
+    service.arpExportTemplate = function (template) {
+      return HttpBuilderService.post(UrlService.arpExportTemplateJson(), angular.toJson(template));
     }
 
     return service;
