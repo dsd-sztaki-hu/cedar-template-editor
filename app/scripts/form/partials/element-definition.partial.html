@@ -55,6 +55,27 @@
         with-floating-label>
   </div>
 
+  <!-- field title -->
+  <div  class="form-group floating-label-wrapper" >
+    <input type="text"
+           class="form-control"
+           placeholder="{{'ARP.enterPrefLabel' | translate}}"
+           aria-label="{{'ARP.enterPrefLabel' | translate}}"
+           ng-model="$root.schemaOf(element)['hunLabel']"
+           with-floating-label>
+  </div>
+
+  <div class="form-group floating-label-wrapper">
+    <input type="text"
+           class="form-control field-description-definition"
+           id="help-text-hun-{{getId().substring(getId().lastIndexOf('/')+1)}}"
+           placeholder="{{'ARP.enterElementDescription' | translate}}"
+           aria-label="{{'ARP.enterElementDescription' | translate}}"
+           ng-model="elementDescription[key+'_hun']"
+           ng-model-options="{ debounce: 1000, allowInvalid:true }"
+           with-floating-label>
+  </div>
+
 </div>
 
 <div ng-if="!isEditState()">
