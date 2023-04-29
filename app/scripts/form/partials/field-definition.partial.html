@@ -78,12 +78,11 @@
 
 
   <div ng-if="allowArpAdditions()" class="form-group floating-label-wrapper">
-    <!-- TODO: Is arp:prefLabel OK? -->
     <input type="text"
            class="form-control"
            placeholder="{{'ARP.enterPrefLabelHun' | translate}}"
            aria-label="{{'ARP.enterPrefLabelHun' | translate}}"
-           ng-model="$root.schemaOf(field)['arp:prefLabel']"
+           ng-model="$root.schemaOf(field)['hunLabel']"
            with-floating-label>
   </div>
 
