@@ -80,19 +80,20 @@
   <div ng-if="allowArpAdditions()" class="form-group floating-label-wrapper">
     <input type="text"
            class="form-control"
-           placeholder="{{'ARP.enterPrefLabelHun' | translate}}"
-           aria-label="{{'ARP.enterPrefLabelHun' | translate}}"
+           placeholder="{{'ARP.CREATOR.enterPrefLabelHun' | translate}}"
+           aria-label="{{'ARP.CREATOR.enterPrefLabelHun' | translate}}"
            ng-model="$root.schemaOf(field)['hunLabel']"
            with-floating-label>
   </div>
 
   <div ng-if="allowArpAdditions()" class="form-group floating-label-wrapper">
+    <!--           ng-model="fieldDescription[fieldDescriptionKey+'_hun']"-->
     <input type="text"
            class="form-control field-description-definition"
            id="help-text-hun-{{getId().substring(getId().lastIndexOf('/')+1)}}"
-           placeholder="{{'ARP.enterFieldDescriptionHun' | translate}}"
-           aria-label="{{'ARP.enterFieldDescriptionHun' | translate}}"
-           ng-model="fieldDescription[fieldDescriptionKey+'_hun']"
+           placeholder="{{'ARP.CREATOR.enterFieldDescriptionHun' | translate}}"
+           aria-label="{{'ARP.CREATOR.enterFieldDescriptionHun' | translate}}"
+           ng-model="$root.schemaOf(field)['hunDescription']"
            ng-model-options="{ debounce: 1000, allowInvalid:true }"
            autocomplete="off"
            ng-disabled="isPublished()"

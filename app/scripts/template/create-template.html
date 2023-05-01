@@ -15,6 +15,15 @@
                        ng-model="form['schema:name']"
                        with-floating-label>
               </div>
+              <div class="form-group floating-label-wrapper">
+                <input type="text"
+                       class="form-control"
+                       id="template-name-hun"
+                       placeholder="{{'ARP.GENERIC.SchemaNameHun' | translate}}"
+                       aria-label="{{'ARP.GENERIC.SchemaNameHun' | translate}}"
+                       ng-model="form['hunName']"
+                       with-floating-label>
+              </div>
             </form>
           </div>
         </div>
@@ -55,6 +64,15 @@
                        placeholder="{{'GENERIC.Description' | translate}}"
                        aria-label="{{'GENERIC.Description' | translate}}"
                        ng-model="form['schema:description']"
+                       with-floating-label>
+              </div>
+
+              <div class="form-group floating-label-wrapper">
+                <input type="text" class="form-control"
+                       id="template-description2"
+                       placeholder="{{'ARP.GENERIC.SchemaDescriptionHun' | translate}}"
+                       aria-label="{{'ARP.GENERIC.SchemaDescriptionHun' | translate}}"
+                       ng-model="form['hunDescription']"
                        with-floating-label>
               </div>
             </form>

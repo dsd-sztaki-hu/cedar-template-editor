@@ -65,13 +65,14 @@
            with-floating-label>
   </div>
 
+  <!-- TODO: $root.schemaOf(element)['hunDescription'] instead of  -->
   <div class="form-group floating-label-wrapper">
     <input type="text"
            class="form-control field-description-definition"
            id="help-text-hun-{{getId().substring(getId().lastIndexOf('/')+1)}}"
            placeholder="{{'ARP.enterElementDescription' | translate}}"
            aria-label="{{'ARP.enterElementDescription' | translate}}"
-           ng-model="elementDescription[key+'_hun']"
+           ng-model="$root.schemaOf(element)['hunDescription']"
            ng-model-options="{ debounce: 1000, allowInvalid:true }"
            with-floating-label>
   </div>

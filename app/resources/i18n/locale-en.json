@@ -751,7 +751,13 @@
       "templateExport": "<pre><b>Unprocessable elements</b>: {{unprocessableElements}}</br><b>Invalid names</b>: {{invalidNames}}<br/><b>Incompatible pairs</b>: {{incompatiblePairs}}<br/></pre>",
       "unavailable": "ARP Service is unavailable"
     },
-    "enterPrefLabelHun": "Enter Preferred Hungarian Label",
-    "enterFieldDescriptionHun": "Enter Hungarian Field Help Text"
+    "CREATOR": {
+      "enterPrefLabelHun": "Enter Preferred Hungarian Label",
+      "enterFieldDescriptionHun": "Enter Hungarian Field Help Text"
+    },
+    "GENERIC": {
+      "SchemaNameHun": "Hungarian Name",
+      "SchemaDescriptionHun": "Hungarian Description"
+    }
   }
 }
