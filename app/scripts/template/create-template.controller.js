@@ -47,7 +47,7 @@ define([
 
         $scope.isTemplate = true;
 
-        $scope.exportButtonDisabled = function() {
+        $scope.arpExportButtonDisabled = function() {
           return UIUtilService.isDirty() || $routeParams.id === undefined;
         };
 
@@ -311,6 +311,10 @@ define([
               }
           );
         };
+
+        $scope.canArpExportTemplate = function () {
+          return TemplateService.canArpExportTemplate()
+        }
 
         // Stores the template into the database
         $scope.doSaveTemplate = function () {

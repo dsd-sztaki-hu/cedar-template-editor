@@ -200,8 +200,8 @@
               <button id="button-cancel-template" type="button" class="btn btn-clear template"
                       ng-click="cancelTemplate()" translate>GENERIC.Cancel
               </button>
-              <button id="button-export-template" ng-disabled=exportButtonDisabled()3 type="button"
-                      class="btn btn-clear template" ng-click="arpExportTemplate()"
+              <button id="button-export-template" ng-disabled="arpExportButtonDisabled()" type="button"
+                      class="btn btn-clear template" ng-click="arpExportTemplate()" ng-if="canArpExportTemplate()"
                       translate>
                 ARP.ExportTemplate
               </button>

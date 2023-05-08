@@ -31,8 +31,12 @@ define([
     };
 
     service.arpExportTemplate = function (template) {
-      console.log("ZZZ", CedarUser.getApiKeys()[0].key);
       return HttpBuilderService.post(UrlService.arpExportTemplateJson(CedarUser.getApiKeys()[0].key), angular.toJson(template));
+    }
+
+    service.canArpExportTemplate = function () {
+      // userAdministrator roles is a central admi role
+      return CedarUser.getRoles().includes("userAdministrator");
     }
 
     return service;
