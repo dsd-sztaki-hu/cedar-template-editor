@@ -6,9 +6,9 @@ define([
   angular.module('cedar.templateEditor.service.templateService', [])
       .service('TemplateService', TemplateService);
 
-  TemplateService.$inject = ['HttpBuilderService', 'UrlService'];
+  TemplateService.$inject = ['HttpBuilderService', 'UrlService', 'CedarUser'];
 
-  function TemplateService(HttpBuilderService, UrlService) {
+  function TemplateService(HttpBuilderService, UrlService, CedarUser) {
 
     var service = {
       serviceId: 'TemplateService'
@@ -31,7 +31,8 @@ define([
     };
 
     service.arpExportTemplate = function (template) {
-      return HttpBuilderService.post(UrlService.arpExportTemplateJson(), angular.toJson(template));
+      console.log("ZZZ", CedarUser.getApiKeys()[0].key);
+      return HttpBuilderService.post(UrlService.arpExportTemplateJson(CedarUser.getApiKeys()[0].key), angular.toJson(template));
     }
 
     return service;
