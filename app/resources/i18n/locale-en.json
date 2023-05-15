@@ -753,7 +753,8 @@
     },
     "CREATOR": {
       "enterPrefLabelHun": "Enter Preferred Hungarian Label",
-      "enterFieldDescriptionHun": "Enter Hungarian Field Help Text"
+      "enterFieldDescriptionHun": "Enter Hungarian Field Help Text",
+      "enterElementDescriptionHun": "Enter Hungarian Element Help Text"
     },
     "GENERIC": {
       "SchemaNameHun": "Hungarian Name",
