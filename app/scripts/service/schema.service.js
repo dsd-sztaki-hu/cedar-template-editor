@@ -814,7 +814,15 @@ define([
     };
 
     service.isArpDataverseSearchable = function (node) {
-      return service.schemaOf(node)._arp.dataverse.searchable || false;
+      if (!service.schemaOf(node)._arp) {
+        service.schemaOf(node)._arp = {
+          "dataverse": {
+            "facetable": false,
+            "searchable": false
+          }
+        }
+      }
+      return service.schemaOf(node)._arp?.dataverse.searchable || false;
     };
 
     return service;
