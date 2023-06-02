@@ -800,12 +800,25 @@ define([
       }
     };
 
+    //
     // ARP specific
+    //
+
+    service.ensureDefaultDataverseValues = function (node) {
+      if (!service.schemaOf(node)._arp) {
+        service.schemaOf(node)._arp = {
+          "dataverse": {
+          }
+        }
+      }
+    };
+
     service.setArpDataverseFacetable = function (node, value) {
       service.schemaOf(node)._arp.dataverse.facetable = value;
     };
 
     service.isArpDataverseFacetable = function (node) {
+      service.ensureDefaultDataverseValues(node);
       return service.schemaOf(node)._arp.dataverse.facetable || false;
     };
 
@@ -814,15 +827,28 @@ define([
     };
 
     service.isArpDataverseSearchable = function (node) {
-      if (!service.schemaOf(node)._arp) {
-        service.schemaOf(node)._arp = {
-          "dataverse": {
-            "facetable": false,
-            "searchable": false
-          }
-        }
-      }
-      return service.schemaOf(node)._arp?.dataverse.searchable || false;
+      service.ensureDefaultDataverseValues(node);
+      return service.schemaOf(node)._arp.dataverse.searchable || false;
+    };
+
+    service.getArpDataverseDisplayNameField = function (node) {
+      service.ensureDefaultDataverseValues(node);
+      return service.schemaOf(node)._arp.dataverse.displayNameField;
+    };
+
+    service.setArpDataverseDisplayNameField = function (node, value) {
+      service.ensureDefaultDataverseValues(node);
+      service.schemaOf(node)._arp.dataverse.displayNameField = value;
+    };
+
+    service.isArpDataverseDisplayNameField = function (node) {
+      service.ensureDefaultDataverseValues(node);
+      return service.schemaOf(node)._arp.dataverse.isDisplayNameField || false;
+    };
+
+    service.setArpDataverseIsDisplayNameField = function (node, value) {
+      service.ensureDefaultDataverseValues(node);
+      service.schemaOf(node)._arp.dataverse.isDisplayNameField = value;
     };
 
     return service;

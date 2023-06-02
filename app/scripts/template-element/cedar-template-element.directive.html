@@ -93,6 +93,11 @@
               ng-click="setTab('cardinality');">
             <span>Multiple</span>
           </div>
+          <div class="element-toggle table-cell-style dataverse-tab"
+               ng-class="{active: isTabActive('dataverse')}"
+               ng-click="setTab('dataverse');  $event.stopPropagation();">
+            <span>DV</span>
+          </div>
         </div>
       </div>
       <div id="cardinality-options" class="cardinality-options cardinality-selectors"
@@ -115,6 +120,52 @@
         </div>
 
       </div>
+      <!-- Dataverse tab  -->
+      <div id="dataverse" ng-show="isTabActive('dataverse')">
+        <!-- Display name field -->
+        <div>
+        <b>{{'ARP.CREATOR.selectFieldAsDisplayName' | translate}}</b>
+        </div>
+        <div  class="btn-group"  uib-dropdown  auto-close="always" on-toggle="toggled(open)">
+          <button id="displayNameButton" type="button" class="btn btn-primary" uib-dropdown-toggle>
+            <span translate>{{elementSchema._arp.dataverse.displayNameField}}</span>  <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button"  >
+            <li ng-repeat="value in arpPropList"  role="menuitem">
+              <a href="#"  class="dropdown-selector"   ng-class="{'none' : value.label === 'none'}"
+                 ng-click="setArpDataverseDisplayNameField(value.value)">
+                {{value.label}} ({{value.value}})
+                <i ng-if="value.value == elementSchema._arp.dataverse.displayNameField" class="fa fa-check check"></i></a></li>
+          </ul>
+        </div>
+        <div>
+        <b>{{'ARP.CREATOR.orEnterDisplayNameFieldExpression' | translate}}</b>
+        </div>
+        <div class="form-group floating-label-wrapper">
+          <input type="text" auto-focus
+                 class="form-control field-default-definition"
+                 placeholder="{{'ARP.CREATOR.enterDisplayNameFieldExpression' | translate}}"
+                 aria-label="{{'ARP.CREATOR.enterDisplayNameFieldExpression' | translate}}"
+                 ng-model="elementSchema._arp.dataverse.displayNameField"
+                 ng-change="onArpDataverseDisplayNameFieldChange()"
+                 with-floating-label>
+        </div>
+
+        <!-- Radio is too verbose -->
+<!--        <div class="form-group field-wrapper-radio  " >-->
+<!--            <div class="form-group radio-item" ng-repeat="(index, value) in arpPropList">-->
+<!--              <div class="radio radio-primary">-->
+<!--                <input type="radio"-->
+<!--                       id="radio-{{value.value}}"-->
+<!--                       ng-model="elementSchema._arp.dataverse.displayNameField"-->
+<!--                       ng-value="value.value"-->
+<!--                />-->
+<!--                <label for="radio-{{value.value}}">{{value.label}} ({{value.value}})</label>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--        </div>-->
+      </div>
+
       <div class="clearfix"></div>
     </div>
   </div>

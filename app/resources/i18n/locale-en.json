@@ -754,7 +754,13 @@
     "CREATOR": {
       "enterPrefLabelHun": "Enter Preferred Hungarian Label",
       "enterFieldDescriptionHun": "Enter Hungarian Field Help Text",
-      "enterElementDescriptionHun": "Enter Hungarian Element Help Text"
+      "enterElementDescriptionHun": "Enter Hungarian Element Help Text",
+      "enterDisplayNameFieldExpression": "Enter display name field",
+      "orEnterDisplayNameFieldExpression": "... or enter display name field expression",
+      "selectFieldAsDisplayName": "Select field as display name",
+      "useAsDisplayNameInCompoundValuePrompt": "Use as display name in compound value?",
+      "searchablePrompt": "Searchable",
+      "facetablePrompt": "Facetable?"
     },
     "GENERIC": {
       "SchemaNameHun": "Hungarian Name",

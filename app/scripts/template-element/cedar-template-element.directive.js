@@ -33,7 +33,7 @@ define([
 
     function linker(scope, element, attrs) {
 
-      var tabSet = ["options",  "cardinality"];
+      var tabSet = ["options",  "cardinality", "dataverse"];
       scope.activeTab;
 
 
@@ -43,8 +43,6 @@ define([
       scope.elementSchema = dms.schemaOf(scope.element);
       scope.elementLabel = dms.getPropertyLabels(scope.parentElement);
       scope.elementDescription = dms.getPropertyDescriptions(scope.parentElement);
-
-
 
       scope.isRoot = function () {
         return !schemaService.getId(scope.element) || (schemaService.getId(scope.element) === $rootScope.keyOfRootElement);
@@ -439,9 +437,62 @@ define([
       };
 
       scope.getIconClass = function () {
+        //console.log("scope.parentElement", scope.parentElement)
         return 'fa fa-cubes';
       };
 
+
+      //
+      // ARP
+      //
+
+      // make sure we have scope.elementSchema._arp.dataverse
+      if (!scope.elementSchema._arp) {
+        scope.elementSchema._arp = {
+          dataverse: {
+          }
+        }
+      }
+
+      // When editing an element inside a template, set a default displayNameField.
+      if (scope.parentElement["@type"]) {
+        // if no explicit displayNameField set, check if a field in the element is already
+        // set as isDisplayNameField. If set, use that as default displayNameField
+        if (!scope.elementSchema._arp.dataverse.displayNameField) {
+          const propNames = Object.keys(scope.elementSchema.properties).filter(key => {
+            return !key.startsWith("@");
+          })
+          propNames.forEach(propName => {
+            if (scope.elementSchema.properties[propName]._arp?.dataverse?.isDisplayNameField === true) {
+              scope.elementSchema._arp.dataverse.displayNameField = scope.elementSchema.properties[propName]["schema:name"];
+            }
+          })
+        }
+      }
+      else {
+        // When editing the element itself (ie. scope.parentElement["@type"] is not set) then don't set displayNameField
+        // Even better: don't have an _arp object at all
+        delete scope.elementSchema._arp
+      }
+
+      scope.setArpDataverseDisplayNameField = function(value) {
+        scope.elementSchema._arp.dataverse.displayNameField = value;
+      }
+
+      scope.onArpDataverseDisplayNameFieldChange = function() {
+        // TODO: check whether scope.elementSchema._arp.dataverse.displayNameField is valid, ie. it is field name
+        // present in the element
+      }
+
+      // For creating a select inut for selecting a field as display name
+      scope.arpPropList = Object.keys(scope.elementSchema.properties).filter(key => {
+          return !key.startsWith("@");
+        }).map(prop => {
+          return {
+            value: scope.elementSchema.properties[prop]["schema:name"],
+            label: scope.elementSchema.properties[prop]["skos:prefLabel"]
+          }
+        });
 
       //
       // controlled terms modal

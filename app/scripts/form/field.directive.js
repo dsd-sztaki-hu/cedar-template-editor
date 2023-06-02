@@ -1278,7 +1278,7 @@ define([
         schemaService.setArpDataverseFacetable($scope.field, value);
       };
 
-      $scope.isArpDataverseFacetable = function (value) {
+      $scope.isArpDataverseFacetable = function () {
         return schemaService.isArpDataverseFacetable($scope.field);
       };
 
@@ -1286,8 +1286,21 @@ define([
         schemaService.setArpDataverseSearchable($scope.field, value);
       };
 
-      $scope.isArpDataverseSearchable = function (value) {
+      $scope.isArpDataverseSearchable = function () {
         return schemaService.isArpDataverseSearchable($scope.field);
+      };
+
+      $scope.isArpDataverseDisplayNameField = function () {
+        return schemaService.isArpDataverseDisplayNameField($scope.field);
+      };
+
+      $scope.setArpDataverseIsDisplayNameField = function (value) {
+        return schemaService.setArpDataverseIsDisplayNameField($scope.field, value);
+      };
+
+      // Check whether field's parent is a Template or a TemplateElement
+      $scope.isEditingElement = function () {
+        return $scope.parentElement["@type"] == "https://schema.metadatacenter.org/core/TemplateElement"
       };
 
 
