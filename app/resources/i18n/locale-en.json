@@ -755,12 +755,13 @@
       "enterPrefLabelHun": "Enter Preferred Hungarian Label",
       "enterFieldDescriptionHun": "Enter Hungarian Field Help Text",
       "enterElementDescriptionHun": "Enter Hungarian Element Help Text",
-      "enterDisplayNameFieldExpression": "Enter display name field",
+      "enterDisplayNameFieldExpression": "Enter display name field expression",
       "orEnterDisplayNameFieldExpression": "... or enter display name field expression",
       "selectFieldAsDisplayName": "Select field as display name",
       "useAsDisplayNameInCompoundValuePrompt": "Use as display name in compound value?",
       "searchablePrompt": "Searchable",
-      "facetablePrompt": "Facetable?"
+      "facetablePrompt": "Facetable?",
+      "dataverseSpecificSettings": "Dataverse specific element settings"
     },
     "GENERIC": {
       "SchemaNameHun": "Hungarian Name",

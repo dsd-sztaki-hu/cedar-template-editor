@@ -7,10 +7,10 @@ define([
       .directive('cedarTemplateElement', cedarTemplateElementDirective);
 
   cedarTemplateElementDirective.$inject = ['$rootScope', 'DataManipulationService', 'schemaService','DataUtilService',
-                                           'SpreadsheetService', 'UIUtilService'];
+                                           'SpreadsheetService', 'UIUtilService', 'TemplateService'];
 
   function cedarTemplateElementDirective($rootScope, DataManipulationService, schemaService,DataUtilService, SpreadsheetService,
-                                         UIUtilService) {
+                                         UIUtilService, TemplateService) {
 
     var directive = {
       restrict   : 'EA',
@@ -469,11 +469,6 @@ define([
           })
         }
       }
-      else {
-        // When editing the element itself (ie. scope.parentElement["@type"] is not set) then don't set displayNameField
-        // Even better: don't have an _arp object at all
-        delete scope.elementSchema._arp
-      }
 
       scope.setArpDataverseDisplayNameField = function(value) {
         scope.elementSchema._arp.dataverse.displayNameField = value;
@@ -493,6 +488,10 @@ define([
             label: scope.elementSchema.properties[prop]["skos:prefLabel"]
           }
         });
+
+      scope.canArpEditDisplayName = function () {
+        return TemplateService.canArpExportTemplate();
+      }
 
       //
       // controlled terms modal

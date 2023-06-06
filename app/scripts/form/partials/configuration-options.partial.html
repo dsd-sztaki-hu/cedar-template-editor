@@ -443,21 +443,6 @@
         <span translate>GENERIC.Yes</span>
       </div>
     </div>
-    <div ng-if="isEditingElement()">
-      {{'ARP.CREATOR.useAsDisplayNameInCompoundValuePrompt' | translate }}
-      <div class="type-toggle date" >
-        <div class="single-date d-option yesno-arp-dataverse-display-name-no"
-             ng-click="setDirty(); setArpDataverseIsDisplayNameField(false); $event.stopPropagation();"
-             ng-class="{active: !isArpDataverseDisplayNameField()}">
-          <span>No</span>
-        </div>
-        <div class="date-range d-option yesno-arp-dataverse-display-namee-yes"
-             ng-click="setDirty(); setArpDataverseIsDisplayNameField(true); $event.stopPropagation();"
-             ng-class="{active: isArpDataverseDisplayNameField()}">
-          <span>Yes</span>
-        </div>
-      </div>
-    </div>
 </div>
 
 <div class="clearfix"></div>

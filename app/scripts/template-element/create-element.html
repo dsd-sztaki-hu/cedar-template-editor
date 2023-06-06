@@ -132,6 +132,57 @@
               <!--</div>-->
               <form-directive form="form" page="page" model="instance" page-index="0" ng-if="!isPropertiesEmpty()"></form-directive>
 
+              <div ng-if="arpPropList.length" style="margin:0 21px">
+                <hr style="border: 0; height: 0; border-top: 1px solid rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.3);"/>
+
+
+                <div class="item-root element-root field-root" style="padding:0 5px;">
+
+                  <div style="padding:5px;">
+                    <b>{{'ARP.CREATOR.dataverseSpecificSettings' | translate}}</b>
+                  </div>
+
+                  <!-- Display name field -->
+                  <div style="padding:5px;">
+                    {{'ARP.CREATOR.selectFieldAsDisplayName' | translate}}
+                  </div>
+                  <div  class="btn-group"  uib-dropdown  auto-close="always" on-toggle="toggled(open)">
+                    <button id="displayNameButton" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                      <span>{{element._arp.dataverse.displayNameField}}</span>  <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button"  >
+                      <li ng-repeat="value in arpPropList"  role="menuitem">
+                        <a href="#"  class="dropdown-selector"   ng-class="{'none' : value.label === 'none'}"
+                           ng-click="setArpDataverseDisplayNameField(value.value)">
+                          {{value.label}} ({{value.value}})
+                          <i ng-if="value.value == element._arp.dataverse.displayNameField" class="fa fa-check check"></i></a></li>
+                    </ul>
+                  </div>
+                  <div style="padding:5px;">
+                    {{'ARP.CREATOR.orEnterDisplayNameFieldExpression' | translate}}
+                  </div>
+                  <div class="form-group" ng-if="element">
+                    <input type="text"
+                           class="form-control field-default-definition"
+                           aria-label="{{'ARP.CREATOR.enterDisplayNameFieldExpression' | translate}}"
+                           ng-model="element._arp.dataverse.displayNameField"
+                           ng-change="onArpDataverseDisplayNameFieldChange()">
+                  </div>
+
+<!--                  <div style="padding:5px;">-->
+<!--                    {{'ARP.CREATOR.dataverseSpecificSettings' | translate}}-->
+<!--                  </div>-->
+<!--                  <div class="form-group floating-label-wrapper">-->
+<!--                    <input type="text"-->
+<!--                           class="form-control field-default-definition"-->
+<!--                           placeholder="{{'ARP.CREATOR.enterDisplayNameFieldExpression' | translate}}"-->
+<!--                           aria-label="{{'ARP.CREATOR.enterDisplayNameFieldExpression' | translate}}"-->
+<!--                           ng-model="element._arp.dataverse.displayNameField"-->
+<!--                           ng-change="onArpDataverseDisplayNameFieldChange()"-->
+<!--                           with-floating-label>-->
+<!--                  </div>-->
+                </div>
+              </div>
 
             </div>
             <!-- /.form-preview -->

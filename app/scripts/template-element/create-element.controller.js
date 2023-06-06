@@ -102,6 +102,7 @@ define([
     };
 
     var getElement = function () {
+      console.log("getElement called")
       $scope.form = {};
       // Load existing element if $routeParams.id parameter is supplied
       if ($routeParams.id) {
@@ -184,7 +185,9 @@ define([
 
       }
     };
+    console.log("getElement before")
     getElement();
+    console.log("getElement after")
 
     var populateCreatingFieldOrElement = function () {
       $scope.invalidFieldStates = {};
@@ -464,6 +467,7 @@ define([
 
     // This function watches for changes in the form and defaults the title and description fields
     $scope.$watch('$scope.element', function (v) {
+      console.log("XXX ", $scope.element)
       if (dms.schemaOf($scope.element)) {
         if (!dms.getTitle($scope.element)) {
           dms.setTitle($scope.element, $translate.instant("VALIDATION.noNameElement"));
@@ -595,6 +599,69 @@ define([
         return $translate.instant("CREATOR.hideAdditionalFields");
       }
     };
+
+
+    // ARP
+    // This function watches for changes in the form and defaults the title and description fields
+    // $scope.$watch('element', function (v) {
+    //   console.log("element", $scope.element)
+    //   $scope.updateArpPropList();
+    // });
+    $scope.$watch('element.properties', function (v) {
+      $scope.updateArpPropList();
+    }, true);
+
+    $scope.updateArpPropList = function() {
+      if (!$scope.element) {
+        return;
+      }
+
+      $scope.arpPropList = Object.keys($scope.element.properties).filter(key => {
+        return !key.startsWith("@");
+      }).map(prop => {
+        return {
+          value: $scope.element.properties[prop]["schema:name"],
+          label: $scope.element.properties[prop]["skos:prefLabel"]
+        }
+      });
+    }
+    $scope.getArpPropList = function(form, item) {
+      if (!$scope.element) {
+        return [];
+      }
+
+      const keys = Object.keys($scope.element.properties).filter(key => {
+        return !key.startsWith("@");
+      })
+
+      // If we just simply map the keys to the values we need, it results in infinite loop for some reason,
+      // so instead we check if the $scope.arpPropList has the same length as the keys.length and if we have
+      // and already calced $scope.arpPropList use that, otherwise generate it now
+      if ($scope.arpPropList && $scope.arpPropList.length != 0 && $scope.arpPropList.length == keys.length) {
+        return $scope.arpPropList;
+      }
+      $scope.arpPropList =  keys.filter(key => {
+        return !key.startsWith("@");
+      }).map(prop => {
+        return {
+          value: $scope.element.properties[prop]["schema:name"],
+          label: $scope.element.properties[prop]["skos:prefLabel"]
+        }
+      });
+      console.log("getArpPropList", JSON.stringify($scope.arpPropList));
+      return $scope.arpPropList;
+    }
+
+    $scope.setArpDataverseDisplayNameField = function(fieldNameOrExp) {
+      console.log("setArpDataverseDisplayNameField", fieldNameOrExp)
+      if (!$scope.element._arp) {
+        $scope.element._arp = {
+          dataverse: {}
+        }
+      }
+      $scope.element._arp.dataverse.displayNameField = fieldNameOrExp;
+    }
+
 
   }
 });

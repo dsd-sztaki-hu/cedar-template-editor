@@ -841,16 +841,19 @@ define([
       service.schemaOf(node)._arp.dataverse.displayNameField = value;
     };
 
-    service.isArpDataverseDisplayNameField = function (node) {
-      service.ensureDefaultDataverseValues(node);
-      return service.schemaOf(node)._arp.dataverse.isDisplayNameField || false;
-    };
 
-    service.setArpDataverseIsDisplayNameField = function (node, value) {
-      service.ensureDefaultDataverseValues(node);
-      service.schemaOf(node)._arp.dataverse.isDisplayNameField = value;
-    };
-
+    service.getArpPropList = function(node) {
+      const arpProList =  Object.keys(node.properties).filter(key => {
+        return !key.startsWith("@");
+      }).map(prop => {
+        return {
+          value: node.properties[prop]["schema:name"],
+          label: node.properties[prop]["skos:prefLabel"]
+        }
+      });
+      console.log("getArpPropList", JSON.stringify(arpProList));
+      return arpProList;
+    }
     return service;
   }
 
