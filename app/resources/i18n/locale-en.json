@@ -762,7 +762,11 @@
       "searchablePrompt": "Searchable",
       "displayOnCreatePrompt": "Display on create",
       "facetablePrompt": "Facetable?",
-      "dataverseSpecificSettings": "Dataverse specific element settings"
+      "dataverseSpecificSettings": "Dataverse specific element settings",
+      "watermarkPrompt": "Watermark",
+      "enterWatermark": "Enter Watermark",
+      "displayFormatPrompt": "Display Format",
+      "enterDisplayFormat": "Enter Display Format"
     },
     "GENERIC": {
       "SchemaNameHun": "Hungarian Name",

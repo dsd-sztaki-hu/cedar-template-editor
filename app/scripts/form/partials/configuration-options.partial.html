@@ -456,6 +456,24 @@
         <span translate>GENERIC.Yes</span>
       </div>
     </div>
+    {{'ARP.CREATOR.watermarkPrompt' | translate }}
+    <div class="form-group floating-label-wrapper">
+      <input type="text"
+             class="form-control"
+             placeholder="{{'ARP.CREATOR.enterWatermark' | translate}}"
+             aria-label="{{'ARP.CREATOR.enterWatermark' | translate}}"
+             ng-model="$root.schemaOf(field)['_arp']['dataverse']['watermark']"
+             with-floating-label>
+    </div>
+    {{'ARP.CREATOR.displayFormatPrompt' | translate }}
+    <div class="form-group floating-label-wrapper">
+      <input type="text"
+             class="form-control"
+             placeholder="{{'ARP.CREATOR.enterDisplayFormat' | translate}}"
+             aria-label="{{'ARP.CREATOR.enterDisplayFormat' | translate}}"
+             ng-model="$root.schemaOf(field)['_arp']['dataverse']['displayFormat']"
+             with-floating-label>
+    </div>
 </div>
 
 <div class="clearfix"></div>
