@@ -1274,6 +1274,14 @@ define([
         return true;
       };
 
+      $scope.setArpDataverseDisplayOnCreate = function (value) {
+        schemaService.setArpDataverseDisplayOnCreate($scope.field, value);
+      };
+
+      $scope.isArpDataverseDisplayOnCreate = function () {
+        return schemaService.isArpDataverseDisplayOnCreate($scope.field);
+      };
+
       $scope.setArpDataverseFacetable = function (value) {
         schemaService.setArpDataverseFacetable($scope.field, value);
       };

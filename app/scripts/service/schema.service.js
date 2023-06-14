@@ -813,6 +813,15 @@ define([
       }
     };
 
+    service.setArpDataverseDisplayOnCreate = function (node, value) {
+      service.schemaOf(node)._arp.dataverse.displayoncreate = value;
+    };
+
+    service.isArpDataverseDisplayOnCreate = function (node) {
+      service.ensureDefaultDataverseValues(node);
+      return service.schemaOf(node)._arp.dataverse.displayoncreate || false;
+    };
+
     service.setArpDataverseFacetable = function (node, value) {
       service.schemaOf(node)._arp.dataverse.facetable = value;
     };

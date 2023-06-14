@@ -417,6 +417,19 @@
 
   <!-- Dataverse tab  -->
   <div id="dataverse" ng-show="isTabActive('dataverse')">
+    {{'ARP.CREATOR.displayOnCreatePrompt' | translate }}
+    <div class="type-toggle date">
+      <div class="single-date d-option yesno-arp-dataverse-displayoncreate-no"
+           ng-click="setDirty();setArpDataverseDisplayOnCreate(false); $event.stopPropagation();"
+           ng-class="{active: !isArpDataverseDisplayOnCreate()}">
+        <span translate>GENERIC.No</span>
+      </div>
+      <div class="date-range d-option yesno-arp-dataverse-displayoncreate-yes"
+           ng-click="setDirty();setArpDataverseDisplayOnCreate(true);   $event.stopPropagation();"
+           ng-class="{active: isArpDataverseDisplayOnCreate()}">
+        <span translate>GENERIC.Yes</span>
+      </div>
+    </div>
     {{'ARP.CREATOR.searchablePrompt' | translate }}
     <div class="type-toggle date">
       <div class="single-date d-option yesno-arp-dataverse-searchable-no"
