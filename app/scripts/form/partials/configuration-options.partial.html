@@ -430,16 +430,16 @@
         <span translate>GENERIC.Yes</span>
       </div>
     </div>
-    {{'ARP.CREATOR.searchablePrompt' | translate }}
+    {{'ARP.CREATOR.advancedSearchFieldPrompt' | translate }}
     <div class="type-toggle date">
-      <div class="single-date d-option yesno-arp-dataverse-searchable-no"
-           ng-click="setDirty();setArpDataverseSearchable(false); $event.stopPropagation();"
-           ng-class="{active: !isArpDataverseSearchable()}">
+      <div class="single-date d-option yesno-arp-dataverse-advanced-search-field-no"
+           ng-click="setDirty();setArpDataverseAdvancedSearchField(false); $event.stopPropagation();"
+           ng-class="{active: !isArpDataverseAdvancedSearchField()}">
         <span translate>GENERIC.No</span>
       </div>
-      <div class="date-range d-option yesno-arp-dataverse-searchable-yes"
-           ng-click="setDirty();setArpDataverseSearchable(true);   $event.stopPropagation();"
-           ng-class="{active: isArpDataverseSearchable()}">
+      <div class="date-range d-option yesno-arp-dataverse-advanced-search-field-yes"
+           ng-click="setDirty();setArpDataverseAdvancedSearchField(true);   $event.stopPropagation();"
+           ng-class="{active: isArpDataverseAdvancedSearchField()}">
         <span translate>GENERIC.Yes</span>
       </div>
     </div>

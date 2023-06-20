@@ -1290,12 +1290,12 @@ define([
         return schemaService.isArpDataverseFacetable($scope.field);
       };
 
-      $scope.setArpDataverseSearchable = function (value) {
-        schemaService.setArpDataverseSearchable($scope.field, value);
+      $scope.setArpDataverseAdvancedSearchField = function (value) {
+        schemaService.setArpDataverseAdvancedSearchField($scope.field, value);
       };
 
-      $scope.isArpDataverseSearchable = function () {
-        return schemaService.isArpDataverseSearchable($scope.field);
+      $scope.isArpDataverseAdvancedSearchField = function () {
+        return schemaService.isArpDataverseAdvancedSearchField($scope.field);
       };
 
       $scope.isArpDataverseDisplayNameField = function () {

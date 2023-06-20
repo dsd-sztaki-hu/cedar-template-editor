@@ -759,7 +759,7 @@
       "orEnterDisplayNameFieldExpression": "... or enter display name field expression",
       "selectFieldAsDisplayName": "Select field as display name",
       "useAsDisplayNameInCompoundValuePrompt": "Use as display name in compound value?",
-      "searchablePrompt": "Searchable",
+      "advancedSearchFieldPrompt": "Advanced search field",
       "displayOnCreatePrompt": "Display on create",
       "facetablePrompt": "Facetable?",
       "dataverseSpecificSettings": "Dataverse specific element settings",

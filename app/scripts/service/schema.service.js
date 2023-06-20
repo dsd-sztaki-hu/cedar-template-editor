@@ -831,13 +831,13 @@ define([
       return service.schemaOf(node)._arp.dataverse.facetable || false;
     };
 
-    service.setArpDataverseSearchable = function (node, value) {
-      service.schemaOf(node)._arp.dataverse.searchable= value;
+    service.setArpDataverseAdvancedSearchField = function (node, value) {
+      service.schemaOf(node)._arp.dataverse.advancedSearchField= value;
     };
 
-    service.isArpDataverseSearchable = function (node) {
+    service.isArpDataverseAdvancedSearchField = function (node) {
       service.ensureDefaultDataverseValues(node);
-      return service.schemaOf(node)._arp.dataverse.searchable || false;
+      return service.schemaOf(node)._arp.dataverse.advancedSearchField || false;
     };
 
     service.getArpDataverseDisplayNameField = function (node) {
