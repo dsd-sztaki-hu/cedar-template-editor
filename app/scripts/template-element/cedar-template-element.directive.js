@@ -33,7 +33,7 @@ define([
 
     function linker(scope, element, attrs) {
 
-      var tabSet = ["options",  "cardinality", "dataverse"];
+      var tabSet = ["options", "cardinality", "required", "dataverse"];
       scope.activeTab;
 
 
@@ -54,6 +54,14 @@ define([
 
       scope.isCardinal = function () {
         return schemaService.isCardinalElement(scope.element);
+      };
+
+      scope.isRequired = function () {
+        return schemaService.isRequiredElement(scope.element);
+      };
+
+      scope.setRequired = function (value) {
+        schemaService.setRequiredElement(scope.element, value);
       };
 
       scope.isPublished = function () {

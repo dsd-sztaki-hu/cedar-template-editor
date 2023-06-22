@@ -800,6 +800,22 @@ define([
       }
     };
 
+    service.ensureValueConstraintsForElement = function (node) {
+      if (!service.schemaOf(node)._valueConstraints) {
+        service.schemaOf(node)._valueConstraints = {}
+      }
+    };
+
+    service.isRequiredElement = function (node) {
+      service.ensureValueConstraintsForElement(node);
+      if (node && service.getValueConstraints(node)) return service.getValueConstraints(node).requiredValue;
+    }
+
+    service.setRequiredElement = function (node, value) {
+      service.ensureValueConstraintsForElement(node);
+      service.getValueConstraints(node).requiredValue = value;
+    }
+
     //
     // ARP specific
     //
