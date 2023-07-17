@@ -70,42 +70,22 @@
                 <div ng-if="dc.isFilterSection('type')" class="filter-type">
 
                   <cedar-resource-icon style="display:inline-block;margin:2px;" resource-type="'template'"
-                                       uib-tooltip="{{'GENERIC.Template' | translate}}"
-                                       tooltip-trigger
-                                       tooltip-animation="false"
-                                       tooltip-placement="top"
-                                       data-toggle="tooltip"
                                        ng-click="dc.toggleResourceType('template')"
                                        class="template"
                                        ng-class="{ deselected: !dc.isResourceTypeActive('template'), selected: dc.isResourceTypeActive('template'), 'template-deselected': !dc.isResourceTypeActive('template'), 'template-selected': dc.isResourceTypeActive('template')}">
                   </cedar-resource-icon>
 
                   <cedar-resource-icon style="display:inline-block;margin:2px;" resource-type="'element'"
-                                       uib-tooltip="{{'GENERIC.Element' | translate}}"
-                                       tooltip-trigger
-                                       tooltip-animation="false"
-                                       tooltip-placement="top"
-                                       data-toggle="tooltip"
                                        ng-click="dc.toggleResourceType('element')"
                                        class="element"
                                        ng-class="{ deselected: !dc.isResourceTypeActive('element'), selected: dc.isResourceTypeActive('element'), 'element-deselected': !dc.isResourceTypeActive('element'), 'element-selected': dc.isResourceTypeActive('element') }"></cedar-resource-icon>
 
                   <cedar-resource-icon style="display:inline-block;margin:2px;" resource-type="'field'"
-                                       uib-tooltip="{{'GENERIC.Field' | translate}}"
-                                       tooltip-trigger
-                                       tooltip-animation="false"
-                                       tooltip-placement="top"
-                                       data-toggle="tooltip"
                                        ng-click="dc.toggleResourceType('field')"
                                        class="field"
                                        ng-class="{ deselected: !dc.isResourceTypeActive('field'), selected: dc.isResourceTypeActive('field'), 'field-deselected': !dc.isResourceTypeActive('field'), 'field-selected': dc.isResourceTypeActive('field') }"></cedar-resource-icon>
 
                   <cedar-resource-icon style="display:inline-block;margin:2px;" resource-type="'metadata'"
-                                       uib-tooltip="{{'GENERIC.Metadata' | translate}}"
-                                       tooltip-trigger
-                                       tooltip-animation="false"
-                                       tooltip-placement="top"
-                                       data-toggle="tooltip"
                                        ng-click="dc.toggleResourceType('instance')"
                                        class="metadata"
                                        ng-class="{ deselected: !dc.isResourceTypeActive('instance'), selected: dc.isResourceTypeActive('instance'), 'instance-deselected': !dc.isResourceTypeActive('instance'), 'instance-selected': dc.isResourceTypeActive('instance') }"></cedar-resource-icon>
@@ -175,9 +155,11 @@
                      ng-if="dc.linkFolder(folder)">{{dc.breadcrumbName(dc.getTitle(folder))}}</a>
                   <span class="breadcrumbs"
                         ng-if="!dc.linkFolder(folder)">{{dc.breadcrumbName(dc.getTitle(folder))}}</span>
+                  <span ng-if="folder['isOpen']"><i class="action fa fa-external-link-square">&nbsp;</i></span>
                   /
                 </span>
                 <a class="breadcrumbs">{{dc.breadcrumbName(dc.getTitle(dc.currentPath))}}</a>
+                <span ng-if="dc.currentPath['isOpen']"><i class="action fa fa-external-link-square">&nbsp;</i></span>
               </p>
             </div>
           </div>
@@ -301,14 +283,18 @@
                                                draft-callback="dc.createDraftResource"
                                                make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
                                                open-open="dc.openOpen"
+                                               open-datacite="dc.openDatacite"
                                                can-not-publish="dc.canNotPublish"
                                                can-not-create-draft="dc.canNotCreateDraft"
                                                can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
                                                can-not-submit="dc.canNotSubmit" can-not-rename="dc.canNotRename"
                                                can-not-share="dc.canNotShare" can-not-delete="dc.canNotDelete"
-                                               can-not-make-open="true" can-not-make-not-open="true"
+                                               can-not-make-open="dc.canNotMakeOpen" can-not-make-not-open="dc.canNotMakeNotOpen"
                                                can-not-open-open="true"
-                                               is-folder="dc.isFolder()">
+                                               can-not-open-datacite="dc.canNotOpenDatacite"
+                                               is-folder="dc.isFolder()" copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
+                                               copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
+                                               get-folder-id="dc.getFolderId" get-parent-folder-id="dc.getParentFolderId">
                           </cedar-dropdown-menu>
 
                         </div>
@@ -325,6 +311,21 @@
                         </div>
                       </div>
 
+                      <hr style="margin:0;padding:0"/>
+
+                      <div style="min-height:2em;padding:2px 4px">
+                        <!-- OpenView icon -->
+                        <div ng-if="dc.isOpen(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
+                             uib-tooltip="{{'GENERIC.IsOpen' | translate}}"
+                             tooltip-placement="top">
+                          <i class="action fa fa-external-link-square">&nbsp;</i>
+                        </div>
+                        <div ng-if="dc.isOpenJustImplicitly(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
+                             uib-tooltip="{{'GENERIC.IsOpenImplicitly' | translate}}"
+                             tooltip-placement="top">
+                          <i class="action fa fa-external-link-square isOpenImplicitly">&nbsp;</i>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -374,6 +375,7 @@
                                                draft-callback="dc.createDraftResource"
                                                make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
                                                open-open="dc.openOpen"
+                                               open-datacite="dc.openDatacite"
                                                can-not-publish="dc.canNotPublish"
                                                can-not-create-draft="dc.canNotCreateDraft"
                                                can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
@@ -381,8 +383,11 @@
                                                can-not-share="dc.canNotShare" can-not-delete="dc.canNotDelete"
                                                can-not-make-open="dc.canNotMakeOpen"
                                                can-not-make-not-open="dc.canNotMakeNotOpen"
-                                               can-not-open-open="dc.canNotMakeNotOpen"
-                                               is-folder="dc.isFolder()">
+                                               can-not-open-open="dc.canNotOpenOpen"
+                                               can-not-open-datacite="dc.canNotOpenDatacite"
+                                               is-folder="dc.isFolder()" copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
+                                               copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
+                                               get-selected-folder-id="dc.getSelectedFolderId" get-selected-parent-folder-id="dc.getSelectedParentFolderId">
                           </cedar-dropdown-menu>
 
                         </div>
@@ -422,10 +427,15 @@
                           <i class="fa fa-shield">&nbsp;</i>
                         </div>
                         <!-- OpenView icon -->
-                        <div ng-if="dc.isOpen(resource)" style="display:inline; float:right;"
+                        <div ng-if="dc.isOpen(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
                              uib-tooltip="{{'GENERIC.IsOpen' | translate}}"
                              tooltip-placement="top">
                           <i class="action fa fa-external-link-square">&nbsp;</i>
+                        </div>
+                        <div ng-if="dc.isOpenJustImplicitly(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
+                             uib-tooltip="{{'GENERIC.IsOpenImplicitly' | translate}}"
+                             tooltip-placement="top">
+                          <i class="action fa fa-external-link-square isOpenImplicitly">&nbsp;</i>
                         </div>
                       </div>
                     </div>
@@ -487,7 +497,18 @@
                     <div class="ellipsis" style="width:100px;padding-right:10px;">{{ resource['pav:lastUpdatedOn'] |
                     prettyDate}}
                     </div>
-                    <div style="width:150px;"></div>
+                    <div style="width:150px;">
+                      <div ng-if="dc.isOpen(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
+                           uib-tooltip="{{'GENERIC.IsOpen' | translate}}"
+                           tooltip-placement="top">
+                        <i class="action fa fa-external-link-square" style="font-size:18px">&nbsp;</i>
+                      </div>
+                      <div ng-if="dc.isOpenJustImplicitly(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
+                           uib-tooltip="{{'GENERIC.IsOpenImplicitly' | translate}}"
+                           tooltip-placement="top">
+                        <i class="action fa fa-external-link-square isOpenImplicitly" style="font-size:18px">&nbsp;</i>
+                      </div>
+                    </div>
                     <div class="flex" style="width:80px;justify-content:flex-end;">
 
 
@@ -515,6 +536,7 @@
                                            draft-callback="dc.createDraftResource"
                                            make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
                                            open-open="dc.openOpen"
+                                           open-datacite="dc.openDatacite"
                                            can-not-publish="dc.canNotPublish"
                                            can-not-create-draft="dc.canNotCreateDraft"
                                            can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
@@ -523,7 +545,11 @@
                                            is-folder="dc.isFolder()"
                                            can-not-make-open="dc.canNotMakeOpen"
                                            can-not-make-not-open="dc.canNotMakeNotOpen"
-                                           can-not-open-open="dc.canNotMakeNotOpen">
+                                           can-not-open-open="dc.canNotOpenOpen"
+                                           can-not-open-datacite="dc.canNotOpenDatacite"
+                                           copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
+                                           copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
+                                           get-selected-folder-id="dc.getSelectedFolderId" get-selected-parent-folder-id="dc.getSelectedParentFolderId">
                       </cedar-dropdown-menu>
 
                     </div>
@@ -592,10 +618,15 @@
                         <i class="fa fa-shield" style="font-size:18px">&nbsp;</i>
                       </div>
                       <!-- OpenView icon -->
-                      <div ng-if="dc.isOpen(resource)" style="display:inline; float:right;"
+                      <div ng-if="dc.isOpen(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
                            uib-tooltip="{{'GENERIC.IsOpen' | translate}}"
                            tooltip-placement="top">
                         <i class="action fa fa-external-link-square" style="font-size:18px">&nbsp;</i>
+                      </div>
+                      <div ng-if="dc.isOpenJustImplicitly(resource)" ng-click="dc.openOpen(resource)" style="display:inline; float:right;"
+                           uib-tooltip="{{'GENERIC.IsOpenImplicitly' | translate}}"
+                           tooltip-placement="top">
+                        <i class="action fa fa-external-link-square isOpenImplicitly" style="font-size:18px">&nbsp;</i>
                       </div>
                       <!-- Globe icon -->
 <!--                      <div ng-if="dc.isPublished(resource)" style="display:inline; float:right;"-->
@@ -659,6 +690,7 @@
                                            draft-callback="dc.createDraftResource"
                                            make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
                                            open-open="dc.openOpen"
+                                           open-datacite="dc.openDatacite"
                                            can-not-publish="dc.canNotPublish"
                                            can-not-create-draft="dc.canNotCreateDraft"
                                            can-not-submit="dc.canNotSubmit" can-not-rename="dc.canNotRename"
@@ -667,7 +699,11 @@
                                            is-folder="dc.isFolder()"
                                            can-not-make-open="dc.canNotMakeOpen"
                                            can-not-make-not-open="dc.canNotMakeNotOpen"
-                                           can-not-open-open="dc.canNotMakeNotOpen">
+                                           can-not-open-open="dc.canNotOpenOpen"
+                                           can-not-open-datacite="dc.canNotOpenDatacite"
+                                           copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
+                                           copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
+                                           get-selected-folder-id="dc.getSelectedFolderId" get-selected-parent-folder-id="dc.getSelectedParentFolderId">
                       </cedar-dropdown-menu>
 
                     </div>
@@ -944,6 +980,26 @@
                     ng-click="dc.toggleDescriptionEditing()"><i class="fa fa-pencil graytext"></i></button>
               </div>
             </div>
+
+            <div class="flex flex-wrap padding-top" ng-if="dc.getSelected() && dc.isFolder()">
+              <button ng-click="dc.copyFolderId2Clipboard()"
+                      uib-tooltip='{{dc.getSelectedFolderId()}}'
+                      tooltip-trigger
+                      tooltip-animation="false"
+                      tooltip-placement="top"
+                      data-toggle="tooltip"
+              >Copy folder Id</button>
+            </div>
+            <div class="flex flex-wrap padding-top" ng-if="dc.getSelected()">
+              <button ng-click="dc.copyParentFolderId2Clipboard()"
+                      uib-tooltip='{{dc.getSelectedParentFolderId()}}'
+                      tooltip-trigger
+                      tooltip-animation="false"
+                      tooltip-placement="top"
+                      data-toggle="tooltip"
+              >Copy parent folder Id</button>
+            </div>
+
 
             <hr/>
           </div>

@@ -199,10 +199,12 @@
     "PublishedVersion": "Published Version",
     "DraftVersion": "Draft Version",
     "IsOpen": "OpenView Enabled",
+    "IsOpenImplicitly": "OpenView Enabled by inheritance",
     "TrustedBy": "Trusted by",
     "Header": "Header Information",
     "Footer": "Footer Information",
-    "NothingFound": "Nothing found"
+    "NothingFound": "Nothing found",
+    "CopyToClipboard" : "Copy to clipboard"
   },
   "HELP": {
     "createFolder": "Create folder",
@@ -376,6 +378,14 @@
       "makeNotOpenArtifact": {
         "success": "The artifact '{{title}}' was made NOT open!",
         "error": "There was an error while making the artifact NOT open!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "makeOpenFolder": {
+        "success": "The folder '{{title}}' was made open!",
+        "error": "There was an error while making the folder open!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "makeNotOpenFolder": {
+        "success": "The folder '{{title}}' was made NOT open!",
+        "error": "There was an error while making the folder NOT open!<br /><br />VIEW TECHNICAL DETAILS!"
       }
     },
     "ELEMENTS": {
@@ -449,12 +459,16 @@
       "delete": "Delete",
       "share": "Share...",
       "copy": "Copy to...",
+      "copyFolderId": "Copy folder Id",
+      "copyParentFolderId": "Copy parent folder Id",
       "move": "Move to...",
       "rename": "Rename...",
       "submit": "Submit...",
       "makeopen": "Enable OpenView",
       "makenotopen": "Disable OpenView",
-      "openopen": "Visit OpenView"
+      "openopen": "Visit OpenView",
+      "opendatacite": "Create DOI using DataCite",
+      "populateEE": "Populate with new editor"
     },
     "delete": {
       "confirm": {
@@ -546,7 +560,11 @@
   },
   "METADATAEDITOR": {
     "invalidTerm": "Invalid term",
-    "draftTemplateWarning": "You are populating an unpublished template which may be modified at a later date."
+    "draftTemplateWarning": "You are populating an unpublished template which may be modified at a later date.",
+    "JsonLDCopied" : "JSON-LD copied to clipboard",
+    "JsonLDCopyFail" : "JSON-LD can not be copied to clipboard",
+    "RdfCopied" : "RDF copied to clipboard",
+    "RdfCopyFail" : "RDF can not be copied to clipboard"
   },
   "TEMPLATEEDITOR": {
     "clear": {
@@ -657,6 +675,7 @@
     "enterDate": "Enter Date",
     "enterMinLength": "Enter Minimum String Length",
     "enterMaxLength": "Enter Maximum String Length",
+    "enterRegex": "Enter Regex",
     "enterUnitOfMeasure": "Enter Unit of Measure",
     "enterMinValue": "Enter Minimum Value",
     "enterMaxValue": "Enter Maximum Value",
@@ -738,6 +757,23 @@
     "null": "",
     "bibo:draft": "Draft",
     "bibo:published": "Published"
+  },
+  "DOI": {
+    "DataCite": {
+      "NOT-OPEN": {
+        "title": "Can not start DOI process Datacite wizard",
+        "text" : {
+          "template": "You need to make the template open in order to get a DOI",
+          "template-instance": "You need to make the metadata instance open in order to get a DOI"
+        }
+      },
+      "NOT-PUBLISHED": {
+        "title": "Can not start DOI process Datacite wizard",
+        "text" : {
+          "template": "You need to publish the template open in order to get a DOI"
+        }
+      }
+    }
   },
   "ARP": {
     "Exported": "Exported",
