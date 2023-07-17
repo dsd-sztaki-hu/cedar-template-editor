@@ -61,13 +61,17 @@ define([
           canPublish               : canPublish,
           canMakeOpen              : canMakeOpen,
           canMakeNotOpen           : canMakeNotOpen,
+          canOpenOpen              : canOpenOpen,
+          canOpenDatacite          : canOpenDatacite,
           canSubmit                : canSubmit,
           canCreateDraft           : canCreateDraft,
           canPopulate              : canPopulate,
           publishResource          : publishResource,
           createDraftResource      : createDraftResource,
-          makeOpen                 : makeOpen,
-          makeNotOpen              : makeNotOpen,
+          makeArtifactOpen         : makeArtifactOpen,
+          makeArtifactNotOpen      : makeArtifactNotOpen,
+          makeFolderOpen           : makeFolderOpen,
+          makeFolderNotOpen        : makeFolderNotOpen,
           renameNode               : renameNode,
           validateResource         : validateResource,
           canDo                    : canDo
@@ -678,10 +682,10 @@ define([
           );
         }
 
-        function makeOpen(resource, successCallback, errorCallback) {
+        function makeArtifactOpen(resource, successCallback, errorCallback) {
           var postData = {};
           postData['@id'] = resource['@id'];
-          var url = urlService.makeOpen();
+          var url = urlService.makeArtifactOpen();
           authorizedBackendService.doCall(
               httpBuilderService.post(url, postData),
               function (response) {
@@ -691,10 +695,36 @@ define([
           );
         }
 
-        function makeNotOpen(resource, successCallback, errorCallback) {
+        function makeArtifactNotOpen(resource, successCallback, errorCallback) {
           var postData = {};
           postData['@id'] = resource['@id'];
-          var url = urlService.makeNotOpen();
+          var url = urlService.makeArtifactNotOpen();
+          authorizedBackendService.doCall(
+              httpBuilderService.post(url, postData),
+              function (response) {
+                successCallback(response.data);
+              },
+              errorCallback
+          );
+        }
+
+        function makeFolderOpen(resource, successCallback, errorCallback) {
+          var postData = {};
+          postData['@id'] = resource['@id'];
+          var url = urlService.makeFolderOpen();
+          authorizedBackendService.doCall(
+              httpBuilderService.post(url, postData),
+              function (response) {
+                successCallback(response.data);
+              },
+              errorCallback
+          );
+        }
+
+        function makeFolderNotOpen(resource, successCallback, errorCallback) {
+          var postData = {};
+          postData['@id'] = resource['@id'];
+          var url = urlService.makeFolderNotOpen();
           authorizedBackendService.doCall(
               httpBuilderService.post(url, postData),
               function (response) {
@@ -887,13 +917,31 @@ define([
         }
 
         function canMakeOpen(resource) {
-          // TODO: change this back to canMakeOpen when the backend sends it correctly
-          return this.canDo(resource, 'canWrite') && !(resource.hasOwnProperty('isOpen') && resource['isOpen']);
+          return this.canDo(resource, 'canWrite') && this.canDo(resource, 'canMakeOpen');
         }
 
         function canMakeNotOpen(resource) {
-          // TODO: change this back to canMakeNotOpen when the backend sends it correctly
-          return this.canDo(resource, 'canWrite') && (resource.hasOwnProperty('isOpen') && resource['isOpen']);
+          return this.canDo(resource, 'canWrite') && this.canDo(resource, 'canMakeNotOpen');
+        }
+
+        function canOpenOpen(resource) {
+          return resource.hasOwnProperty('isOpen') && resource['isOpen'];
+        }
+
+        function canOpenDatacite(resource) {
+          switch (resource.resourceType) {
+            case CONST.resourceType.FIELD:
+              return false;
+            case CONST.resourceType.FOLDER:
+              return false;
+            case CONST.resourceType.TEMPLATE:
+              return true;
+            case CONST.resourceType.ELEMENT:
+              return false;
+            case CONST.resourceType.INSTANCE:
+              return true;
+          }
+          return false;
         }
 
         function canSubmit(resource) {

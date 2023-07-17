@@ -1,6 +1,10 @@
 function KeycloakUserHandler() {
 
-  const keycloak = Keycloak();
+  const keycloak = Keycloak({
+    "realm"   : "CEDAR",
+    "url"     : window.location.origin.replaceAll('/cedar.', '/auth.'),
+    "clientId": "cedar-angular-app"
+  });
 
   this.doLogin = function () {
     keycloak.login();
@@ -27,17 +31,20 @@ function KeycloakUserHandler() {
   };
 
   this.refreshToken = function (minValidity, successCallback, errorCallback) {
-    return keycloak.updateToken(minValidity).success(function (refreshed) {
+    return keycloak.updateToken(minValidity).then(function (refreshed) {
       return successCallback(refreshed);
-    }).error(function () {
+    }).catch(function () {
       return errorCallback();
     });
   };
 
   this.initUserHandler = function (successCallback, failureCallback) {
-    return keycloak.init().success(function (authenticated) {
+    return keycloak.init({
+          onLoad: 'check-sso',
+          silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
+        }).then(function (authenticated) {
       return successCallback(authenticated);
-    }).error(function () {
+    }).catch(function () {
       return failureCallback();
     });
   };
