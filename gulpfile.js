@@ -406,7 +406,9 @@ let envConfig = {
   'CEDAR_FRONTEND_TARGET'     : null,
   'CEDAR_VERSION'             : null,
   'CEDAR_VERSION_MODIFIER'    : null,
-  'CEDAR_DATACITE_ENABLED'    : null
+  'CEDAR_DATACITE_ENABLED'    : null,
+  'CEDAR_FRONTEND_ARP_API_URL': null,
+  'CEDAR_FRONTEND_ARP_DV_COLLECTION': null
 };
 console.log();
 console.log();
