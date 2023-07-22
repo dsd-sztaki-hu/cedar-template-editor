@@ -97,8 +97,8 @@ gulp.task('replace-url', function (done) {
       .pipe(replace('impexServerUrl', 'https://impex.' + cedarRestHost))
       .pipe(replace('artifactsFrontendUrl', 'https://artifacts.' + cedarRestHost))
       .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
-      .pipe(replace('arpApiUrl', arpAPIUrl))
-      .pipe(replace('arpDvCollectionValue', arpDvCollection))
+      .pipe(replace('CEDAR_FRONTEND_ARP_API_URL', CEDAR_FRONTEND_ARP_API_URL))
+      .pipe(replace('CEDAR_FRONTEND_ARP_DV_COLLECTION', CEDAR_FRONTEND_ARP_DV_COLLECTION))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -380,6 +380,7 @@ function exitWithError(msg) {
 
 function readAllEnvVarsOrFail() {
   console.log("- Environment variables used:".yellow);
+  console.log("- Environment variables available:".yellow, process.env);
   for (var key  in envConfig) {
     if (!process.env.hasOwnProperty(key)) {
       exitWithError('You need to set the following environment variable: ' + key);
@@ -406,7 +407,9 @@ let envConfig = {
   'CEDAR_FRONTEND_TARGET'     : null,
   'CEDAR_VERSION'             : null,
   'CEDAR_VERSION_MODIFIER'    : null,
-  'CEDAR_DATACITE_ENABLED'    : null
+  'CEDAR_DATACITE_ENABLED'    : null,
+  'CEDAR_FRONTEND_ARP_API_URL': null,
+  'CEDAR_FRONTEND_ARP_DV_COLLECTION': null
 };
 console.log();
 console.log();
@@ -453,8 +456,10 @@ var cedarTestUser2Login = envConfig[cedarUser2LoginVarName];
 var cedarTestUser2Name = envConfig[cedarUser2NameVarName];
 var cedarTestUser2Password = envConfig[cedarUser2PasswordVarName];
 
-var arpAPIUrl = getFrontendEnvVar('ARP_API_URL');
-var arpDvCollection = getFrontendEnvVar('ARP_DV_COLLECTION');
+var CEDAR_FRONTEND_ARP_API_URL = envConfig['CEDAR_FRONTEND_ARP_API_URL'];
+var CEDAR_FRONTEND_ARP_DV_COLLECTION = envConfig['CEDAR_FRONTEND_ARP_DV_COLLECTION'];
+console.log("CEDAR_FRONTEND_ARP_API_URL", CEDAR_FRONTEND_ARP_API_URL)
+console.log("CEDAR_FRONTEND_ARP_DV_COLLECTION", CEDAR_FRONTEND_ARP_DV_COLLECTION)
 
 console.log(
     "-------------------------------------------- ************* --------------------------------------------".red);
