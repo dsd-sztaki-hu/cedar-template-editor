@@ -97,6 +97,8 @@ gulp.task('replace-url', function (done) {
       .pipe(replace('impexServerUrl', 'https://impex.' + cedarRestHost))
       .pipe(replace('artifactsFrontendUrl', 'https://artifacts.' + cedarRestHost))
       .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
+      .pipe(replace('arpApiUrl', arpAPIUrl))
+      .pipe(replace('arpDvCollectionValue', arpDvCollection))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -450,6 +452,9 @@ var cedarTestUser1Name = envConfig[cedarUser1NameVarName];
 var cedarTestUser2Login = envConfig[cedarUser2LoginVarName];
 var cedarTestUser2Name = envConfig[cedarUser2NameVarName];
 var cedarTestUser2Password = envConfig[cedarUser2PasswordVarName];
+
+var arpAPIUrl = getFrontendEnvVar('ARP_API_URL');
+var arpDvCollection = getFrontendEnvVar('ARP_DV_COLLECTION');
 
 console.log(
     "-------------------------------------------- ************* --------------------------------------------".red);
