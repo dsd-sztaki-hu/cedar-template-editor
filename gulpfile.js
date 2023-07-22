@@ -97,7 +97,7 @@ gulp.task('replace-url', function (done) {
       .pipe(replace('impexServerUrl', 'https://impex.' + cedarRestHost))
       .pipe(replace('artifactsFrontendUrl', 'https://artifacts.' + cedarRestHost))
       .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
-      .pipe(replace('arpApiUrl', arpAPIUrl))
+      .pipe(replace('arpAPIUrl', arpAPIUrl))
       .pipe(replace('arpDvCollectionValue', arpDvCollection))
       .pipe(gulp.dest('app/config/'));
   done();
