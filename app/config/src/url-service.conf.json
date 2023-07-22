@@ -12,6 +12,6 @@
   "impexRestAPI": "impexServerUrl",
   "artifactsFrontend": "artifactsFrontendUrl",
   "dataciteDOIBase": "dataciteDOIBaseUrl",
-  "arpAPI": "arpAPIUrl",
-  "arpDvCollection": "arpDvCollectionValue"
+  "arpAPI": "CEDAR_FRONTEND_ARP_API_URL",
+  "arpDvCollection": "CEDAR_FRONTEND_ARP_DV_COLLECTION"
 }

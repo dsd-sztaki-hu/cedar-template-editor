@@ -97,8 +97,8 @@ gulp.task('replace-url', function (done) {
       .pipe(replace('impexServerUrl', 'https://impex.' + cedarRestHost))
       .pipe(replace('artifactsFrontendUrl', 'https://artifacts.' + cedarRestHost))
       .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
-      .pipe(replace('arpAPIUrl', arpAPIUrl))
-      .pipe(replace('arpDvCollectionValue', arpDvCollection))
+      .pipe(replace('CEDAR_FRONTEND_ARP_API_URL', CEDAR_FRONTEND_ARP_API_URL))
+      .pipe(replace('CEDAR_FRONTEND_ARP_DV_COLLECTION', CEDAR_FRONTEND_ARP_DV_COLLECTION))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -456,10 +456,10 @@ var cedarTestUser2Login = envConfig[cedarUser2LoginVarName];
 var cedarTestUser2Name = envConfig[cedarUser2NameVarName];
 var cedarTestUser2Password = envConfig[cedarUser2PasswordVarName];
 
-var arpAPIUrl = envConfig['CEDAR_FRONTEND_ARP_API_URL'];
-var arpDvCollection = envConfig['CEDAR_FRONTEND_ARP_DV_COLLECTION'];
-console.log("arpAPIUrl", arpAPIUrl)
-console.log("arpDvCollection", arpDvCollection)
+var CEDAR_FRONTEND_ARP_API_URL = envConfig['CEDAR_FRONTEND_ARP_API_URL'];
+var CEDAR_FRONTEND_ARP_DV_COLLECTION = envConfig['CEDAR_FRONTEND_ARP_DV_COLLECTION'];
+console.log("CEDAR_FRONTEND_ARP_API_URL", CEDAR_FRONTEND_ARP_API_URL)
+console.log("CEDAR_FRONTEND_ARP_DV_COLLECTION", CEDAR_FRONTEND_ARP_DV_COLLECTION)
 
 console.log(
     "-------------------------------------------- ************* --------------------------------------------".red);
