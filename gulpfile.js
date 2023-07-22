@@ -453,8 +453,10 @@ var cedarTestUser2Login = envConfig[cedarUser2LoginVarName];
 var cedarTestUser2Name = envConfig[cedarUser2NameVarName];
 var cedarTestUser2Password = envConfig[cedarUser2PasswordVarName];
 
-var arpAPIUrl = getFrontendEnvVar('ARP_API_URL');
-var arpDvCollection = getFrontendEnvVar('ARP_DV_COLLECTION');
+var arpAPIUrl = envConfig['CEDAR_FRONTEND_ARP_API_URL'];
+var arpDvCollection = envConfig['CEDAR_FRONTEND_ARP_DV_COLLECTION'];
+console.log("arpAPIUrl", arpAPIUrl)
+console.log("arpDvCollection", arpDvCollection)
 
 console.log(
     "-------------------------------------------- ************* --------------------------------------------".red);
