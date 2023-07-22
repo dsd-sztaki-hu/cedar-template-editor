@@ -380,6 +380,7 @@ function exitWithError(msg) {
 
 function readAllEnvVarsOrFail() {
   console.log("- Environment variables used:".yellow);
+  console.log("- Environment variables available:".yellow, process.env);
   for (var key  in envConfig) {
     if (!process.env.hasOwnProperty(key)) {
       exitWithError('You need to set the following environment variable: ' + key);
