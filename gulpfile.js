@@ -117,6 +117,7 @@ gulp.task('replace-version', function (done) {
       .pipe(replace('cedarVersionValue', cedarVersion))
       .pipe(replace('cedarVersionModifierValue', cedarVersionModifier))
       .pipe(replace('dataciteEnabledValue', dataciteEnabled))
+      .pipe(replace('authBaseValue', 'https://auth.' + cedarRestHost))
       .pipe(gulp.dest('app/config/'));
   done();
 });
