@@ -128,5 +128,18 @@
     "allowsValueRecommendation": false,
     "hasInstanceTerm": false,
     "allowsRequired": true
+  },
+  {
+    "cedarType": "richtext",
+    "iconClass": "fa fa-pencil-square-o",
+    "allowedInElement": true,
+    "label": "Rich Text",
+    "primaryField": false,
+    "hasControlledTerms": false,
+    "staticField": true,
+    "allowsMultiple": false,
+    "allowsValueRecommendation": false,
+    "hasInstanceTerm": false,
+    "allowsRequired": false
   }
 ]
