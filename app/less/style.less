@@ -4,16 +4,22 @@
 /* Definine local variables */
 @container-cedar-medium: 952px;
 
-@top-nav-color: rgba(21, 53, 53, 0.98); // top nav and controls bar
-@background-side: rgba(16, 43, 46, 0.84); // field and element header
+//@top-nav-color: rgba(21, 53, 53, 0.98); // top nav and controls bar
+// @background-side: rgba(16, 43, 46, 0.84); // field and element header
+@top-nav-color: rgba(30, 49, 90, 0.98); // top nav and controls bar
+@background-side: darken(@top-nav-color, 10%); // field and element header
 @modal-bg-color: #eaf2f2; // controlled terms modal background
 @background-gray: #e8e8e8;
 
 // resource colors
-@template-color: #408392;
-@element-color: #58797F;
-@field-color: #79A99E;
-@metadata-color: #0F7686;
+//@template-color: #408392;
+//@element-color: #58797F;
+//@field-color: #79A99E;
+//@metadata-color: #0F7686;
+@template-color: lighten(@top-nav-color, 10%);
+@element-color: lighten(@top-nav-color, 30%);
+@field-color: lighten(@top-nav-color, 20%);
+@metadata-color: lighten(@top-nav-color, 40%);
 @folder-color: lighten(@top-nav-color, 10%);
 @deselected-icon-color: gray;
 
@@ -52,8 +58,10 @@
 @primary-accent: #cb6318;
 @dark-accent: #7d4427;
 
-@primary-text: #0F7686;
-@secondary-text: #5A6D7E;
+//@primary-text: #0F7686;
+//@secondary-text: #5A6D7E;
+@primary-text: lighten(@top-nav-color, 10%);
+@secondary-text: lighten(@top-nav-color, 10%);
 //@search-input: rgba(50, 119, 119, 0.46);
 @search-input: rgba(232, 232, 232, 0.1);
 
@@ -359,6 +367,23 @@ button {
     }
   }
 
+  //.navbar-brand {
+  //  background-image: url(../img/arp-logo.png);
+  //  background-repeat: no-repeat;
+  //  width: 70px;
+  //  background-size: 145px;
+  //  .text-hide();
+  //  color: @white;
+  //  text-shadow: none;
+  //  border: 0;
+  //  left: 0;
+  //  top: 5px;
+  //  position: absolute;
+  //  //left:calc(~"50% - 70px");
+  //  @media (min-width: @screen-sm-min) {
+  //    width: 145px;
+  //  }
+  //}
   .navbar-brand {
     background-image: url(../img/cedar-logo-main.png);
     background-repeat: no-repeat;

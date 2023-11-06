@@ -10,7 +10,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title ng-bind="'Project Cedar - ' + pageTitle">Project Cedar</title>
+  <title>ARP - Cedar</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="/">
@@ -41,14 +41,16 @@
   <div class="nav-container" id="headerCtrl" ng-controller="HeaderCtrl as hc">
     <div class="navbar-header ">
 
-      <div ng-if="hc.isDashboard() || hc.isProfile() || hc.isPrivacy() || hc.isMessaging() || hc.isSettings()">
+<!--      <div ng-if="hc.isDashboard() || hc.isProfile() || hc.isPrivacy() || hc.isMessaging() || hc.isSettings()">-->
+      <div>
         <div class="row">
-          <div class="col-xs-2" ng-click="hc.goToDashboardOrBack()">
-            <a class="navbar-brand " alt="Cedar" href="javascript:">Cedar</a>
+          <div class="col-xs-4" ng-click="hc.goToDashboardOrBack()">
+            <a class="navbar-brand " alt="Cedar" href="javascript:" style="margin-left: 150px">Cedar</a>
+            <a alt="ARP" href="javascript:"><img src="../img/arp-logo.png" width="140px" style="margin-top: 10px"></a>
           </div>
 
-          <div class="col-xs-7" style="margin-top:0;padding-top:0">
-            <form>
+          <div class="col-xs-5" style="margin-top:0;padding-top:0">
+            <form ng-if="hc.isDashboard() || hc.isProfile() || hc.isPrivacy() || hc.isMessaging() || hc.isSettings()">
               <div class="form-group floating-label-wrapper search-input">
                 <input autocomplete="off" ng-keyup="$event.keyCode == 13 && hc.search(hc.searchTerm)" type="search"
                     class="form-control search-input"
