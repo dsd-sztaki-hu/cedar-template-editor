@@ -102,7 +102,6 @@ define([
     };
 
     var getElement = function () {
-      console.log("getElement called")
       $scope.form = {};
       // Load existing element if $routeParams.id parameter is supplied
       if ($routeParams.id) {
@@ -185,9 +184,7 @@ define([
 
       }
     };
-    console.log("getElement before")
     getElement();
-    console.log("getElement after")
 
     var populateCreatingFieldOrElement = function () {
       $scope.invalidFieldStates = {};
@@ -467,7 +464,6 @@ define([
 
     // This function watches for changes in the form and defaults the title and description fields
     $scope.$watch('$scope.element', function (v) {
-      console.log("XXX ", $scope.element)
       if (dms.schemaOf($scope.element)) {
         if (!dms.getTitle($scope.element)) {
           dms.setTitle($scope.element, $translate.instant("VALIDATION.noNameElement"));
@@ -598,6 +594,17 @@ define([
       else {
         return $translate.instant("CREATOR.hideAdditionalFields");
       }
+    };
+
+    $scope.copyJson2Clipboard = function () {
+      navigator.clipboard.writeText($filter('json')(this.stripTmpFields())).then(function(){
+        UIMessageService.flashSuccess('METADATAEDITOR.JsonSchemaCopied', {"title": "METADATAEDITOR.JsonSchemaCopied"}, 'GENERIC.Copied');
+        $scope.$apply();
+      }).catch((err)=>{
+        UIMessageService.flashWarning('METADATAEDITOR.JsonSchemaCopyFail', {"title": "METADATAEDITOR.JsonSchemaCopyFail"}, 'GENERIC.Error');
+        console.error(err);
+        $scope.$apply();
+      });
     };
 
 
