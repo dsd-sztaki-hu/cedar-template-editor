@@ -80,7 +80,7 @@ define([
                 // here is a duplicate, so delete it
                 DataManipulationService.deleteFieldControlledTerm(key, scope.field);
               } else {
-                myMap.set(key, "");
+                //myMap.set(key, "");
               }
             }
 
