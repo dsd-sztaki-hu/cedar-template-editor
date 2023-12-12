@@ -215,6 +215,10 @@ define([
       }
     };
 
+    vm.arpShowHelp = function() {
+      window.open('https://metadatacenter.github.io/cedar-manual/', '_blank');
+    };
+
     vm.showSearch = function () {
       return $rootScope.showSearch;
     };

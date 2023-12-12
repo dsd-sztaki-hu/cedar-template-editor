@@ -78,9 +78,13 @@
                   </div>
                 </li>
                 <li id="user-menu"><button  id="user-menu-dropdown-trigger" class="inline"
-                    type="button"
-                    ng-click="hc.toggleUserMenuDropdown()"><i   class="fa fa-user inline"></i></button>
-                 </li>
+                                            type="button"
+                                            ng-click="hc.toggleUserMenuDropdown()"><i   class="fa fa-user inline"></i></button>
+                </li>
+                <li id="arp-help-menu"><button  id="arp-help-menu-trigger" class="inline"
+                                            type="button"
+                                            ng-click="hc.arpShowHelp()"><i   class="fa fa-question-circle inline"></i></button>
+                </li>
               </ul>
             </div>
             <div class="Version">{{'V ' + hc.getCedarVersion()}}</div>
@@ -121,7 +125,7 @@
   <div id="user-menu-dropdown">
     <ul>
       <a href="/profile"><li id="user-profile-tool" >Profile</li></a>
-      <a target="_blank" href="https://metadatacenter.github.io/cedar-manual/"><li id="user-help">Help</li></a>
+      <a target="_blank" href="http://metadatacenter.org/tools-training/support"><li id="user-help">Support</li></a>
       <a target="_blank" href="http://metadatacenter.org/tools-training/orientation"><li id="user-about" >About</li></a>
       <a href="/privacy"><li id="user-privacy" >Privacy</li></a>
       <a href="/settings"><li>Settings</li></a>
