@@ -216,7 +216,7 @@ define([
     };
 
     vm.arpShowHelp = function() {
-      window.open('https://metadatacenter.github.io/cedar-manual/', '_blank');
+      window.open('https://metadatacenter.readthedocs.io/en/latest/user-overview/', '_blank');
     };
 
     vm.showSearch = function () {
