@@ -31,6 +31,30 @@
   <link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.min.css"/>
   <link rel="stylesheet" href="bower_components//ngprogress/ngProgress.css">
   <script src="config/version.js" type="text/javascript"></script>
+
+  <!-- ARP google analytics and cookie consent -->
+  <script
+          type="text/plain"
+          async="true"
+          src="https://www.googletagmanager.com/gtag/js?id=G-3FPX68ZSES"
+          data-category="analytics"
+          data-service="Google Analytics"
+  ></script>
+  <script
+          type="text/plain"
+          data-category="analytics"
+          data-service="Google Analytics"
+  >
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3FPX68ZSES');
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.0/dist/cookieconsent.css">
+  <link rel="stylesheet" href="arp/cookieconsent.css">
+  <script type="application/javascript" src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@v3.0.0/dist/cookieconsent.umd.js"></script>
+  <script type="application/javascript" src="arp/cookieconsent.js"></script>
 </head>
 <body cedar-switch-navbar="true" ng-cloak id="rootElement">
 <!--[if lt IE 8]>

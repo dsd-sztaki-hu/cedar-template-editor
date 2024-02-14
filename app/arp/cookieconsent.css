@@ -1,0 +1,4 @@
+/* Make cookie consent a bit wider */
+#cc-main .cm {
+    max-width: 34rem;
+}
