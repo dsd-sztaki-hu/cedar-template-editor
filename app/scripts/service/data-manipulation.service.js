@@ -1744,7 +1744,7 @@ define([
             service.setDescription(field, description);
 
             // property label
-            service.getPropertyLabels(parent)[fieldProp] = propertyLabel;
+            service.getPropertyLabels(parent)[fieldProp] = label;
 
             // property id
             if (!propertyId || propertyId.length < 1) {
