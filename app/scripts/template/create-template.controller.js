@@ -290,13 +290,25 @@ define([
             UIMessageService.conditionalOrConfirmedExecution(
                 StagingService.isEmpty(),
                 function () {
-                  $scope.doSaveTemplate();
+                  $scope.arpValidateTemplate();
                 },
                 'GENERIC.AreYouSure',
                 'TEMPLATEEDITOR.save.nonEmptyStagingConfirm',
                 'GENERIC.YesSaveIt'
             );
           }
+        };
+
+        $scope.arpValidateTemplate = function () {
+          AuthorizedBackendService.doCall(
+              TemplateService.arpExportTemplate($scope.form),
+              function () {
+                $scope.doSaveTemplate();
+              },
+              function (err) {
+                UIMessageService.showArpError('ARP.ExportResult.error', err);
+              }
+          );
         };
 
         $scope.arpExportTemplate = function () {
