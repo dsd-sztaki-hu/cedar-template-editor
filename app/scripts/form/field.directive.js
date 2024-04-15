@@ -269,6 +269,10 @@ define([
         return schemaService.isTextFieldType($scope.field);
       };
 
+      $scope.isFileField = function () {
+        return schemaService.isFileFieldType($scope.field);
+      };
+
       $scope.isTemporalField = function () {
         return schemaService.isTemporalType($scope.field);
       };
@@ -1277,7 +1281,7 @@ define([
 
       // ARP specific
       $scope.allowArpAdditions = function () {
-        return true;
+        return !$scope.isFileField();
       };
 
       $scope.setArpDataverseDisplayOnCreate = function (value) {

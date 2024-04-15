@@ -432,6 +432,10 @@ define([
           return (service.getInputType(node) === 'textfield');
         };
 
+        service.isFileFieldType = function (node) {
+          return (service.getInputType(node) === 'file');
+        };
+
         service.isDateType = function (node) {
           return (service.getInputType(node) === 'temporal');
         };

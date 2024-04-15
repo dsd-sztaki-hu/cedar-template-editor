@@ -141,5 +141,18 @@
     "allowsValueRecommendation": false,
     "hasInstanceTerm": false,
     "allowsRequired": false
+  },
+  {
+    "cedarType": "file",
+    "iconClass": "fa fa-file-o",
+    "label": "File",
+    "allowedInElement": true,
+    "primaryField": false,
+    "hasControlledTerms": false,
+    "staticField": true,
+    "allowsMultiple": true,
+    "allowsValueRecommendation": false,
+    "hasInstanceTerm": false,
+    "allowsRequired": true
   }
 ]

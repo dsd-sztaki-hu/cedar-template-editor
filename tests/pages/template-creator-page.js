@@ -57,6 +57,7 @@ var TemplateCreatorPage = function () {
   var createPhoneNumberButton = element(by.id('button-add-field-phone-number'));
   var createSectionBreakButton = element(by.id('button-add-field-section-break'));
   var createRichTextButton = element(by.id('button-add-field-richtext'));
+  var createFileButton = element(by.id('button-add-field-file'));
   var createImageButton = element(by.id('button-add-field-image'));
   var createVideoButton = element(by.id('button-add-field-youtube'));
   var removeFieldButton = element(by.css('.field-root  .trash'));
@@ -1045,6 +1046,9 @@ var TemplateCreatorPage = function () {
       case "richtext":
         btn = createRichTextButton;
         break;
+      case "file":
+        btn = createFileButton;
+        break;
     }
 
     if (btn) {
@@ -1124,6 +1128,9 @@ var TemplateCreatorPage = function () {
         break;
       case "richtext":
         btn = createRichTextButton;
+        break;
+      case "file":
+        btn = createFileButton;
         break;
       default:
         found = false;
