@@ -2199,7 +2199,8 @@ define([
 
         // does this field allow the hidden attribute?
         service.allowsHidden = function (node) {
-          return (service.schemaOf(node)._ui.inputType === 'textfield');
+          const inputType = service.schemaOf(node)._ui.inputType;
+          return ( inputType === 'textfield' || inputType === 'file');
         };
 
         // does this field allow the hidden attribute?
