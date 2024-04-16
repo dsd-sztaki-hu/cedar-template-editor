@@ -35,7 +35,7 @@ define([
     }
     
     service.arpValidateTemplate = function (template) {
-      return HttpBuilderService.post(UrlService.arpValidateTemplateJson(CedarUser.getApiKeys()[0].key), angular.toJson(template));
+      return HttpBuilderService.post(UrlService.arpValidateTemplateJson(), angular.toJson(template));
     }
 
     service.canArpExportTemplate = function () {

@@ -301,7 +301,7 @@ define([
 
         $scope.arpValidateTemplate = function () {
           AuthorizedBackendService.doCall(
-              TemplateService.arpExportTemplate($scope.form),
+              TemplateService.arpValidateTemplate($scope.form),
               function () {
                 $scope.doSaveTemplate();
               },
