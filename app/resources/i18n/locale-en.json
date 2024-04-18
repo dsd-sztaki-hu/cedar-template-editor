@@ -704,7 +704,8 @@
   },
   "EDITOR": {
     "TOOLBAR": {
-      "searchForMore": "Search for fields and elements"
+      "searchForMore": "Search for fields and elements",
+      "mergeTemplates" : "Merge with a chosen template"
     },
     "selectTimezone": "Select Timezone",
     "enterDecimalSeconds": "Enter Decimal Seconds",

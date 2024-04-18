@@ -50,5 +50,13 @@
           tooltip-placement="left"
       ><i class="fa fa-search "></i></a>
     </li>
+    <li ng-if="!isField" class="divider"></li>
+    <li ng-if="!isField">
+      <a ng-click="showFinderModalForMerge('finder-modal')"
+         id='button-merge-element'
+         uib-tooltip='{{"EDITOR.TOOLBAR.mergeTemplates" | translate}}'
+         tooltip-placement="left"
+      ><i class="fa fa-random "></i></a>
+    </li>
   </ul>
 </div>

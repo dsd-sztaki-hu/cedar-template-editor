@@ -63,6 +63,8 @@ define([
           vm.categoryTreeEnabled = true;
           vm.categoryTree = null;
           vm.loadingCategoryTree = false;
+          
+          vm.merge = false;
 
           /*
            * Public function declarations
@@ -106,6 +108,8 @@ define([
           vm.hasFolders = hasFolders;
           vm.hasElementsOrFields = hasElementsOrFields;
           vm.getElementsAndFields = getElementsAndFields;
+          vm.getTemplates = getTemplates;
+          vm.isMerge = isMerge;
           vm.getId = getId;
           vm.isOverflow = isOverflow;
 
@@ -203,9 +207,13 @@ define([
           function doShowCategoryTree() {
             return vm.categoryTreeEnabled;
           };
+          
+          function isMerge() {
+            return vm.merge;
+          }
 
           function activeResourceTypes() {
-            let activeResourceTypes = ['element', 'field', 'folder'];
+            let activeResourceTypes = ['element', 'field', 'folder', 'template'];
             return activeResourceTypes;
           };
 
@@ -615,6 +623,9 @@ define([
                 case CONST.resourceType.FIELD:
                   result += "fa-cube";
                   break;
+                case CONST.resourceType.TEMPLATE:
+                  result += "fa-file-text";
+                  break;
               }
               result += ' ' + resource.resourceType;
             }
@@ -633,6 +644,9 @@ define([
                   break;
                 case CONST.resourceType.FIELD:
                   result += "field";
+                  break;
+                case CONST.resourceType.TEMPLATE:
+                  result += "template";
                   break;
               }
 
@@ -813,6 +827,17 @@ define([
             return result;
           };
 
+          function getTemplates() {
+            let result = [];
+
+            if (vm.resources) {
+              result = vm.resources.filter(function (obj) {
+                return obj.resourceType == CONST.resourceType.TEMPLATE;
+              });
+            }
+            return result;
+          };
+
           function getId(node, label) {
             if (node) {
               let id = schemaService.getId(node);
@@ -946,6 +971,16 @@ define([
             vm.params.search = null;
             vm.params.folderId = null;
             vm.selectedResource = null;
+            if (params && params.merge === true) {
+              vm.merge = params.merge;
+              delete vm.resourceTypes;
+              vm.resourceTypes = {
+                element : false,
+                field   : false,
+                instance: false,
+                template: true
+              };
+            }
           });
 
         };

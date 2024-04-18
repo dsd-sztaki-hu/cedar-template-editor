@@ -157,9 +157,40 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Then, display Templates for merging -->
+                  <div
+                          ng-if="!finder.isFolder(template) && finder.isMerge()" class="box-row"
+                          ng-class="{ selected: finder.isResourceSelected(template) }"
+                          ng-click="finder.selectResource(template)"
+                          ng-dblclick="finder.openResource(template)"
+                          ng-repeat="(index, template) in finder.getTemplates()">
+                    <div
+                            class="outer flex resource-instance"
+                            ng-class="finder.getResourceTypeClass(template)">
+                      <div class="flex ellipsis" style="justify-content:space-between">
+                        <cedar-resource-icon resource-type="template.resourceType"></cedar-resource-icon>
+                        <div id="{{finder.getId(template, 'row')}}" class="ellipsis" style="width:100%"
+                             uib-tooltip='{{finder.getTitle(template)}}'
+                             tooltip-append-to-body="true"
+                             tooltip-trigger="mouseenter"
+                             tooltip-animation="false"
+                             tooltip-placement="bottom"
+                             data-toggle="tooltip"
+                             tooltip-enable="finder.isOverflow(template, 'row')"
+                        >{{ finder.getTitle(template)}}
+                        </div>
+                      </div>
+                      <!-- Trusted badge -->
+                      <div ng-if="finder.getTrustedBy(template)"
+                           style="display:inline; float:right;font-size: 16px;padding-right:20px"
+                           uib-tooltip="{{'GENERIC.TrustedBy' | translate}} {{finder.getTrustedBy(template)}}">
+                        <i class="fa fa-shield">&nbsp;</i>
+                      </div>
+                    </div>
+                  </div>
                   <!-- Then, display Elements and Fields -->
                   <div
-                      ng-if="!finder.isFolder(resource)" class="box-row"
+                      ng-if="!finder.isFolder(resource) && !finder.isMerge()" class="box-row"
                       ng-class="{ selected: finder.isResourceSelected(resource) }"
                       ng-click="finder.selectResource(resource)"
                       ng-dblclick="finder.openResource(resource)"
@@ -318,7 +349,7 @@
           <div class="clear-save">
             <button data-dismiss="modal" type="cancel" class="btn btn-clear canc">{{'GENERIC.Cancel' | translate}}
             </button>
-            <button ng-disabled="!finder.hasSelection()" class="btn btn-save subm" ng-click="finder.openResource()">
+            <button ng-disabled="!finder.isMerge()" class="btn btn-save subm" ng-click="finder.openResource()">
               {{'GENERIC.Select' | translate}}
             </button>
           </div>

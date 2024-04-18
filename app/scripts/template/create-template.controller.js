@@ -581,6 +581,12 @@ define([
           $scope.$broadcast('finderModalVisible');
         };
 
+        $scope.showFinderModalForMerge = function () {
+          // open and activate the modal
+          $scope.finderModalVisible = true;
+          $scope.$broadcast('finderModalVisible', {merge: true});
+        };
+
         $scope.hideFinder = function () {
           jQuery("#finder-modal").modal('hide');
         };
