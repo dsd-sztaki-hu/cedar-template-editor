@@ -213,7 +213,10 @@ define([
           }
 
           function activeResourceTypes() {
-            let activeResourceTypes = ['element', 'field', 'folder', 'template'];
+            let activeResourceTypes = ['element', 'field', 'folder'];
+            if (vm.merge) {
+              activeResourceTypes.push('template');
+            }
             return activeResourceTypes;
           };
 
@@ -979,6 +982,14 @@ define([
                 field   : false,
                 instance: false,
                 template: true
+              };
+            } else {
+              vm.merge = false;
+              vm.resourceTypes = {
+                element : true,
+                field   : true,
+                instance: false,
+                template: false
               };
             }
           });
