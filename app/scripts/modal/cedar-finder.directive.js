@@ -983,6 +983,7 @@ define([
                 instance: false,
                 template: true
               };
+              getFolderContentsById(decodeURIComponent(CedarUser.getHomeFolderId()));
             } else {
               vm.merge = false;
               vm.resourceTypes = {
