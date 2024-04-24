@@ -458,6 +458,10 @@ define([
           }
         });
 
+        $scope.$on('mergeModalVisible', function (event, args) {
+          $scope.mergeModalVisible = true;
+        });
+        
         $scope.$on('invalidElementState', function (event, args) {
           if (args[0] == 'add') {
             $scope.invalidElementStates[args[2]] = args[1];

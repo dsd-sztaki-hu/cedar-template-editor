@@ -492,6 +492,9 @@
       "title": "Rename",
       "label": "Enter a name"
     },
+    "merge": {
+      "title": "Merge Templates"
+    },
     "publish": {
       "title": "Publish",
       "version": "Version"

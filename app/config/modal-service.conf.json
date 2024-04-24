@@ -16,6 +16,10 @@
     "modalId": "rename-modal"
   },
   {
+    "modalName": "template-merge",
+    "modalId": "merge-modal"
+  },
+  {
     "modalName": "share",
     "modalId": "share-modal"
   },

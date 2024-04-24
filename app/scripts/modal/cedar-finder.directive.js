@@ -606,11 +606,17 @@ define([
               goToFolder(r['@id']);
             } else {
               if (typeof vm.pickResourceCallback === 'function') {
-                vm.pickResourceCallback(r);
+                if (!vm.merge) {
+                  vm.pickResourceCallback(r);
+                } else {
+                  console.log('Merge');
+                  const openedTemplate = $scope.form;
+                  $rootScope.$broadcast('mergeModalVisible', [true, openedTemplate, r]);
+                }
+                $scope.hideModal(vm.id);
               }
-              $scope.hideModal(vm.id);
             }
-          };
+          }
 
           function getResourceIconClass(resource) {
             let result = '';
