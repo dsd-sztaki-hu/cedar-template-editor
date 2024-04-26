@@ -791,6 +791,10 @@
       "success": "The template <b>{{title}}</b> has been exported to Dataverse.",
       "error": "There was an error while exporting the template to Dataverse!<br /><br />VIEW TECHNICAL DETAILS!"
     },
+    "merge": {
+      "success": "The {{resourceType}} <b>{{title}}</b> has been merged with the updated version of the {{resourceType}}.",
+      "error": "There was an error while merging the templates!<br /><br />VIEW TECHNICAL DETAILS!"
+    },
     "ERROR": {
       "templateExportTitle": "Template export error details",
       "templateExport": "<pre><b>Unprocessable elements</b>: {{unprocessableElements}}</br><b>Invalid names</b>: {{invalidNames}}<br/><b>Incompatible pairs</b>: {{incompatiblePairs}}<br/></pre>",
@@ -815,7 +819,9 @@
     },
     "GENERIC": {
       "SchemaNameHun": "Hungarian Name",
-      "SchemaDescriptionHun": "Hungarian Description"
+      "SchemaDescriptionHun": "Hungarian Description",
+      "Merged": "Merged",
+      "Merge": "Merge"
     }
   }
 }

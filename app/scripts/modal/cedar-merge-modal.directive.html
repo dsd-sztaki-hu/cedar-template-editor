@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header" id="mergeModalHeader">
@@ -12,9 +13,9 @@
     </div>
     <div class="modal-footer actions">
       <div class="clear-save">
-        <button id="merge-modal-save-button" ng-click="merge.updateResource();dc.mergeModalVisible=false;" type="button"
+        <button id="merge-modal-save-button" ng-click="merge.mergeResources();dc.mergeModalVisible=false;" type="button"
                 class="btn btn-save confirm" translate>
-          GENERIC.Save
+          ARP.GENERIC.Merge
         </button>
       </div>
       <div class="clear-save">

@@ -594,7 +594,7 @@ define([
         };
 
         $scope.showMergeModal = function () {
-          $scope.$broadcast('mergeModalVisible', [$scope.form]);
+          $scope.$broadcast('mergeModalVisible', [$scope.form, 'template']);
         };
 
         $scope.hideFinder = function () {

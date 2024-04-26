@@ -670,7 +670,8 @@ define([
     }
 
     $scope.showMergeModal = function () {
-      $scope.$broadcast('mergeModalVisible', [$scope.element]);
+      $scope.mergeModalVisible = true;
+      $rootScope.$broadcast('mergeModalVisible', [$scope.element, 'element']);
     };
 
     $scope.canArpMerge = function() {
