@@ -606,15 +606,9 @@ define([
               goToFolder(r['@id']);
             } else {
               if (typeof vm.pickResourceCallback === 'function') {
-                if (!vm.merge) {
-                  vm.pickResourceCallback(r);
-                } else {
-                  console.log('Merge');
-                  const openedTemplate = $scope.form;
-                  $rootScope.$broadcast('mergeModalVisible', [true, openedTemplate, r]);
-                }
-                $scope.hideModal(vm.id);
+                vm.pickResourceCallback(r);
               }
+              $scope.hideModal(vm.id);
             }
           }
 
@@ -980,27 +974,7 @@ define([
             vm.params.search = null;
             vm.params.folderId = null;
             vm.selectedResource = null;
-            if (params && params.merge === true) {
-              vm.merge = params.merge;
-              delete vm.resourceTypes;
-              vm.resourceTypes = {
-                element : false,
-                field   : false,
-                instance: false,
-                template: true
-              };
-              getFolderContentsById(decodeURIComponent(CedarUser.getHomeFolderId()));
-            } else {
-              vm.merge = false;
-              vm.resourceTypes = {
-                element : true,
-                field   : true,
-                instance: false,
-                template: false
-              };
-            }
           });
-
         };
 
         /**

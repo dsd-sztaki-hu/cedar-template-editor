@@ -550,12 +550,6 @@ define([
       $rootScope.$broadcast('finderModalVisible');
     };
 
-    $scope.showFinderModalForMerge = function () {
-      // open and activate the modal
-      $scope.finderModalVisible = true;
-      $scope.$broadcast('finderModalVisible', {merge: true});
-    };
-
     // $scope.hideFinder = function () {
     //   jQuery("#finder-modal").modal('hide')
     // };
@@ -675,6 +669,16 @@ define([
       $scope.element._arp.dataverse.displayNameField = fieldNameOrExp;
     }
 
+    $scope.showMergeModal = function () {
+      $scope.$broadcast('mergeModalVisible', [$scope.element]);
+    };
 
+    $scope.canArpMerge = function() {
+      if ($scope.element) {
+        return TemplateElementService.canArpMergeTemplateElement() && $scope.element.hasOwnProperty('pav:derivedFrom');
+      } else {
+        return false;
+      }
+    }
   }
 });

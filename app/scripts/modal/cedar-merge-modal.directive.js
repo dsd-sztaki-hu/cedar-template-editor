@@ -76,23 +76,20 @@ define([
           // modal open or closed
           $scope.$on('mergeModalVisible', function (event, params) {
 
-            const visible = params[0];
-            const before = params[1];
-            let after = params[2];
-            vm.modalVisible = visible;
-
+            const updatedResource = params[0];
+            const originalResourceId = updatedResource['pav:derivedFrom']
+            vm.modalVisible = true;
+            
             AuthorizedBackendService.doCall(
-                TemplateService.getTemplate(after["@id"]),
+                TemplateService.getTemplate(originalResourceId),
                 function (response) {
-                  // Assign returned form object from FormService to $scope.form
-                  after = response.data;
-                  dms.stripTmps(before);
-                  dms.stripTmps(after);
+                  const originalResource = response.data;
+                  dms.stripTmps(originalResource);
+                  dms.stripTmps(updatedResource);
                   vm.mergeResource = {
-                    'before': before,
-                    'after': after
+                    'before': originalResource,
+                    'after': updatedResource
                   };
-                  console.log('mergeModalVisible!!!!!!!!!!!!!!');
                   postTemplates();
                 },
                 function (err) {

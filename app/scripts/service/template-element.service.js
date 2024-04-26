@@ -6,9 +6,9 @@ define([
   angular.module('cedar.templateEditor.service.templateElementService', [])
       .service('TemplateElementService', TemplateElementService);
 
-  TemplateElementService.$inject = ['HttpBuilderService', 'UrlService'];
+  TemplateElementService.$inject = ['HttpBuilderService', 'UrlService', 'CedarUser'];
 
-  function TemplateElementService(HttpBuilderService, UrlService) {
+  function TemplateElementService(HttpBuilderService, UrlService, CedarUser) {
 
     var service = {
       serviceId: "TemplateElementService"
@@ -29,6 +29,10 @@ define([
     service.updateTemplateElement = function (id, element) {
       return HttpBuilderService.put(UrlService.getTemplateElement(id), angular.toJson(element));
     };
+
+    service.canArpMergeTemplateElement = function () {
+      return CedarUser.getRoles().includes("userAdministrator");
+    }
 
     return service;
 

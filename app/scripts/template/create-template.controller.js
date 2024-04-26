@@ -50,7 +50,15 @@ define([
         $scope.arpExportButtonDisabled = function() {
           return UIUtilService.isDirty() || $routeParams.id === undefined;
         };
-
+        
+        $scope.canArpMerge= function() {
+          if ($scope.form) {
+            return TemplateService.canArpExportTemplate() && $scope.form.hasOwnProperty('pav:derivedFrom');
+          } else {
+            return false;
+          }
+        }
+        
         $scope.checkLocking = function () {
           if ($scope.details) {
             $scope.cannotWrite = !resourceService.canWrite($scope.details) || schemaService.isPublished($scope.details)
@@ -585,10 +593,8 @@ define([
           $scope.$broadcast('finderModalVisible');
         };
 
-        $scope.showFinderModalForMerge = function () {
-          // open and activate the modal
-          $scope.finderModalVisible = true;
-          $scope.$broadcast('finderModalVisible', {merge: true});
+        $scope.showMergeModal = function () {
+          $scope.$broadcast('mergeModalVisible', [$scope.form]);
         };
 
         $scope.hideFinder = function () {

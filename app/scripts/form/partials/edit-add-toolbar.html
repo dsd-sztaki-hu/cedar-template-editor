@@ -50,10 +50,10 @@
           tooltip-placement="left"
       ><i class="fa fa-search "></i></a>
     </li>
-    <div ng-if="canArpExportTemplate()">
+    <div ng-if="canArpMerge()">
       <li ng-if="!isField" class="divider"></li>
       <li ng-if="!isField">
-        <a ng-click="showFinderModalForMerge('finder-modal')"
+        <a ng-click="showMergeModal('merge-modal')"
            id='button-merge-element'
            uib-tooltip='{{"EDITOR.TOOLBAR.mergeTemplates" | translate}}'
            tooltip-placement="left"
