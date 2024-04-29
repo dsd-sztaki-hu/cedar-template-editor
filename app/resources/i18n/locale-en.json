@@ -822,6 +822,9 @@
       "SchemaDescriptionHun": "Hungarian Description",
       "Merged": "Merged",
       "Merge": "Merge"
+    },
+    "MENU": {
+      "arpCopy": "ARP Copy to..."
     }
   }
 }

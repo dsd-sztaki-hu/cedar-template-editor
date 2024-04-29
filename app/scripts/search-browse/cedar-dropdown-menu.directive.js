@@ -52,6 +52,8 @@ define([
         copyFolderId2Clipboard      : "=",
         copyParentFolderId2Clipboard: "=",
         isMeta                      : "=",
+        isAdmin                     : "=",
+        arpCopy                     : "="
       },
       controller : function ($scope, $element) {
       },

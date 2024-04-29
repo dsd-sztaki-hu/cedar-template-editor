@@ -4,6 +4,7 @@ define([
   'angular',
   'cedar/template-editor/modal/modal.module',
   'cedar/template-editor/modal/cedar-copy-modal.directive',
+  'cedar/template-editor/modal/cedar-arp-copy-modal.directive',
   'cedar/template-editor/modal/cedar-move-modal.directive',
   'cedar/template-editor/modal/cedar-publish-modal.directive',
   'cedar/template-editor/modal/cedar-rename-modal.directive',
@@ -17,6 +18,7 @@ define([
 ], function(angular) {
   angular.module('cedar.templateEditor.modal', [
     'cedar.templateEditor.modal.cedarCopyModal',
+    'cedar.templateEditor.modal.cedarArpCopyModal',
     'cedar.templateEditor.modal.cedarMoveModal',
     'cedar.templateEditor.modal.cedarPublishModal',
     'cedar.templateEditor.modal.cedarRenameModal',

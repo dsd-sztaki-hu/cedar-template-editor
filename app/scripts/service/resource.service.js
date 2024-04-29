@@ -74,7 +74,8 @@ define([
           makeFolderNotOpen        : makeFolderNotOpen,
           renameNode               : renameNode,
           validateResource         : validateResource,
-          canDo                    : canDo
+          canDo                    : canDo,
+          isAdmin                  : isAdmin
         };
         return service;
 
@@ -967,6 +968,10 @@ define([
             command["schema:description"] = description;
           }
           return httpBuilderService.post(urlService.renameNode(), angular.toJson(command));
+        }
+        
+        function isAdmin() {
+          return CedarUser.getRoles().includes("userAdministrator");
         }
 
       }

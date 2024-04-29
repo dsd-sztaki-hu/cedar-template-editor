@@ -277,11 +277,12 @@
                                                resource="resource" go-to="dc.goToResource" share="dc.showShareModal"
                                                move="dc.showMoveModal" delete="dc.deleteResource"
                                                copy="dc.showCopyModal"
+                                               arp-copy="dc.showArpCopyModal"
                                                rename="dc.showRenameModal"
                                                submit="dc.showFlowModal"
                                                publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
                                                draft-callback="dc.createDraftResource"
-                                               make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
+                                               make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                                open-open="dc.openOpen"
                                                open-datacite="dc.openDatacite"
                                                can-not-publish="dc.canNotPublish"
@@ -370,11 +371,12 @@
                                                resource="resource" go-to="dc.goToResource" share="dc.showShareModal"
                                                move="dc.showMoveModal" delete="dc.deleteResource"
                                                copy="dc.showCopyModal"
+                                               arp-copy="dc.showArpCopyModal"
                                                rename="dc.showRenameModal"
                                                submit="dc.showFlowModal"
                                                publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
                                                draft-callback="dc.createDraftResource"
-                                               make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
+                                               make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                                open-open="dc.openOpen"
                                                open-datacite="dc.openDatacite"
                                                can-not-publish="dc.canNotPublish"
@@ -532,11 +534,12 @@
                                            aria-labelledby="{{dc.getId(resource, 'list')}}"
                                            resource="resource" go-to="dc.goToResource" share="dc.showShareModal"
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
+                                           arp-copy="dc.showArpCopyModal"
                                            rename="dc.showRenameModal"
                                            submit="dc.showFlowModal"
                                            publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
                                            draft-callback="dc.createDraftResource"
-                                           make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
+                                           make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                            open-open="dc.openOpen"
                                            open-datacite="dc.openDatacite"
                                            can-not-publish="dc.canNotPublish"
@@ -687,11 +690,12 @@
                                            class="dropdown-menu " aria-labelledby="{{dc.getId(resource, 'list')}}"
                                            resource="resource" go-to="dc.goToResource" share="dc.showShareModal"
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
+                                           arp-copy="dc.showArpCopyModal"
                                            rename="dc.showRenameModal"
                                            submit="dc.showFlowModal"
                                            publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
                                            draft-callback="dc.createDraftResource"
-                                           make-open="dc.makeOpen" make-not-open="dc.makeNotOpen"
+                                           make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                            open-open="dc.openOpen"
                                            open-datacite="dc.openDatacite"
                                            can-not-publish="dc.canNotPublish"
@@ -1047,6 +1051,14 @@
                     tabindex="-1" role="dialog" aria-labelledby="copyModalHeader"
                     data-keyboard="true" data-backdrop="static" copy-resource="resource">
   </cedar-copy-modal>
+</section>
+
+<!-- ARP copy modal -->
+<section>
+  <cedar-arp-copy-modal cedar-modal-show modal-visible="dc.arpCopyModalVisible" class="modal fade" id="arp-copy-modal"
+                    tabindex="-1" role="dialog" aria-labelledby="arpCopyModalHeader"
+                    data-keyboard="true" data-backdrop="static" arp-copy-resource="resource">
+  </cedar-arp-copy-modal>
 </section>
 
 <!-- move modal -->

@@ -58,6 +58,7 @@ define([
 
           // modals
           vm.showCopyModal = showCopyModal;
+          vm.showArpCopyModal = showArpCopyModal;
           vm.showMoveModal = showMoveModal;
           vm.showPublishModal = showPublishModal;
           vm.showShareModal = showShareModal;
@@ -67,6 +68,7 @@ define([
           vm.showImportModal = showImportModal;
 
           vm.copyModalVisible = false;
+          vm.arpCopyModalVisible = false;
           vm.moveModalVisible = false;
           vm.publishModalVisible = false;
           vm.shareModalVisible = false;
@@ -117,6 +119,7 @@ define([
           vm.canNotDelete = false;
           vm.canNotRename = false;
           vm.currentFolder = null;
+          vm.isAdmin = resourceService.isAdmin();
 
           vm.hasSelected = hasSelected;
           vm.getSelected = getSelected;
@@ -590,6 +593,7 @@ define([
             vm.canNotMakeNotOpen = !vm.canMakeNotOpen();
             vm.canNotOpenOpen = !vm.canOpenOpen();
             vm.canNotOpenDatacite = !vm.canOpenDatacite();
+            vm.isAdmin = resourceService.isAdmin();
             vm.getNumberOfInstances();
             vm.getResourcePublicationStatus();
           };
@@ -2338,6 +2342,18 @@ define([
               vm.copyModalVisible = true;
               $scope.$broadcast('copyModalVisible',
                   [vm.copyModalVisible, r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, CedarUser.getSort()]);
+            }
+          }
+
+          // open the 'ARP copy' modal
+          function showArpCopyModal(resource) {
+            let r = resource || getSelected();
+            if (r && vm.isFolder(r)) {
+              const homeFolderId = CedarUser.getHomeFolderId();
+              const folderId = vm.currentFolderId || homeFolderId;
+              vm.arpCopyModalVisible = true;
+              $scope.$broadcast('arpCopyModalVisible',
+                  [vm.arpCopyModalVisible, r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, CedarUser.getSort()]);
             }
           }
 
