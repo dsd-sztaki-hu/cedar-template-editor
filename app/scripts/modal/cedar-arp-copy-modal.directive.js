@@ -42,6 +42,7 @@ define([
           vm.isDestinationSelected = isDestinationSelected;
           vm.copyDisabled = copyDisabled;
           vm.updateResource = updateResource;
+          vm.recursiveCopyResource = recursiveCopyResource;
           vm.openDestination = openDestination;
           vm.getResourceIconClass = getResourceIconClass;
           vm.loadMore = loadMore;
@@ -135,6 +136,102 @@ define([
               }
             }
           }
+          
+          function recursiveCopyResource(resource) {
+            if (vm.selectedDestination) {
+              const newParentFolderId = vm.selectedDestination['@id'];
+              if (vm.arpCopyResource) {
+                const resource = vm.arpCopyResource;
+                let newFolderName = resource['schema:name'];
+                const sameFolder = vm.currentFolderId === newParentFolderId;
+                if (sameFolder) {
+                  newFolderName = $translate.instant('ARP.GENERIC.CopyOfTitle', {"title": resource['schema:name']});
+                }
+                resourceService.createFolder(
+                    newParentFolderId,
+                    newFolderName,
+                    resource['schema:description'],
+                    function (response) {
+                      const newFolderId = response['@id'];
+                      copyRecursively(resource, newFolderId);
+                      refresh();
+                    },
+                    function (error) {
+                      UIMessageService.showBackendError('ARP.copy.error', error);
+                    }
+                );
+              }
+            }
+          }
+
+          function copyRecursively(resource, newFolderId) {
+            getFolderContentsByFolderId(resource['@id'])
+                .then(response => {
+                  const responseArray = Array.isArray(response) ? response : [response];
+                  responseArray.forEach(resource => {
+                    if (resource['resourceType'] === CONST.resourceType.FOLDER) {
+                      resourceService.createFolder(
+                          newFolderId,
+                          resource['schema:name'],
+                          resource['schema:description'],
+                          function (response) {
+                            const newFolderId = response['@id'];
+                            copyRecursively(resource, newFolderId);
+                          },
+                          function (error) {
+                            UIMessageService.showBackendError('SERVER.FOLDER.create.error', error);
+                          }
+                      );
+                    } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD].includes(resource['resourceType'])) {
+                      resourceService.copyResource(
+                          resource,
+                          newFolderId,
+                          resource['schema:name'],
+                          function (response) {
+                          },
+                          function (error) {
+                            UIMessageService.showBackendError('SERVER.RESOURCE.copyToResource.error', error);
+                          }
+                      );
+                    }
+                  });
+                })
+                .catch(error => {
+                  UIMessageService.showBackendError('ARP.copy.error', error);
+                });
+          }
+
+          function getFolderContentsByFolderId(folderId) {
+            return new Promise((resolve, reject) => {
+              let resourceTypes = activeResourceTypes();
+              let limit = UISettingsService.getRequestLimit();
+              let offset = 0;
+              resourceService.getResources({
+                    folderId         : folderId,
+                    resourceTypes    : resourceTypes,
+                    sort             : sortField(),
+                    limit            : limit,
+                    offset           : offset,
+                    version          : getFilterVersion(),
+                    publicationStatus: getFilterStatus()
+                  },
+                  function (response) {
+                    resolve(response.resources); // Resolve the promise with the response data
+                  },
+                  function (error) {
+                    reject(error); // Reject the promise with the error
+                    UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
+                  });
+            });
+          }
+
+          function getFilterVersion() {
+            return CedarUser.getVersion();
+          };
+
+          function getFilterStatus() {
+            return CedarUser.getStatus();
+          };
 
           function refresh() {
             $scope.$broadcast('refreshWorkspace', [vm.arpCopyResource]);
@@ -288,15 +385,7 @@ define([
           }
 
           function activeResourceTypes() {
-            const activeResourceTypes = [];
-            angular.forEach(Object.keys(vm.resourceTypes), function (value, key) {
-              if (vm.resourceTypes[value]) {
-                activeResourceTypes.push(value);
-              }
-            });
-            // always want to show folders, elements and field
-            activeResourceTypes.push('folder');
-            return activeResourceTypes;
+            return ['element', 'field', 'folder', 'template'];
           }
 
           function getResourceIconClass(resource) {

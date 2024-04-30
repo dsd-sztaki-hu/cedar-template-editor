@@ -821,10 +821,14 @@
       "SchemaNameHun": "Hungarian Name",
       "SchemaDescriptionHun": "Hungarian Description",
       "Merged": "Merged",
-      "Merge": "Merge"
+      "Merge": "Merge",
+      "CopyOfTitle": "ARP Copy of {{title}}"
     },
     "MENU": {
       "arpCopy": "ARP Copy to..."
+    },
+    "copy": {
+      "error": "There was an error during ARP Copy!<br /><br />VIEW TECHNICAL DETAILS!"
     }
   }
 }
