@@ -1,0 +1,106 @@
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
+
+<section>
+  <cedar-arp-merge-modal cedar-modal-show modal-visible="arpMergeModalVisible" class="modal fade" id="merge-modal"
+                         tabindex="-1" role="dialog" aria-labelledby="mergeModalHeader"
+                         data-keyboard="true" data-backdrop="static" merge-resource="resource">
+  </cedar-arp-merge-modal>
+</section>
+
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="row copyToModalContainer">
+
+      <div ng-if="loading">
+        <div class="loading-screen">
+          <p>Loading...</p>
+        </div>
+      </div>
+
+      <div ng-if="!loading">
+        <div class="copyToModalRightPanel">
+
+        <div class="modal-header row" id="arpMergePreviewModalHeader">
+
+          <div class="col-sm-11">
+            <p ng-if="arpmergepreview.isCommunity">
+                <span>
+                  Community Folders
+                </span>
+            </p>
+            <p ng-if="!arpmergepreview.isCommunity">
+              <span class="folder-path" ng-repeat="folder in arpmergepreview.destinationPathInfo track by $index">
+                  <a ng-click="arpmergepreview.openDestination(folder)" class="breadcrumbs" ng-if="arpmergepreview.linkFolder(folder)">{{arpmergepreview.breadcrumbName(arpmergepreview.getTitle(folder))}}</a>
+                  <span class="breadcrumbs"
+                        ng-if="!arpmergepreview.linkFolder(folder)">{{arpmergepreview.breadcrumbName(arpmergepreview.getTitle(folder))}}</span>
+                  /
+                </span>
+            </p>
+          </div>
+
+          <div class="col-sm-1 pull-right">
+            <button class="close" type="button" ng-click="dc.arpMergePreviewModalVisible=false;arpmergepreview.hideModal()" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+          </div>
+
+        </div>
+
+        <div id="arpMergePreviewModalContent" class="modal-body scrollable-content" cedar-infinite-scroll load-more="arpmergepreview.loadMore()">
+
+          <!-- show the clickable folders  -->
+          <div ng-if="arpmergepreview.isFolder(resource)" class="box-row row"
+               ng-class="{ selected: arpmergepreview.isDestinationSelected(resource)}"
+               ng-repeat="(index, resource) in destinationResources">
+            <div class="col-sm-1 " ng-click="arpmergepreview.selectDestination(resource)"><i style="color:#9e9e9e;font-size:20px;padding-right:5px"
+                                                                                    class="fa" ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
+            </div>
+            <a class="contents-folder-title col-sm-9" ng-click="arpmergepreview.selectDestination(resource)">{{resource['schema:name']}}</a>
+            <!--            <button ng-click="checkAllCheckboxes()">Check All</button>-->
+            <div class="col-sm-1 arrow-click"
+                 ng-click="arpmergepreview.openDestination(resource)"
+                 uib-tooltip="{{'HELP.openFolder' | translate}}"
+                 tooltip-trigger
+                 tooltip-animation="false"
+                 tooltip-placement="left"
+                 data-toggle="tooltip"><i class="fa fa-arrow-right"></i>
+            </div>
+            <div class="col-sm-1">
+              <input style="width: 18px; height: 18px;" type="checkbox" ng-model="resource.checked" ng-click="arpmergepreview.selectDestination(resource)">
+            </div>
+          </div>
+
+          <!-- then the disabled documents -->
+          <div ng-if="!arpmergepreview.isFolder(resource)" class="box-row row"
+               ng-repeat="(index, resource) in destinationResources">
+            <div class="col-sm-1" ng-click="arpmergepreview.selectDestination(resource)" ><i style="font-size:20px;padding-right:5px" class="fa"
+                                                                                                       class="fa"
+                                                                                                       ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
+            </div>
+            <div class="contents-resource-title col-sm-10" ng-click="arpmergepreview.selectDestination(resource)" ng-dblclick="arpmergepreview.openPreview(resource)">{{resource['schema:name']}}
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer actions">
+          <div class="clear-save">
+            <button ng-disabled="arpmergepreview.copyDisabled()" ng-click="arpmergepreview.recursiveCopyResource();dc.arpMergePreviewModalVisible=false;arpmergepreview.hideModal()"
+                    type="button"
+                    class="btn btn-save confirm"> ARP Copy
+            </button>
+          </div>
+          <div class="clear-save">
+            <button type="button" class="btn btn-clear" ng-click="arpmergepreview.arpMergePreviewModalVisible=false;arpmergepreview.refresh();arpmergepreview.hideModal()" translate="">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

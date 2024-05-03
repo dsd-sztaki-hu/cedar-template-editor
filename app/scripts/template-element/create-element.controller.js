@@ -669,9 +669,9 @@ define([
       $scope.element._arp.dataverse.displayNameField = fieldNameOrExp;
     }
 
-    $scope.showMergeModal = function () {
-      $scope.mergeModalVisible = true;
-      $rootScope.$broadcast('mergeModalVisible', [$scope.element, 'element']);
+    $scope.showArpMergeModal = function () {
+      $scope.arpMergeModalVisible = true;
+      $rootScope.$broadcast('arpMergeModalVisible', [$scope.element, 'element']);
     };
 
     $scope.canArpMerge = function() {

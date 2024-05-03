@@ -1,8 +1,7 @@
-<script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header" id="mergeModalHeader">
-      <button type="button" class="close" ng-click="dc.mergeModalVisible=false" aria-label="Close"><span
+      <button type="button" class="close" ng-click="arpMergeModalVisible=false" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
       <h4 class="modal-title" translate>DASHBOARD.merge.title</h4>
     </div>
@@ -13,13 +12,13 @@
     </div>
     <div class="modal-footer actions">
       <div class="clear-save">
-        <button id="merge-modal-save-button" ng-click="merge.mergeResources();dc.mergeModalVisible=false;" type="button"
+        <button ng-if="merge.elementMerge()" id="merge-modal-save-button" ng-click="merge.mergeResources();arpMergeModalVisible=false" type="button"
                 class="btn btn-save confirm" translate>
           ARP.GENERIC.Merge
         </button>
       </div>
       <div class="clear-save">
-        <button type="button" class="btn btn-clear" ng-click="dc.mergeModalVisible=false;" translate="">Cancel</button>
+        <button type="button" class="btn btn-clear" ng-click="arpMergeModalVisible=false" translate="">Cancel</button>
       </div>
     </div>
   </div>

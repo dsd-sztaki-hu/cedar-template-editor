@@ -465,10 +465,6 @@ define([
             delete $scope.invalidFieldStates[args[2]];
           }
         });
-
-        $scope.$on('mergeModalVisible', function (event, args) {
-          $scope.mergeModalVisible = true;
-        });
         
         $scope.$on('invalidElementState', function (event, args) {
           if (args[0] == 'add') {
@@ -593,8 +589,8 @@ define([
           $scope.$broadcast('finderModalVisible');
         };
 
-        $scope.showMergeModal = function () {
-          $scope.$broadcast('mergeModalVisible', [$scope.form, 'template']);
+        $scope.showArpMergeModal = function () {
+          $scope.$broadcast('arpMergePreviewModalVisible', [$scope.form, QueryParamUtilsService.getFolderId(), CedarUser.getSort()]);
         };
 
         $scope.hideFinder = function () {

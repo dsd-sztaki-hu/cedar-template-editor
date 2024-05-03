@@ -7013,7 +7013,7 @@ table.apiKey {
   background: transparent;
 }
 
-#rename-modal, #publish-modal, #new-folder-modal, #move-modal, #copy-modal, #arp-copy-modal, #share-modal, #airr-submission-modal, #flow-modal, #terms-modal, #import-modal {
+#rename-modal, #publish-modal, #new-folder-modal, #move-modal, #copy-modal, #arp-copy-modal, #arp-merge-preview-modal, #share-modal, #airr-submission-modal, #flow-modal, #terms-modal, #import-modal {
 
   i.fa-globe {
     color: @published;
@@ -8035,7 +8035,7 @@ table.apiKey {
   }
 }
 
-#move-modal, #copy-modal, #arp-copy-modal{
+#move-modal, #copy-modal, #arp-copy-modal, #arp-merge-preview-modal{
   .modal-content {
     .modal-body {
       height: 300px;
@@ -9113,5 +9113,24 @@ div.resource-icon {
 
   .copyToModalLeftPanel ul {
     margin-left:-20px;
+  }
+}
+
+#arp-merge-preview-modal {
+  .modal-content {
+    border-radius: 0;
+    border: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    border-top: 1px solid #CCCCCC;
+  }
+
+  .copyToModalContainer {
+    background-color: #e8e8e8;
+  }
+
+  .row.copyToModalContainer {
+    margin-left:0px;
+    margin-right:0px;
   }
 }
