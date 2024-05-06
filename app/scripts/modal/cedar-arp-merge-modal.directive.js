@@ -45,6 +45,7 @@ define([
           vm.resetTemplates = resetTemplates;
           vm.elementMerge = elementMerge;
           vm.templateMerge = templateMerge;
+          vm.hideModal = hideModal;
 
           const dms = DataManipulationService;
           
@@ -112,6 +113,10 @@ define([
 
           function refresh() {
             $scope.$broadcast('refreshWorkspace', [vm.mergeResource]);
+          }
+          
+          function hideModal() {
+            vm.modalVisible = false;
           }
           
           function saveMergedResource(mergedTemplate) {

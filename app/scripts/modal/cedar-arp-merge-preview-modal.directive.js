@@ -559,9 +559,8 @@ define([
 
           function openPreview(resource) {
             const previewResource = vm.previewCache.get(resource['@id'])
-            $scope.arpMergeModalVisible = true;
-            $scope.$broadcast('arpMergeModalVisible', [{'original': previewResource.original, 'updated': previewResource.updated}, 'template']);
-            console.log('openPreview');
+            $rootScope.arpMergeModalVisible = true;
+            $rootScope.$broadcast('arpMergeModalVisible', [{'original': previewResource.original, 'updated': previewResource.updated}, 'template']);
           }
           
           function hideModal() {

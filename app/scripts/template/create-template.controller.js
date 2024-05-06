@@ -465,6 +465,10 @@ define([
             delete $scope.invalidFieldStates[args[2]];
           }
         });
+
+        $scope.$on('arpMergeModalVisible', function (event, args) {
+          $scope.arpMergeModalVisible = true;
+        });
         
         $scope.$on('invalidElementState', function (event, args) {
           if (args[0] == 'add') {
