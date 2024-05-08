@@ -89,6 +89,22 @@ define([
                         resourceJson['pav:createdOn'] = originalObject['pav:createdOn'];
                     }
                 }
+
+                // If the object has a "pav:createdBy" property, replace "pav:createdBy" with the original "pav:createdBy"
+                if (resourceJson.hasOwnProperty('pav:createdBy') && typeof resourceJson['pav:createdBy'] === 'string') {
+                    const originalObject = find(vm.mergeResource.before, '@id', resourceJson['@id']);
+                    if (originalObject) {
+                        resourceJson['pav:createdBy'] = originalObject['pav:createdBy'];
+                    }
+                }
+
+                // If the object has a "schema:identifier" property, replace "schema:identifier" with the original "schema:identifier"
+                if (resourceJson.hasOwnProperty('schema:identifier') && typeof resourceJson['schema:identifier'] === 'string') {
+                    const originalObject = find(vm.mergeResource.before, '@id', resourceJson['@id']);
+                    if (originalObject) {
+                        resourceJson['schema:identifier'] = originalObject['schema:identifier'];
+                    }
+                }
                 
                 const values = Object.values(resourceJson);
                 values.forEach(value => {

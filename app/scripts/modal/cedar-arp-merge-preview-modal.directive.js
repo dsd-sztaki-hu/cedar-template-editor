@@ -389,7 +389,7 @@ define([
           
           async function collectModifiedResources(resources, parentFolder) {
             const promises = [];
-            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id'];
+            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id', 'pav:createdBy', 'schema:identifier'];
 
             for (const resource of resources) {
               const updatedResourceId = resource['@id'];

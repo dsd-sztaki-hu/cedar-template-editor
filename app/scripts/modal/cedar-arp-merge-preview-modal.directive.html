@@ -42,6 +42,10 @@
 
         <div id="arpMergePreviewModalContent" class="modal-body scrollable-content" cedar-infinite-scroll load-more="arpmergepreview.loadMore()">
 
+          <div ng-if="destinationResources.length === 0">
+            <p>No changes to merge.</p>
+          </div>
+          
           <!-- show the clickable folders  -->
           <div ng-if="arpmergepreview.isFolder(resource)" class="box-row row"
                ng-class="{ selected: arpmergepreview.isDestinationSelected(resource)}"
