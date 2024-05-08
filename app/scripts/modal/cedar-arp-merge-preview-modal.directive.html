@@ -69,7 +69,7 @@
                                                                                                        class="fa"
                                                                                                        ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
             </div>
-            <div class="contents-resource-title col-sm-10" ng-click="arpmergepreview.selectDestination(resource)" ng-dblclick="arpmergepreview.openPreview(resource)">{{resource['schema:name']}}
+            <div class="contents-resource-title col-sm-10" ng-click="arpmergepreview.selectDestination(resource)" ng-dblclick="arpmergepreview.openPreview(resource)"  ng-class="{'arpModifiedResource': !arpmergepreview.isNewResource(resource), 'arpNewResource': arpmergepreview.isNewResource(resource)}">{{resource['schema:name']}}
             </div>
             <div class="col-sm-1">
               <input style="width: 18px; height: 18px;" type="checkbox" ng-model="resource.checked">

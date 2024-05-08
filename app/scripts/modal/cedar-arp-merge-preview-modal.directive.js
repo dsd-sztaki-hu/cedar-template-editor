@@ -50,6 +50,7 @@ define([
           vm.getResourceIconClass = getResourceIconClass;
           vm.loadMore = loadMore;
           vm.isFolder = isFolder;
+          vm.isNewResource = isNewResource;
           vm.canWrite = canWrite;
           vm.hideModal = hideModal;
           vm.breadcrumbName = breadcrumbName;
@@ -337,8 +338,15 @@ define([
                   function (response) {
                     const modifiedResources = [];
                     for (const res of response.resources) {
-                      if (vm.previewCache.has(res['@id']) && vm.previewCache.get(res['@id'])['changed'] === true) {
-                        modifiedResources.push(vm.previewCache.get(res['@id']).resource);
+                      const resourceId = res['@id'];
+                      if (vm.previewCache.has(resourceId)) {
+                        const cachedResource = vm.previewCache.get(resourceId);
+                        if (cachedResource['changed'] === true) {
+                          if (cachedResource.original) {
+                            res['_arpTmpIsNewResPropForBgColor_'] =  Object.keys(cachedResource.original).length === 0;
+                          }
+                          modifiedResources.push(res);
+                        }
                       }
                     }
                     vm.totalCount = modifiedResources.length;
@@ -394,11 +402,11 @@ define([
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
-                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource });
+                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{} });
                         if (parentFolder) {
                           const parentFolderId = parentFolder['@id'];
                           if (!vm.previewCache.has(parentFolderId)) {
-                            vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
+                            vm.previewCache.set(parentFolderId, { changed: true });
                           }
                         }
                       } else {
@@ -412,11 +420,11 @@ define([
                               if (isEqual) {
                                 vm.previewCache.set(resource['@id'], { changed: false });
                               } else {
-                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys, resource: resource });
+                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys });
                                 if (parentFolder) {
                                   const parentFolderId = parentFolder['@id'];
                                   if (!vm.previewCache.has(parentFolderId)) {
-                                    vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
+                                    vm.previewCache.set(parentFolderId, { changed: true});
                                   }
                                 }
                               }
@@ -604,6 +612,14 @@ define([
             let result = false;
             if (resource) {
               result = (resource.resourceType === CONST.resourceType.FOLDER);
+            }
+            return result;
+          }
+          
+          function isNewResource(resource) {
+            let result = false;
+            if (resource) {
+              result = resource['_arpTmpIsNewResPropForBgColor_'];
             }
             return result;
           }
