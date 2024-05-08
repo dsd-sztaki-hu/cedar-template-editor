@@ -617,6 +617,7 @@ define([
           function hideModal() {
             document.getElementById('arpMergePreviewModalContent').scrollTop = 0;
             vm.modalVisible = false;
+            $rootScope.arpMergeModalVisible = false;
           }
 
           $scope.$on('arpMergePreviewModalVisible', async function (event, params) {
