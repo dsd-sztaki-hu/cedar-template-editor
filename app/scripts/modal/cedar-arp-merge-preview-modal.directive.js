@@ -335,28 +335,25 @@ define([
               return resourceService.getResources(
                   {folderId: folderId, resourceTypes: resourceTypes, sort: sortField(), limit: limit, offset: offset},
                   function (response) {
-                    collectModifiedResources(response.resources).then(function() {
-                      const modifiedResources = [];
-                      for (const [key, value] of vm.previewCache) {
-                        if (value.hasOwnProperty('original')) {
-                          modifiedResources.push(value.resource);
-                        }
+                    const modifiedResources = [];
+                    for (const res of response.resources) {
+                      if (vm.previewCache.has(res['@id']) && vm.previewCache.get(res['@id'])['changed'] === true) {
+                        modifiedResources.push(vm.previewCache.get(res['@id']).resource);
                       }
-                      vm.totalCount = modifiedResources.length;
-                      vm.currentDestinationID = folderId;
-                      if (vm.offset > 0) {
-                        $scope.destinationResources = $scope.destinationResources.concat(modifiedResources);
-                      } else {
-                        $scope.destinationResources = modifiedResources;
-                      }
-
-                      const resource = response.pathInfo[response.pathInfo.length - 1];
-                      vm.selectedDestination = resource;
-                      vm.currentDestination = resource;
-                      calculateDestinationPathInfo(response.pathInfo);
-                      $scope.loading = false;
-                      $scope.$apply();
-                    });
+                    }
+                    vm.totalCount = modifiedResources.length;
+                    vm.currentDestinationID = folderId;
+                    if (vm.offset > 0) {
+                      $scope.destinationResources = $scope.destinationResources.concat(modifiedResources);
+                    } else {
+                      $scope.destinationResources = modifiedResources;
+                    }
+                    
+                    const resource = response.pathInfo[response.pathInfo.length - 1];
+                    vm.selectedDestination = resource;
+                    vm.currentDestination = resource;
+                    calculateDestinationPathInfo(response.pathInfo);
+                    $scope.loading = false;
                   },
                   function (error) {
                     UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
@@ -364,34 +361,64 @@ define([
               );
             }
           }
+
+          function setPreviewCache(folderId) {
+            return new Promise((resolve, reject) => {
+              resourceService.getResources(
+                  {folderId: folderId, resourceTypes: activeResourceTypes(), sort: sortField(), limit: UISettingsService.getRequestLimit(), offset: vm.offset},
+                  function (response) {
+                    collectModifiedResources(response.resources)
+                        .then(() => resolve())
+                        .catch(error => reject(error));
+                  },
+                  function (error) {
+                    UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
+                    reject(error);
+                  }
+              );
+            });
+          }
           
-          //todo: only add folders if contias modified resources
-          //todo: if theres no pav:derivedFrom, then add the resource
-          async function collectModifiedResources(resources) {
+          async function collectModifiedResources(resources, parentFolder) {
             const promises = [];
             const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id'];
 
-            resources.forEach(resource => {
+            for (const resource of resources) {
+              const updatedResourceId = resource['@id'];
+              const updatedResourceType = resource['resourceType'];
+
               if ([CONST.resourceType.ELEMENT, CONST.resourceType.TEMPLATE].includes(resource['resourceType'])
                   && !vm.previewCache.has(resource['@id'])) {
-                const updatedResourceId = resource['@id'];
-                const updatedResourceType = resource['resourceType'];
+
                 const promise = getResourceById(updatedResourceId, updatedResourceType)
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
-                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedContent });
+                        const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
+                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource });
+                        if (parentFolder) {
+                          const parentFolderId = parentFolder['@id'];
+                          if (!vm.previewCache.has(parentFolderId)) {
+                            vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
+                          }
+                        }
                       } else {
                         const originalContentType = getContentType(updatedContent);
                         const originalId = updatedContent['pav:derivedFrom'];
                         return getResourceById(originalId, originalContentType)
                             .then(originalContent => {
-                              const originalExcludedKeys = _.omit(originalContent, keysToExclude);
-                              const updatedExcludedKeys = _.omit(updatedContent, keysToExclude);
+                              const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
+                              const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
                               const isEqual = _.isEqual(originalExcludedKeys, updatedExcludedKeys);
                               if (isEqual) {
                                 vm.previewCache.set(resource['@id'], { changed: false });
                               } else {
                                 vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys, resource: resource });
+                                if (parentFolder) {
+                                  const parentFolderId = parentFolder['@id'];
+                                  if (!vm.previewCache.has(parentFolderId)) {
+                                    vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
+                                  }
+                                }
                               }
                             });
                       }
@@ -400,11 +427,35 @@ define([
                       UIMessageService.showBackendError('SERVER.TEMPLATE.load.error', error);
                     });
                 promises.push(promise);
+
+              } else if (CONST.resourceType.FOLDER === updatedResourceType) {
+                const folderContents = await getFolderContentsByFolderId(resource['@id']);
+                promises.push(collectModifiedResources(folderContents, resource));
               }
-            });
+            }
 
             await Promise.all(promises);
           }
+
+          function omitDeep(obj, keysToExclude) {
+            if (_.isArray(obj)) {
+              obj.forEach((element, index) => {
+                if (_.isObject(element)) {
+                  omitDeep(element, keysToExclude);
+                }
+              });
+            } else if (_.isObject(obj)) {
+              _.forIn(obj, function(value, key) {
+                if (_.isObject(value)) {
+                  omitDeep(value, keysToExclude);
+                } else if (keysToExclude.includes(key)) {
+                  delete obj[key];
+                }
+              });
+            }
+            return obj;
+          }
+
           
           function getContentType(content) {
             const typeStr = content['@type'];
@@ -518,7 +569,7 @@ define([
           }
 
           function activeResourceTypes() {
-            return ['element', 'folder', 'template'];
+            return [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT];
           }
 
           function getResourceIconClass(resource) {
@@ -568,8 +619,7 @@ define([
             vm.modalVisible = false;
           }
 
-          // modal open or closed
-          $scope.$on('arpMergePreviewModalVisible', function (event, params) {
+          $scope.$on('arpMergePreviewModalVisible', async function (event, params) {
             const resource = params[0];
             const currentFolderId = params[1];
             const sortOptionField = params[2];
@@ -582,12 +632,20 @@ define([
               vm.sortOptionField = sortOptionField;
               vm.selectedDestination = null;
               vm.offset = 0;
-              // TODO scroll to top
-              getDestinationById(vm.currentFolderId);
+              
+              $timeout(async function() {
+                try {
+                  await setPreviewCache(vm.currentFolderId);
+                  getDestinationById(vm.currentFolderId);
+                } catch (error) {
+                  UIMessageService.showBackendError('ARP.merge.preview.error', error);
+                }
+              });
             }
           });
+          
         }
-
+        
         return {
           bindToController: {
             arpMergePreviewResource: '=',

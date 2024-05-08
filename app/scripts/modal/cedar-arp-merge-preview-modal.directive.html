@@ -50,7 +50,6 @@
                                                                                     class="fa" ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
             </div>
             <a class="contents-folder-title col-sm-9" ng-click="arpmergepreview.selectDestination(resource)">{{resource['schema:name']}}</a>
-            <!--            <button ng-click="checkAllCheckboxes()">Check All</button>-->
             <div class="col-sm-1 arrow-click"
                  ng-click="arpmergepreview.openDestination(resource)"
                  uib-tooltip="{{'HELP.openFolder' | translate}}"
@@ -60,11 +59,10 @@
                  data-toggle="tooltip"><i class="fa fa-arrow-right"></i>
             </div>
             <div class="col-sm-1">
-              <input style="width: 18px; height: 18px;" type="checkbox" ng-model="resource.checked" ng-click="arpmergepreview.selectDestination(resource)">
+              <input style="width: 18px; height: 18px;" type="checkbox" ng-model="resource.checked">
             </div>
           </div>
-
-          <!-- then the disabled documents -->
+          
           <div ng-if="!arpmergepreview.isFolder(resource)" class="box-row row"
                ng-repeat="(index, resource) in destinationResources">
             <div class="col-sm-1" ng-click="arpmergepreview.selectDestination(resource)" ><i style="font-size:20px;padding-right:5px" class="fa"
@@ -72,6 +70,9 @@
                                                                                                        ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
             </div>
             <div class="contents-resource-title col-sm-10" ng-click="arpmergepreview.selectDestination(resource)" ng-dblclick="arpmergepreview.openPreview(resource)">{{resource['schema:name']}}
+            </div>
+            <div class="col-sm-1">
+              <input style="width: 18px; height: 18px;" type="checkbox" ng-model="resource.checked">
             </div>
 
           </div>
