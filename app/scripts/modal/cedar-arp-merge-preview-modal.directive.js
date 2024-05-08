@@ -343,9 +343,9 @@ define([
                         const cachedResource = vm.previewCache.get(resourceId);
                         if (cachedResource['changed'] === true) {
                           if (cachedResource.original) {
-                            res['_arpTmpIsNewResPropForBgColor_'] =  Object.keys(cachedResource.original).length === 0;
+                            cachedResource.resource['_arpTmpIsNewResPropForBgColor_'] =  Object.keys(cachedResource.original).length === 0;
                           }
-                          modifiedResources.push(res);
+                          modifiedResources.push(cachedResource.resource);
                         }
                       }
                     }
@@ -402,11 +402,11 @@ define([
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
-                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{} });
+                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource });
                         if (parentFolder) {
                           const parentFolderId = parentFolder['@id'];
                           if (!vm.previewCache.has(parentFolderId)) {
-                            vm.previewCache.set(parentFolderId, { changed: true });
+                            vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
                           }
                         }
                       } else {
@@ -420,11 +420,11 @@ define([
                               if (isEqual) {
                                 vm.previewCache.set(resource['@id'], { changed: false });
                               } else {
-                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys });
+                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys, resource: resource });
                                 if (parentFolder) {
                                   const parentFolderId = parentFolder['@id'];
                                   if (!vm.previewCache.has(parentFolderId)) {
-                                    vm.previewCache.set(parentFolderId, { changed: true});
+                                    vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder});
                                   }
                                 }
                               }
