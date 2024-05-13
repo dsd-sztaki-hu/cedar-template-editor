@@ -83,6 +83,15 @@
 
         </div>
         <div class="modal-footer actions">
+          <div class="clear-save" style="cursor: pointer; font-size: 32px; padding-left: 5px;"
+               tooltip-append-to-body="true"
+               uib-tooltip={{arpmergepreview.updatedResourcesTooltip()}}
+               tooltip-trigger
+               tooltip-animation="true"
+               tooltip-placement="bottom"
+               ng-if="arpmergepreview.showUpdatedResourcesInfo()"
+               data-toggle="tooltip"><i class="fa fa-info-circle"></i>
+          </div>
           <div class="clear-save">
             <button ng-disabled="arpmergepreview.copyDisabled()" ng-click="arpmergepreview.recursiveMergeResource();dc.arpMergePreviewModalVisible=false;arpmergepreview.hideModal()"
                     type="button"

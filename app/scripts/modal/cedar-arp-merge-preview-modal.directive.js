@@ -55,6 +55,8 @@ define([
           vm.hideModal = hideModal;
           vm.breadcrumbName = breadcrumbName;
           vm.getTemplateParentDir = getTemplateParentDir;
+          vm.updatedResourcesTooltip = updatedResourcesTooltip;
+          vm.showUpdatedResourcesInfo = showUpdatedResourcesInfo;
           vm.selectedDestination = null;
           vm.currentDestination = null;
           vm.previewCache = new Map();
@@ -67,6 +69,7 @@ define([
           vm.totalCount = -1;
           vm.isCommunity = false;
           vm.parentFolderPath = null;
+          vm.updatedResources = [];
           $scope.destinationResources = [];
           $scope.checkAllCheckboxes = function() {
             // Check if all checkboxes are checked
@@ -399,7 +402,7 @@ define([
                         if (original) {
                           getResourceById(original['@id'], original['resourceType']).then(originalContent => {
                             const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
-                            compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent);
+                            compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent, originalContent);
                           });
                         } else {
                           vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource, mergeResource: updatedContent });
@@ -417,7 +420,7 @@ define([
                             .then(originalContent => {
                               const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
                               const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
-                              compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent);
+                              compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent, originalContent);
                             });
                       }
                     })
@@ -443,12 +446,13 @@ define([
             await Promise.all(promises);
           }
           
-          function compareAndCacheResource(originalResource, updatedResource, parentFolder, resource, mergeResource) {
+          function compareAndCacheResource(originalResource, updatedResource, parentFolder, resource, mergeResource, originalContent) {
             const isEqual = _.isEqual(originalResource, updatedResource);
             if (isEqual) {
               vm.previewCache.set(resource['@id'], { changed: false });
             } else {
               vm.previewCache.set(resource['@id'], { changed: true, original: originalResource, updated: updatedResource, resource: resource, mergeResource: mergeResource });
+              checkLastUpdatedDates(originalContent, mergeResource);
               if (parentFolder) {
                 const parentFolderId = parentFolder['@id'];
                 if (!vm.previewCache.has(parentFolderId)) {
@@ -456,6 +460,27 @@ define([
                 }
               }
             }
+          }
+          
+          function checkLastUpdatedDates(originalResource, updatedResource) {
+            const originalLastUpdatedDate = originalResource['pav:lastUpdatedOn'];
+            const updatedLastUpdatedDate = updatedResource['pav:lastUpdatedOn'];
+            if (originalLastUpdatedDate && updatedLastUpdatedDate) {
+              const originalDate = new Date(originalLastUpdatedDate);
+              const updatedDate = new Date(updatedLastUpdatedDate);
+              if (originalDate.getTime() > updatedDate.getTime()) {
+                vm.updatedResources.push(originalResource['schema:name']);
+              }
+            }
+          }
+          
+          function showUpdatedResourcesInfo() {
+            return vm.updatedResources.length > 0 && $scope.destinationResources &&  $scope.destinationResources.length > 0;
+          }
+          
+          function updatedResourcesTooltip() {
+            const translatedText = $translate.instant('ARP.recursiveMerge.originalUpdated');
+            return  translatedText + '\n' + JSON.stringify(vm.updatedResources);
           }
           
 
