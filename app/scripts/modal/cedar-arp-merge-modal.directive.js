@@ -21,7 +21,8 @@ define([
           "$translate", 
           "schemaService", 
           "ValidationService", 
-          "CONST"
+          "CONST",
+          "arpService"
         ];
 
         function cedarArpMergeModalController($scope,
@@ -32,7 +33,8 @@ define([
                                            $translate,
                                            schemaService,
                                            ValidationService,
-                                           CONST) {
+                                           CONST,
+                                           arpService) {
             
           const vm = this;
 
@@ -59,63 +61,6 @@ define([
           function mergeResources() {
               saveMergedResource(vm.mergeResult);
           }
-
-          const find = (object, key, value) => {
-                if (!object || typeof object !== 'object') return;
-                if (object[key] === value) return object;
-                let result;
-                Object.values(object).some(o => result = find(o, key, value));
-                return result;
-          };
-
-          // prepare the resource for merge
-          // keep the original "pav:createdOn" values and the original "@id" values
-          function prepareResourceForMerge(resourceJson) {
-
-            if (Array.isArray(resourceJson)) {
-                return resourceJson.map(element => prepareResourceForMerge(element));
-            }
-
-            else if (resourceJson !== null && typeof resourceJson === 'object') {
-                // If the object has an "id" and "pav:derivedFrom" property, replace "id" with "pav:derivedFrom"
-                if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
-                    resourceJson['@id'] = resourceJson['pav:derivedFrom'];
-                    delete resourceJson['pav:derivedFrom'];
-                }
-                // If the object has a "pav:createdOn" property, replace "pav:createdOn" with the original "pav:createdOn"
-                if (resourceJson.hasOwnProperty('pav:createdOn') && typeof resourceJson['pav:createdOn'] === 'string') {
-                    const originalObject = find(vm.mergeResource.before, '@id', resourceJson['@id']);
-                    if (originalObject) {
-                        resourceJson['pav:createdOn'] = originalObject['pav:createdOn'];
-                    }
-                }
-
-                // If the object has a "pav:createdBy" property, replace "pav:createdBy" with the original "pav:createdBy"
-                if (resourceJson.hasOwnProperty('pav:createdBy') && typeof resourceJson['pav:createdBy'] === 'string') {
-                    const originalObject = find(vm.mergeResource.before, '@id', resourceJson['@id']);
-                    if (originalObject) {
-                        resourceJson['pav:createdBy'] = originalObject['pav:createdBy'];
-                    }
-                }
-
-                // If the object has a "schema:identifier" property, replace "schema:identifier" with the original "schema:identifier"
-                if (resourceJson.hasOwnProperty('schema:identifier') && typeof resourceJson['schema:identifier'] === 'string') {
-                    const originalObject = find(vm.mergeResource.before, '@id', resourceJson['@id']);
-                    if (originalObject) {
-                        resourceJson['schema:identifier'] = originalObject['schema:identifier'];
-                    }
-                }
-                
-                const values = Object.values(resourceJson);
-                values.forEach(value => {
-                    if (typeof value === 'object') {
-                        return prepareResourceForMerge(value);
-                    }
-                });
-            }
-
-            return resourceJson;
-          }
           
           function postTemplates(templates) {
             const iframe = document.getElementById('iframeId');
@@ -135,7 +80,7 @@ define([
             vm.modalVisible = false;
           }
           
-          function saveMergedResource(mergedTemplate) {
+          function saveMergedResource(mergedResource) {
               const doUpdate = function (response) {
                   ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
 
@@ -143,34 +88,24 @@ define([
                       {"resourceType": vm.mergeResourceType, "title": schemaService.getTitle(vm.mergeResult)}, 'ARP.GENERIC.Merged');
               };
               
-              // If maxItems is N, then remove maxItems
-              schemaService.removeUnnecessaryMaxItems(mergedTemplate);
-              schemaService.defaultSchemaTitleAndDescription(mergedTemplate);
-
-              const id = mergedTemplate['@id'];
-              dms.updateKeys(mergedTemplate);
-              const copiedForm = jQuery.extend(true, {}, mergedTemplate);
-              if (copiedForm) {
-                  // strip the temps from the copied form only, and save the copy
-                  dms.stripTmps(copiedForm);
-                  
-                  let mergePromise;
-                  if (vm.mergeResourceType === CONST.resourceType.TEMPLATE) {
-                    mergePromise = TemplateService.updateTemplate(id, copiedForm);
-                  } else if (vm.mergeResourceType === CONST.resourceType.ELEMENT) {
-                    mergePromise = TemplateElementService.updateTemplateElement(id, copiedForm);
-                  }
-                  
-                  AuthorizedBackendService.doCall(
-                      mergePromise,
-                      function (response) {
-                          doUpdate(response);
-                      },
-                      function (err) {
-                          UIMessageService.showBackendError('ARP.merge.error', err);
-                      }
-                  );
+              const finalizedResource = arpService.finalizeResourceForMerge(mergedResource);
+              const id = mergedResource['@id'];
+              let mergePromise;
+              if (vm.mergeResourceType === CONST.resourceType.TEMPLATE) {
+                mergePromise = TemplateService.updateTemplate(id, finalizedResource);
+              } else if (vm.mergeResourceType === CONST.resourceType.ELEMENT) {
+                mergePromise = TemplateElementService.updateTemplateElement(id, finalizedResource);
               }
+              
+              AuthorizedBackendService.doCall(
+                  mergePromise,
+                  function (response) {
+                      doUpdate(response);
+                  },
+                  function (err) {
+                      UIMessageService.showBackendError('ARP.merge.error', err);
+                  }
+              );
           }
 
           // modal open or closed
@@ -215,7 +150,7 @@ define([
                         // and then post the templates to the iframe
                         // create a copy of the updated resource
                         const updatedResourceCopy = JSON.parse(JSON.stringify(updatedResource));
-                        vm.mergeResult = prepareResourceForMerge(updatedResourceCopy);
+                        vm.mergeResult = arpService.prepareResourceForMerge(vm.mergeResource.before, updatedResourceCopy);
                         postTemplates({
                             'before': originalResource,
                             'after': vm.mergeResult

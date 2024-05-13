@@ -24,13 +24,14 @@ define([
           'UISettingsService',
           'CONST',
           'AuthorizedBackendService',
-          'schemaService'
+          'schemaService',
+          'arpService'
         ];
 
         function cedarArpMergePreviewModalController($scope, $rootScope, $uibModal, CedarUser, $timeout, $translate,
                                           resourceService,
                                           UIMessageService,UISettingsService,
-                                          CONST, AuthorizedBackendService, schemaService) {
+                                          CONST, AuthorizedBackendService, schemaService, arpService) {
           var vm = this;
           
           vm.openHome = openHome;
@@ -44,8 +45,7 @@ define([
           vm.selectDestination = selectDestination;
           vm.isDestinationSelected = isDestinationSelected;
           vm.copyDisabled = copyDisabled;
-          vm.updateResource = updateResource;
-          vm.recursiveCopyResource = recursiveCopyResource;
+          vm.recursiveMergeResource = recursiveMergeResource;
           vm.openDestination = openDestination;
           vm.getResourceIconClass = getResourceIconClass;
           vm.loadMore = loadMore;
@@ -140,103 +140,103 @@ define([
             return result;
           }
 
-          function updateResource() {
+          function recursiveMergeResource() {
+            if (vm.arpMergePreviewResource) {
+              const resource = vm.arpMergePreviewResource;
+              const originalFolderId = resource['_arpOriginalFolderId_'];
+              const resourcesToMerge = [];
 
-            if (vm.selectedDestination) {
-              const folderId = vm.selectedDestination['@id'];
-
-              if (vm.arpCopyResource) {
-                const resource = vm.arpCopyResource;
-                let newTitle = resource['schema:name'];
-                const sameFolder = vm.currentFolderId === folderId;
-                if (sameFolder) {
-                  newTitle = $translate.instant('GENERIC.CopyOfTitle', {"title": resource['schema:name']});
-                }
-
-                resourceService.copyResource(
-                    resource,
-                    folderId,
-                    newTitle,
-                    function (response) {
-
-                      UIMessageService.flashSuccess('SERVER.RESOURCE.copyToResource.success', {"title": resource['schema:name']},
-                          'GENERIC.Copied');
-
-                      if (sameFolder) {
-                        refresh();
+              resourceService.getResources({
+                    folderId         : vm.currentFolderId,
+                    resourceTypes    : activeResourceTypes(),
+                    sort             : sortField(),
+                    limit            : UISettingsService.getRequestLimit(),
+                    offset           : vm.offset,
+                  },
+                  function (response) {
+                    const arrayResponse = Array.isArray(response.resources) ? response.resources : [response.resources];
+                    arrayResponse.forEach(res => {
+                      const cachedResource = vm.previewCache.get(res['@id']);
+                      if (cachedResource && cachedResource['changed'] === true) {
+                        resourcesToMerge.push(cachedResource);
                       }
-
-                    },
-                    function (response) {
-                      UIMessageService.showBackendError('SERVER.RESOURCE.copyToResource.error', response);
-                    }
-                );
-              }
-            }
-          }
-          
-          function recursiveCopyResource(resource) {
-            if (vm.selectedDestination) {
-              const newParentFolderId = vm.selectedDestination['@id'];
-              if (vm.arpCopyResource) {
-                const resource = vm.arpCopyResource;
-                let newFolderName = resource['schema:name'];
-                const sameFolder = vm.currentFolderId === newParentFolderId;
-                if (sameFolder) {
-                  newFolderName = $translate.instant('ARP.GENERIC.CopyOfTitle', {"title": resource['schema:name']});
-                }
-                resourceService.createFolder(
-                    newParentFolderId,
-                    newFolderName,
-                    resource['schema:description'],
-                    function (response) {
-                      const newFolderId = response['@id'];
-                      copyRecursively(resource, newFolderId);
-                      refresh();
-                    },
-                    function (error) {
-                      UIMessageService.showBackendError('ARP.copy.error', error);
-                    }
-                );
-              }
-            }
-          }
-
-          function copyRecursively(resource, newFolderId) {
-            getFolderContentsByFolderId(resource['@id'])
-                .then(response => {
-                  const responseArray = Array.isArray(response) ? response : [response];
-                  responseArray.forEach(resource => {
-                    if (resource['resourceType'] === CONST.resourceType.FOLDER) {
-                      resourceService.createFolder(
-                          newFolderId,
-                          resource['schema:name'],
-                          resource['schema:description'],
-                          function (response) {
-                            const newFolderId = response['@id'];
-                            copyRecursively(resource, newFolderId);
-                          },
-                          function (error) {
-                            UIMessageService.showBackendError('SERVER.FOLDER.create.error', error);
-                          }
-                      );
-                    } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD].includes(resource['resourceType'])) {
-                      resourceService.copyResource(
-                          resource,
-                          newFolderId,
-                          resource['schema:name'],
-                          function (response) {
-                          },
-                          function (error) {
-                            UIMessageService.showBackendError('SERVER.RESOURCE.copyToResource.error', error);
-                          }
-                      );
-                    }
+                    });
+                    mergeRecursively(resourcesToMerge, originalFolderId);
+                    refresh();
+                  },
+                  function (error) {
+                    UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
                   });
-                })
-                .catch(error => {
-                  UIMessageService.showBackendError('ARP.copy.error', error);
+            }
+          }
+
+
+          function mergeRecursively(resources, arpOriginalFolderId) {
+            resources.forEach(resource => {
+              // mergeResource is the JSON content of the resource to merge, which is either a template or an element
+              if (resource.hasOwnProperty('mergeResource')) {
+                const derivedFromId = resource.mergeResource.hasOwnProperty('pav:derivedFrom') ? resource.mergeResource['pav:derivedFrom'] : null;
+                const mergeResource = arpService.doMergeResource(resource.mergeResource, resource.original);
+                if (derivedFromId) {
+                  let mergePromise;
+                  if (getContentType(mergeResource) === CONST.resourceType.TEMPLATE) {
+                    mergePromise = TemplateService.updateTemplate(derivedFromId, mergeResource);
+                  } else if (getContentType(mergeResource) === CONST.resourceType.ELEMENT) {
+                    mergePromise = TemplateElementService.updateTemplateElement(derivedFromId, mergeResource);
+                  }
+                  AuthorizedBackendService.doCall(
+                      mergePromise,
+                      function (response) {},
+                      function (error) {
+                        UIMessageService.showBackendError('ARP.recursiveMerge.error', error);
+                      }
+                  );
+                } else {
+                  resourceService.copyResource(
+                      mergeResource,
+                      arpOriginalFolderId,
+                      mergeResource['schema:name'],
+                      function (response) {},
+                      function (error) {
+                        UIMessageService.showBackendError('ARP.recursiveMerge.copyError', error);
+                      }
+                  );
+                }
+              } else {
+                // if the resource is a folder, there is no mergeResource, we need the folders name and id only
+                const folderResource = resource.resource;
+                const folderName = folderResource['schema:name'];
+                getFolderContentsByFolderId(arpOriginalFolderId).then(response => {
+                  const alreadyPresentFolder = response.find(res => res['schema:name'] === folderName);
+                  let newParentFolderId;
+                  if (!alreadyPresentFolder) {
+                    resourceService.createFolder(
+                        arpOriginalFolderId,
+                        folderResource['schema:name'],
+                        folderResource['schema:description'],
+                        function (response) {
+                          newParentFolderId = response['@id'];
+                          },
+                        function (error) {
+                          UIMessageService.showBackendError('ARP.recursiveMerge.createFolderError', error);
+                        }
+                    );
+                  } else {
+                    newParentFolderId = alreadyPresentFolder['@id'];
+                  }
+                  getFolderContentsByFolderId(folderResource['@id']).then(response => {
+                    const resourcesToMerge = [];
+                    response.forEach(res => {
+                      const cachedResource = vm.previewCache.get(res['@id']);
+                      if (cachedResource['changed'] === true) {
+                        resourcesToMerge.push(cachedResource);
+                      }
+                    });
+                    mergeRecursively(resourcesToMerge, newParentFolderId);
+                  });
                 });
+              }
+            });
           }
 
           function getFolderContentsByFolderId(folderId) {
@@ -249,27 +249,17 @@ define([
                     resourceTypes    : resourceTypes,
                     sort             : sortField(),
                     limit            : limit,
-                    offset           : offset,
-                    version          : getFilterVersion(),
-                    publicationStatus: getFilterStatus()
+                    offset           : offset
                   },
                   function (response) {
-                    resolve(response.resources); // Resolve the promise with the response data
+                    resolve(Array.isArray(response.resources) ? response.resources : [response.resources]); 
                   },
                   function (error) {
-                    reject(error); // Reject the promise with the error
+                    reject(error);
                     UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
                   });
             });
           }
-
-          function getFilterVersion() {
-            return CedarUser.getVersion();
-          };
-
-          function getFilterStatus() {
-            return CedarUser.getStatus();
-          };
 
           function refresh() {
             $scope.$broadcast('refreshWorkspace', [vm.arpCopyResource]);
@@ -389,7 +379,7 @@ define([
           
           async function collectModifiedResources(resources, parentFolder) {
             const promises = [];
-            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id', 'pav:createdBy', 'schema:identifier'];
+            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id', 'pav:createdBy', 'schema:identifier', '_arpTmpIsNewResPropForBgColor_', '_arpOriginalFolderId_'];
 
             for (const resource of resources) {
               const updatedResourceId = resource['@id'];
@@ -402,7 +392,7 @@ define([
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
-                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource });
+                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource, mergeResource: updatedContent });
                         if (parentFolder) {
                           const parentFolderId = parentFolder['@id'];
                           if (!vm.previewCache.has(parentFolderId)) {
@@ -420,7 +410,7 @@ define([
                               if (isEqual) {
                                 vm.previewCache.set(resource['@id'], { changed: false });
                               } else {
-                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys, resource: resource });
+                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys, resource: resource, mergeResource: updatedContent });
                                 if (parentFolder) {
                                   const parentFolderId = parentFolder['@id'];
                                   if (!vm.previewCache.has(parentFolderId)) {
@@ -634,10 +624,11 @@ define([
             document.getElementById('arpMergePreviewModalContent').scrollTop = 0;
             vm.modalVisible = false;
             $rootScope.arpMergeModalVisible = false;
-            vm.previewCache.clear();
           }
 
           $scope.$on('arpMergePreviewModalVisible', async function (event, params) {
+            vm.previewCache.clear();
+            refresh();
             const resource = params[0];
             const currentFolderId = params[1];
             const sortOptionField = params[2];
