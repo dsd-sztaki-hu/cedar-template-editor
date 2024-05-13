@@ -360,24 +360,27 @@ define([
             }
           }
 
-          function setPreviewCache(folderId) {
+          function setPreviewCache(folderId, arpOriginalFolderId) {
             return new Promise((resolve, reject) => {
-              resourceService.getResources(
-                  {folderId: folderId, resourceTypes: activeResourceTypes(), sort: sortField(), limit: UISettingsService.getRequestLimit(), offset: vm.offset},
-                  function (response) {
-                    collectModifiedResources(response.resources)
-                        .then(() => resolve())
-                        .catch(error => reject(error));
-                  },
-                  function (error) {
-                    UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
-                    reject(error);
-                  }
-              );
+              getFolderContentsByFolderId(arpOriginalFolderId).then(originalFolderResources => {
+                const arpOriginalFolderResources = Array.isArray(originalFolderResources) ? originalFolderResources : [originalFolderResources];
+                resourceService.getResources(
+                    {folderId: folderId, resourceTypes: activeResourceTypes(), sort: sortField(), limit: UISettingsService.getRequestLimit(), offset: vm.offset},
+                    function (response) {
+                      collectModifiedResources(response.resources, null, arpOriginalFolderResources)
+                          .then(() => resolve())
+                          .catch(error => reject(error));
+                    },
+                    function (error) {
+                      UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
+                      reject(error);
+                    }
+                );
+              });
             });
           }
           
-          async function collectModifiedResources(resources, parentFolder) {
+          async function collectModifiedResources(resources, parentFolder, arpOriginalFolderResources) {
             const promises = [];
             const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id', 'pav:createdBy', 'schema:identifier', '_arpTmpIsNewResPropForBgColor_', '_arpOriginalFolderId_'];
 
@@ -392,11 +395,19 @@ define([
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
-                        vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource, mergeResource: updatedContent });
-                        if (parentFolder) {
-                          const parentFolderId = parentFolder['@id'];
-                          if (!vm.previewCache.has(parentFolderId)) {
-                            vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
+                        const original = arpOriginalFolderResources ? arpOriginalFolderResources.find(res => res['schema:name'] === updatedContent['schema:name']) : null;
+                        if (original) {
+                          getResourceById(original['@id'], original['resourceType']).then(originalContent => {
+                            const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
+                            compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent);
+                          });
+                        } else {
+                          vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource, mergeResource: updatedContent });
+                          if (parentFolder) {
+                            const parentFolderId = parentFolder['@id'];
+                            if (!vm.previewCache.has(parentFolderId)) {
+                              vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder });
+                            }
                           }
                         }
                       } else {
@@ -406,18 +417,7 @@ define([
                             .then(originalContent => {
                               const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
                               const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
-                              const isEqual = _.isEqual(originalExcludedKeys, updatedExcludedKeys);
-                              if (isEqual) {
-                                vm.previewCache.set(resource['@id'], { changed: false });
-                              } else {
-                                vm.previewCache.set(resource['@id'], { changed: true, original: originalExcludedKeys, updated: updatedExcludedKeys, resource: resource, mergeResource: updatedContent });
-                                if (parentFolder) {
-                                  const parentFolderId = parentFolder['@id'];
-                                  if (!vm.previewCache.has(parentFolderId)) {
-                                    vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder});
-                                  }
-                                }
-                              }
+                              compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent);
                             });
                       }
                     })
@@ -428,12 +428,36 @@ define([
 
               } else if (CONST.resourceType.FOLDER === updatedResourceType) {
                 const folderContents = await getFolderContentsByFolderId(resource['@id']);
-                promises.push(collectModifiedResources(folderContents, resource));
+                if (arpOriginalFolderResources) {
+                  const originalFolderId = arpOriginalFolderResources.find(folder => folder['schema:name'] === resource['schema:name']);
+                  if (originalFolderId) {
+                    const originalFolderContents = await getFolderContentsByFolderId(originalFolderId['@id']);
+                    promises.push(collectModifiedResources(folderContents, resource, originalFolderContents));
+                  }
+                } else {
+                  promises.push(collectModifiedResources(folderContents, resource, null));
+                }
               }
             }
 
             await Promise.all(promises);
           }
+          
+          function compareAndCacheResource(originalResource, updatedResource, parentFolder, resource, mergeResource) {
+            const isEqual = _.isEqual(originalResource, updatedResource);
+            if (isEqual) {
+              vm.previewCache.set(resource['@id'], { changed: false });
+            } else {
+              vm.previewCache.set(resource['@id'], { changed: true, original: originalResource, updated: updatedResource, resource: resource, mergeResource: mergeResource });
+              if (parentFolder) {
+                const parentFolderId = parentFolder['@id'];
+                if (!vm.previewCache.has(parentFolderId)) {
+                  vm.previewCache.set(parentFolderId, { changed: true, resource: parentFolder});
+                }
+              }
+            }
+          }
+          
 
           function omitDeep(obj, keysToExclude) {
             if (_.isArray(obj)) {
@@ -644,7 +668,7 @@ define([
               
               $timeout(async function() {
                 try {
-                  await setPreviewCache(vm.currentFolderId);
+                  await setPreviewCache(vm.currentFolderId, vm.arpMergePreviewResource['_arpOriginalFolderId_']);
                   getDestinationById(vm.currentFolderId);
                 } catch (error) {
                   UIMessageService.showBackendError('ARP.merge.preview.error', error);
