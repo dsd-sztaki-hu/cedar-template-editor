@@ -54,13 +54,11 @@ define([
                         resourceJson['pav:createdBy'] = originalObject['pav:createdBy'];
                     }
                 }
-
-                // If the object has a "schema:identifier" property, replace "schema:identifier" with the original "schema:identifier"
-                if (resourceJson.hasOwnProperty('schema:identifier') && typeof resourceJson['schema:identifier'] === 'string') {
-                    const originalObject = find(originalResourceJson, '@id', resourceJson['@id']);
-                    if (originalObject) {
-                        resourceJson['schema:identifier'] = originalObject['schema:identifier'];
-                    }
+            
+                // Always keep the original "schema:identifier"
+                const originalObject = find(originalResourceJson, '@id', resourceJson['@id']);
+                if (originalObject) {
+                    resourceJson['schema:identifier'] = originalObject['schema:identifier'];
                 }
                 
                 // remove temporary properties
