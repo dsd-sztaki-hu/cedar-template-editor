@@ -808,7 +808,7 @@
     "ERROR": {
       "templateExportTitle": "Template export error details",
       "templateExport": "<pre><b>Unprocessable elements</b>: {{unprocessableElements}}</br><b>Invalid names</b>: {{invalidNames}}<br/><b>Incompatible pairs</b>: {{incompatiblePairs}}<br/></pre>",
-      "unavailable": "ARP Service is unavailable"
+      "unavailable": "The ARP Dataverse service is unavailable"
     },
     "CREATOR": {
       "enterPrefLabelHun": "Enter Preferred Hungarian Label",
