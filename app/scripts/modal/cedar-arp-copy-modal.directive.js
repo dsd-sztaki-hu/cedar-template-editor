@@ -159,7 +159,12 @@ define([
                     function (response) {
                       const newFolderId = response['@id'];
                       copyRecursively(resource, newFolderId, arpCopyResource['@id']);
-                      refresh();
+                      UIMessageService.flashSuccess('ARP.copy.success', {"title": resource['schema:name']},
+                          'ARP.copy.copied');
+
+                      if (sameFolder) {
+                        refresh();
+                      }
                     },
                     function (error) {
                       UIMessageService.showBackendError('ARP.copy.error', error);
