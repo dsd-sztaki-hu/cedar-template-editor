@@ -53,7 +53,7 @@
             <div class="col-sm-1 " ng-click="arpmergepreview.selectDestination(resource)"><i style="color:#9e9e9e;font-size:20px;padding-right:5px"
                                                                                     class="fa" ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
             </div>
-            <a class="contents-folder-title col-sm-9" ng-click="arpmergepreview.selectDestination(resource)">{{resource['schema:name']}}</a>
+            <a class="contents-folder-title col-sm-9" ng-dblclick="arpmergepreview.openDestination(resource)">{{resource['schema:name']}}</a>
             <div class="col-sm-1 arrow-click"
                  ng-click="arpmergepreview.openDestination(resource)"
                  uib-tooltip="{{'HELP.openFolder' | translate}}"
@@ -73,7 +73,17 @@
                                                                                                        class="fa"
                                                                                                        ng-class="arpmergepreview.getResourceIconClass(resource)"></i>
             </div>
-            <div class="contents-resource-title col-sm-10" ng-click="arpmergepreview.selectDestination(resource)" ng-dblclick="arpmergepreview.openPreview(resource)"  ng-class="{'arpModifiedResource': !arpmergepreview.isNewResource(resource), 'arpNewResource': arpmergepreview.isNewResource(resource)}">{{resource['schema:name']}}
+            <div class="contents-resource-title col-sm-9" ng-click="arpmergepreview.selectDestination(resource)" ng-dblclick="arpmergepreview.openPreview(resource)"  ng-class="{'arpModifiedResource': !arpmergepreview.isNewResource(resource), 'arpNewResource': arpmergepreview.isNewResource(resource)}">{{resource['schema:name']}}
+            </div>
+            <div class="col-sm-1" 
+                 ng-click="arpmergepreview.openPreview(resource)"
+                 uib-tooltip="{{'ARP.recursiveMerge.showJsonDiff' | translate}}"
+                 tooltip-trigger
+                 tooltip-animation="false"
+                 tooltip-placement="left"
+                 data-toggle="tooltip"
+            >
+              <i style="width: 18px; height: 18px;" class="fa fa-exchange"></i>
             </div>
             <div class="col-sm-1">
               <input style="width: 18px; height: 18px;" type="checkbox" ng-model="resource.checked">

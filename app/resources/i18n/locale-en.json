@@ -803,7 +803,8 @@
       "error": "There was an error during recursive merging the resources!<br /><br />VIEW TECHNICAL DETAILS!",
       "copyError": "There was an error copying the resource during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
       "createFolderError": "There was an error creating the folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
-      "originalUpdated": "The following resources have been updated later than the version of the resource being merged with:"
+      "originalUpdated": "The following resources have been updated later than the version of the resource being merged with:",
+      "showJsonDiff": "Show JSON Diff"
     },
     "ERROR": {
       "templateExportTitle": "Template export error details",
