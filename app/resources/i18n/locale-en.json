@@ -799,7 +799,7 @@
       }
     },
     "recursiveMerge": {
-      "success": "The {{resourceType}} <b>{{title}}</b> has been merged with the updated version of the {{resourceType}}.",
+      "success": "<b>{{title}}</b> has been merged into its published version.",
       "error": "There was an error during recursive merging the resources!<br /><br />VIEW TECHNICAL DETAILS!",
       "copyError": "There was an error copying the resource during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
       "createFolderError": "There was an error creating the folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",

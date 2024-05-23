@@ -165,6 +165,8 @@ define([
                       }
                     });
                     mergeRecursively(resourcesToMerge, originalFolderId);
+                    UIMessageService.flashSuccess('ARP.recursiveMerge.success', {"title": resource['schema:name']},
+                        'ARP.GENERIC.Merged');
                     refresh();
                   },
                   function (error) {
