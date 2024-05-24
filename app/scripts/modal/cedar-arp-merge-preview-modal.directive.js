@@ -317,7 +317,7 @@ define([
           }
 
           function copyDisabled() {
-            return vm.selectedDestination == null;
+            return vm.selectedDestination == null || $scope.destinationResources.length === 0;
           }
 
           function isDestinationSelected(resource) {
