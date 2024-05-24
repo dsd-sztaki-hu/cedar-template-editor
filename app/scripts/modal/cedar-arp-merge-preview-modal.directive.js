@@ -71,19 +71,6 @@ define([
           vm.parentFolderPath = null;
           vm.updatedResources = [];
           $scope.destinationResources = [];
-          $scope.checkAllCheckboxes = function() {
-            // Check if all checkboxes are checked
-            let allChecked = $scope.destinationResources.every(function(resource) {
-              return resource.checked;
-            });
-
-            if (allChecked) {
-              console.log('All checkboxes are checked');
-              // Do something when all checkboxes are checked
-            } else {
-              console.log('Not all checkboxes are checked');
-            }
-          };
 
           vm.linkFolder = function (node) {
             return node['activeUserCanRead']
@@ -340,6 +327,9 @@ define([
                           if (cachedResource.original) {
                             cachedResource.resource['_arpTmpIsNewResPropForBgColor_'] =  Object.keys(cachedResource.original).length === 0;
                           }
+                          if (res['resourceType'] === CONST.resourceType.FOLDER) {
+                            cachedResource.resource.checked = isFolderChecked(res);
+                          }
                           modifiedResources.push(cachedResource.resource);
                         }
                       }
@@ -399,6 +389,7 @@ define([
                 const promise = getResourceById(updatedResourceId, updatedResourceType)
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
+                        const parentFolderId = parentFolder ? parentFolder['@id'] : null;
                         const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
                         const original = arpOriginalFolderResources ? arpOriginalFolderResources.find(res => res['schema:name'] === updatedContent['schema:name']) : null;
                         if (original) {
@@ -407,7 +398,7 @@ define([
                             compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent, originalContent);
                           });
                         } else {
-                          vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource, mergeResource: updatedContent });
+                          vm.previewCache.set(resource['@id'], { changed: true, updated: updatedExcludedKeys, original:{}, resource: resource, mergeResource: updatedContent, parentFolderId: parentFolderId });
                           if (parentFolder) {
                             const parentFolderId = parentFolder['@id'];
                             if (!vm.previewCache.has(parentFolderId)) {
@@ -450,10 +441,11 @@ define([
           
           function compareAndCacheResource(originalResource, updatedResource, parentFolder, resource, mergeResource, originalContent) {
             const isEqual = _.isEqual(originalResource, updatedResource);
+            const parentFolderId = parentFolder ? parentFolder['@id'] : null;
             if (isEqual) {
               vm.previewCache.set(resource['@id'], { changed: false });
             } else {
-              vm.previewCache.set(resource['@id'], { changed: true, original: originalResource, updated: updatedResource, resource: resource, mergeResource: mergeResource });
+              vm.previewCache.set(resource['@id'], { changed: true, original: originalResource, updated: updatedResource, resource: resource, mergeResource: mergeResource, parentFolderId: parentFolderId });
               checkLastUpdatedDates(originalContent, mergeResource);
               if (parentFolder) {
                 const parentFolderId = parentFolder['@id'];
@@ -669,6 +661,22 @@ define([
             const previewResource = vm.previewCache.get(resource['@id'])
             $rootScope.arpMergeModalVisible = true;
             $rootScope.$broadcast('arpMergeModalVisible', [{'original': previewResource.original, 'updated': previewResource.updated}, 'template']);
+            resource.checked = true;
+            previewResource.checked = true;
+          }
+          
+          function isFolderChecked(resource) {
+            let result = false;
+            if (resource) {
+              const childResources = [];
+              for (let [key, value] of vm.previewCache) {
+                if (value.parentFolderId === resource['@id']) {
+                  childResources.push(value);
+                }
+              }
+              result = childResources.every(res => res.checked === true);
+            }
+            return result;
           }
           
           function hideModal() {
