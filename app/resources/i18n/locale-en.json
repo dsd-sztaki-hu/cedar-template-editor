@@ -804,7 +804,10 @@
       "copyError": "There was an error copying the resource during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
       "createFolderError": "There was an error creating the folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
       "originalUpdated": "The following resources have been updated later than the version of the resource being merged with:",
-      "showJsonDiff": "Show JSON Diff"
+      "showJsonDiff": "Show JSON Diff",
+      "confirmTextKey": "Yes, ARP Merge",
+      "alertTextKey": "This operation is irreversible.",
+      "alertTextKeyNotAllChecked": "You have not checked all the resources that are going to be merged. Do you really want to proceed?"
     },
     "ERROR": {
       "templateExportTitle": "Template export error details",

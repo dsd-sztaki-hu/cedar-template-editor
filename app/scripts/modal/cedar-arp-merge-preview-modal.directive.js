@@ -45,7 +45,7 @@ define([
           vm.selectDestination = selectDestination;
           vm.isDestinationSelected = isDestinationSelected;
           vm.copyDisabled = copyDisabled;
-          vm.recursiveMergeResource = recursiveMergeResource;
+          vm.confirmRecursiveMerge = confirmRecursiveMerge;
           vm.openDestination = openDestination;
           vm.getResourceIconClass = getResourceIconClass;
           vm.loadMore = loadMore;
@@ -161,7 +161,43 @@ define([
                   });
             }
           }
-
+          
+          function everyResourceChecked() {
+            let result = true;
+            for (let [key, value] of vm.previewCache) {
+              if (value.hasOwnProperty('changed') && value['changed'] === true) {
+                result = result && (value.checked === true);
+              }
+            }
+            return result;
+          }
+          
+          function confirmRecursiveMerge() {
+            const resourcesChecked = everyResourceChecked();
+            if (resourcesChecked) {
+              UIMessageService.confirmedExecution(
+                  function () {
+                    $timeout(function () {
+                      recursiveMergeResource();
+                    });
+                  },
+                  'GENERIC.AreYouSure',
+                  'ARP.recursiveMerge.alertTextKey',
+                  'ARP.recursiveMerge.confirmTextKey'
+              );
+            } else {
+              UIMessageService.confirmedExecution(
+                  function () {
+                    $timeout(function () {
+                      recursiveMergeResource();
+                    });
+                  },
+                  'GENERIC.AreYouSure',
+                  'ARP.recursiveMerge.alertTextKeyNotAllChecked',
+                  'ARP.recursiveMerge.confirmTextKey'
+              );
+            }
+          }
 
           function mergeRecursively(resources, arpOriginalFolderId) {
             resources.forEach(resource => {
@@ -328,7 +364,9 @@ define([
                             cachedResource.resource['_arpTmpIsNewResPropForBgColor_'] =  Object.keys(cachedResource.original).length === 0;
                           }
                           if (res['resourceType'] === CONST.resourceType.FOLDER) {
-                            cachedResource.resource.checked = isFolderChecked(res);
+                            const folderChecked = isFolderChecked(cachedResource.resource);
+                            cachedResource.checked = folderChecked;
+                            cachedResource.resource.checked = folderChecked;
                           }
                           modifiedResources.push(cachedResource.resource);
                         }
@@ -670,7 +708,7 @@ define([
             if (resource) {
               const childResources = [];
               for (let [key, value] of vm.previewCache) {
-                if (value.parentFolderId === resource['@id']) {
+                if (value.changed === true && value.parentFolderId === resource['@id']) {
                   childResources.push(value);
                 }
               }
