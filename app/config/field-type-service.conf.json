@@ -149,7 +149,7 @@
     "allowedInElement": true,
     "primaryField": false,
     "hasControlledTerms": false,
-    "staticField": true,
+    "staticField": false,
     "allowsMultiple": true,
     "allowsValueRecommendation": false,
     "hasInstanceTerm": false,

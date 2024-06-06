@@ -13,7 +13,8 @@ define([
                                           "DataManipulationService", "schemaService", "ValidationService",
                                           "controlledTermDataService", "StringUtilsService",
                                           "DataUtilService", "AuthorizedBackendService",
-                                          "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser"];
+                                          "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", 
+                                          "TemplateElementService"];
 
       function CreateTemplateController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
                                         TrackingService, HeaderService, StagingService, DataTemplateService,
@@ -21,7 +22,8 @@ define([
                                         UIUtilService, DataManipulationService, schemaService, ValidationService,
                                         controlledTermDataService, StringUtilsService,
                                         DataUtilService, AuthorizedBackendService,
-                                        FrontendUrlService, QueryParamUtilsService, CONST, CedarUser) {
+                                        FrontendUrlService, QueryParamUtilsService, CONST, CedarUser, 
+                                        TemplateElementService) {
 
         $rootScope.showSearch = false;
 
@@ -192,15 +194,33 @@ define([
         $scope.addField = function (fieldType) {
           populateCreatingFieldOrElement();
           if (dontHaveCreatingFieldOrElement()) {
-            var domId = DataManipulationService.createDomId();
-            StagingService.addFieldToForm($scope.form, fieldType, false, domId, function (el) {
-              // now we are sure that the element was successfully added
-              UIUtilService.scrollToDomId(domId);
-              $scope.toggleMore();
-              UIUtilService.setDirty(true);
-              ValidationService.checkValidation($scope.form);
-
-            });
+            const domId = DataManipulationService.createDomId();
+            if (fieldType === 'file') {
+              AuthorizedBackendService.doCall(
+                  TemplateElementService.getArpFileElement(),
+                  function (response) {
+                    const fileElement = response.data;
+                    DataManipulationService.createDomIds(fileElement);
+                    StagingService.addElementToForm($scope.form, fileElement["@id"], domId, function (e) {
+                      // now we are sure that the element was successfully added, scroll to it and hide its nested contents
+                      UIUtilService.scrollToDomId(domId);
+                      UIUtilService.setDirty(true);
+                      ValidationService.checkValidation($scope.form);
+                      $rootScope.$broadcast("form:update", fileElement);
+                    });
+                  }, function (err) {
+                    UIMessageService.showBackendError('ARP.FILE_ELEMENT.load.error', err);
+                  }
+              )
+            } else {
+              StagingService.addFieldToForm($scope.form, fieldType, false, domId, function (el) {
+                // now we are sure that the element was successfully added
+                UIUtilService.scrollToDomId(domId);
+                $scope.toggleMore();
+                UIUtilService.setDirty(true);
+                ValidationService.checkValidation($scope.form);
+              });
+            }
           }
         };
 
@@ -212,7 +232,7 @@ define([
         $scope.getTitle = function (node) {
           return DataManipulationService.getTitle(node);
         };
-
+        
         $scope.addElementToTemplate = function (element) {
           populateCreatingFieldOrElement();
           if (dontHaveCreatingFieldOrElement()) {

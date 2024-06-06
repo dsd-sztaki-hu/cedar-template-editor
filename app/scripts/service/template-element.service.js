@@ -33,6 +33,10 @@ define([
     service.canArpMergeTemplateElement = function () {
       return CedarUser.getRoles().includes("userAdministrator");
     }
+    
+    service.getArpFileElement = function () {
+      return HttpBuilderService.get(UrlService.getArpFileElement());
+    };
 
     return service;
 

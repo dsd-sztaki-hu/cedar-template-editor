@@ -846,6 +846,11 @@
       "success": "The resource '{{title}}' was ARP copied to the selected folder!",
       "error": "There was an error during ARP Copy!<br /><br />VIEW TECHNICAL DETAILS!",
       "originalFolderIdError": "There was an error during setting the parent folder id!<br /><br />VIEW TECHNICAL DETAILS!"
+    },
+    "FILE_ELEMENT": {
+      "load": {
+        "error": "There was an error while loading the ARP File Element!<br /><br />VIEW TECHNICAL DETAILS!"
+      }
     }
   }
 }

@@ -8,6 +8,7 @@
   "bioontologyRestAPI": "https://data.bioontology.org/",
   "submissionRestAPI": "submissionServerUrl",
   "messagingRestAPI": "messagingServerUrl",
+  "arpFileElementId": "CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID",
   "openViewBase": "openViewBaseUrl",
   "impexRestAPI": "impexServerUrl",
   "artifactsFrontend": "artifactsFrontendUrl",

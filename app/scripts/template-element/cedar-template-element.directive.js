@@ -446,7 +446,11 @@ define([
 
       scope.getIconClass = function () {
         //console.log("scope.parentElement", scope.parentElement)
-        return 'fa fa-cubes';
+        if (scope.element["schema:identifier"] && scope.element["schema:identifier"] === "dataverseFile") {
+          return "fa fa-file-o";
+        } else {
+          return 'fa fa-cubes';
+        }
       };
 
 

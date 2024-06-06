@@ -22,6 +22,7 @@ define([
     let impexService = null;
     let arpService = null;
     let arpDvCollection = null;
+    let arpFileElementId = null;
     const paging = function (page, size, defaultPage, defaultSize, pageString, sizeString) {
       const p = page > 0 ? page : defaultPage;
       const s = size > 0 ? size : defaultSize;
@@ -44,6 +45,7 @@ define([
       impexService = config.impexRestAPI;
       arpService = config.arpAPI;
       arpDvCollection = config.arpDvCollection;
+      arpFileElementId = config.arpFileElementId;
     };
 
     //TODO: now the dataverse collection is stored in the conf, add option to modify it
@@ -78,6 +80,10 @@ define([
 
     service.getTemplateElement = function (id) {
       return this.templateElements() + '/' + this.encodeURIComponent(id);
+    };
+    
+    service.getArpFileElement = function () {
+      return this.templateElements() + '/' + this.encodeURIComponent(arpFileElementId);
     };
 
     service.postTemplateElement = function (folderId) {
