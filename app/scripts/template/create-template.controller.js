@@ -195,9 +195,9 @@ define([
           populateCreatingFieldOrElement();
           if (dontHaveCreatingFieldOrElement()) {
             const domId = DataManipulationService.createDomId();
-            if (fieldType === 'file') {
+            if (fieldType === 'file' || fieldType === 'dataset') {
               AuthorizedBackendService.doCall(
-                  TemplateElementService.getArpFileElement(),
+                  fieldType === 'file' ? TemplateElementService.getArpFileElement() : TemplateElementService.getArpDatasetElement(),
                   function (response) {
                     const fileElement = response.data;
                     DataManipulationService.createDomIds(fileElement);
@@ -209,7 +209,7 @@ define([
                       $rootScope.$broadcast("form:update", fileElement);
                     });
                   }, function (err) {
-                    UIMessageService.showBackendError('ARP.FILE_ELEMENT.load.error', err);
+                    UIMessageService.showBackendError(fieldType === 'file' ? 'ARP.FILE_ELEMENT.load.error' : 'ARP.DATASET_ELEMENT.load.error', err);
                   }
               )
             } else {

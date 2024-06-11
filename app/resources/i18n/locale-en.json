@@ -54,6 +54,9 @@
       },
       "file": {
         "NAME": "File"
+      },
+      "dataset": {
+        "NAME": "Dataset"
       }
     }
   },
@@ -850,6 +853,11 @@
     "FILE_ELEMENT": {
       "load": {
         "error": "There was an error while loading the ARP File Element!<br /><br />VIEW TECHNICAL DETAILS!"
+      }
+    },
+    "DATASET_ELEMENT": {
+      "load": {
+        "error": "There was an error while loading the ARP Dataset Element!<br /><br />VIEW TECHNICAL DETAILS!"
       }
     }
   }

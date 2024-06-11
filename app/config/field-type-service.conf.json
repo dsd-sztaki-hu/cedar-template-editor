@@ -154,5 +154,18 @@
     "allowsValueRecommendation": false,
     "hasInstanceTerm": false,
     "allowsRequired": true
+  },
+  {
+    "cedarType": "dataset",
+    "iconClass": "fa fa-database",
+    "label": "Dataset",
+    "allowedInElement": true,
+    "primaryField": false,
+    "hasControlledTerms": false,
+    "staticField": false,
+    "allowsMultiple": true,
+    "allowsValueRecommendation": false,
+    "hasInstanceTerm": false,
+    "allowsRequired": true
   }
 ]

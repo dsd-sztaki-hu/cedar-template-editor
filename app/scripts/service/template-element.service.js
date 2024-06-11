@@ -38,6 +38,10 @@ define([
       return HttpBuilderService.get(UrlService.getArpFileElement());
     };
 
+    service.getArpDatasetElement = function () {
+      return HttpBuilderService.get(UrlService.getArpDatasetElement());
+    };
+
     return service;
 
   }

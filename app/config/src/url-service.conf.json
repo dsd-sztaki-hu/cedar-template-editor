@@ -9,6 +9,7 @@
   "submissionRestAPI": "submissionServerUrl",
   "messagingRestAPI": "messagingServerUrl",
   "arpFileElementId": "CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID",
+  "arpDatasetElementId": "CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID",
   "openViewBase": "openViewBaseUrl",
   "impexRestAPI": "impexServerUrl",
   "artifactsFrontend": "artifactsFrontendUrl",

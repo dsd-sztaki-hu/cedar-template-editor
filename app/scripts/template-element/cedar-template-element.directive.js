@@ -448,6 +448,8 @@ define([
         //console.log("scope.parentElement", scope.parentElement)
         if (scope.element["schema:identifier"] && scope.element["schema:identifier"] === "dataverseFile") {
           return "fa fa-file-o";
+        } else if (scope.element["schema:identifier"] && scope.element["schema:identifier"] === "dataverseDataset") {
+          return "fa fa-database";
         } else {
           return 'fa fa-cubes';
         }

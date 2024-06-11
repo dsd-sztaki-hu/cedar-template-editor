@@ -23,6 +23,7 @@ define([
     let arpService = null;
     let arpDvCollection = null;
     let arpFileElementId = null;
+    let arpDatasetElementId = null;
     const paging = function (page, size, defaultPage, defaultSize, pageString, sizeString) {
       const p = page > 0 ? page : defaultPage;
       const s = size > 0 ? size : defaultSize;
@@ -46,6 +47,7 @@ define([
       arpService = config.arpAPI;
       arpDvCollection = config.arpDvCollection;
       arpFileElementId = config.arpFileElementId;
+      arpDatasetElementId = config.arpDatasetElementId;
     };
 
     //TODO: now the dataverse collection is stored in the conf, add option to modify it
@@ -84,6 +86,10 @@ define([
     
     service.getArpFileElement = function () {
       return this.templateElements() + '/' + this.encodeURIComponent(arpFileElementId);
+    };
+
+    service.getArpDatasetElement = function () {
+      return this.templateElements() + '/' + this.encodeURIComponent(arpDatasetElementId);
     };
 
     service.postTemplateElement = function (folderId) {
