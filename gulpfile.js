@@ -99,6 +99,8 @@ gulp.task('replace-url', function (done) {
       .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
       .pipe(replace('CEDAR_FRONTEND_ARP_API_URL', CEDAR_FRONTEND_ARP_API_URL))
       .pipe(replace('CEDAR_FRONTEND_ARP_DV_COLLECTION', CEDAR_FRONTEND_ARP_DV_COLLECTION))
+      .pipe(replace('CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID', CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID))
+      .pipe(replace('CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID', CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -410,7 +412,9 @@ let envConfig = {
   'CEDAR_VERSION_MODIFIER'    : null,
   'CEDAR_DATACITE_ENABLED'    : null,
   'CEDAR_FRONTEND_ARP_API_URL': null,
-  'CEDAR_FRONTEND_ARP_DV_COLLECTION': null
+  'CEDAR_FRONTEND_ARP_DV_COLLECTION': null,
+  'CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID': null,
+  'CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID': null
 };
 console.log();
 console.log();
@@ -459,8 +463,12 @@ var cedarTestUser2Password = envConfig[cedarUser2PasswordVarName];
 
 var CEDAR_FRONTEND_ARP_API_URL = envConfig['CEDAR_FRONTEND_ARP_API_URL'];
 var CEDAR_FRONTEND_ARP_DV_COLLECTION = envConfig['CEDAR_FRONTEND_ARP_DV_COLLECTION'];
+var CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID = envConfig['CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID'];
+var CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID = envConfig['CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID'];
 console.log("CEDAR_FRONTEND_ARP_API_URL", CEDAR_FRONTEND_ARP_API_URL)
 console.log("CEDAR_FRONTEND_ARP_DV_COLLECTION", CEDAR_FRONTEND_ARP_DV_COLLECTION)
+console.log("CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID", CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID)
+console.log("CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID", CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID)
 
 console.log(
     "-------------------------------------------- ************* --------------------------------------------".red);
