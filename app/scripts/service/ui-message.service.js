@@ -238,12 +238,12 @@ define([
 
     service.showArpError = function (messageKey, response) {
       toasty.error({
-        title  : $translate.instant('ARP.ERROR.templateExportTitle'),
+        title  : $translate.instant('ARP.templateError.templateExportTitle'),
         msg    : $translate.instant(messageKey),
         onClick: function () {
-          let content
+          let content = ''
           if (response.data == null) {
-            content = '<pre>' + $translate.instant('ARP.ERROR.unavailable') + '</pre>'
+            content = '<pre>' + $translate.instant('ARP.templateError.unavailable') + '</pre>'
           } else if (response.data.message) {
             let resp = response.data.message
             let incompPairs = ''
@@ -255,17 +255,26 @@ define([
                 }
                 incompPairs = incompPairs.concat(key, values)
               }
+              content = $translate.instant('ARP.templateError.incompatiblePairs', {incompatiblePairs: incompPairs});
             }
-            content = $translate.instant('ARP.ERROR.templateExport', {
-              unprocessableElements: resp.unprocessableElements ? '\n\t' + resp.unprocessableElements.join('\n\t') : 'N/A',
-              invalidNames: resp.invalidNames ? '\n\t' + resp.invalidNames.join('\n\t') : 'N/A',
-              incompatiblePairs: incompPairs ? '\n\t' + incompPairs : 'N/A'
-            })
+
+            if (resp.invalidNames) {
+              content = content.concat($translate.instant('ARP.templateError.invalidNames', {invalidNames: '\n\t' + resp.invalidNames.join('\n\t')}));
+            }
+            
+            if (resp.unprocessableElements) {
+              content = content.concat($translate.instant('ARP.templateError.unprocessableElements', {unprocessableElements: '\n\t' + resp.unprocessableElements.join('\n\t')}));
+            }
+            
+            if (resp.errors) {
+              content = content.concat($translate.instant('ARP.templateError.otherErrors', {errors: '\n\t' + resp.errors.join('\n\t')}));
+            }
+            content = '<pre>' + content + '</pre>'
           } else {
             content = '<pre>' + response.data + '</pre>'
           }
           swal({
-            title:   $translate.instant('ARP.ERROR.templateExportTitle'),
+            title:   $translate.instant('ARP.templateError.templateExportTitle'),
             customClass: "arpErrorDetails",
             text:   content,
             type:   "error",

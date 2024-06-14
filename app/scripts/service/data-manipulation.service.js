@@ -1038,9 +1038,8 @@ define([
             const schema = service.schemaOf(parent);
             for (let prop in props) {
               if (service.getId(props[prop]) === id) {
-                const randomPropertyName = service.generateGUID();
                 if (schema.properties['@context'].properties[prop]) {
-                  schema.properties['@context'].properties[prop]['enum'][0] = service.getEnumOf(randomPropertyName);
+                  schema.properties['@context'].properties[prop]['enum'][0] = "";
                   break;
                 }
               }
@@ -1517,7 +1516,9 @@ define([
 
         service.generateFieldContextProperties = function (fieldName) {
           let c = {};
-          c.enum = new Array(service.getEnumOf(fieldName));
+          // c.enum = new Array(service.getEnumOf(fieldName));
+          // do not generate initial value, we only allow uris to be set
+          c.enum = [""];
           return c;
         };
 
@@ -1700,9 +1701,7 @@ define([
                 if (p["@context"] && p["@context"].properties) {
                   service.renameKeyOfObject(p["@context"].properties, key, newKey);
                   if (p["@context"].properties[newKey] && p["@context"].properties[newKey].enum) {
-                    var propertyId = service.generateGUID();
-                    p["@context"].properties[newKey].enum[0] = service.getPropertyOf(propertyId,
-                        p["@context"].properties[newKey].enum[0]);
+                    p["@context"].properties[newKey].enum[0] = "";
                   }
                 }
                 if (p["@context"].required) {
