@@ -812,9 +812,12 @@
       "alertTextKey": "This operation is irreversible.",
       "alertTextKeyNotAllChecked": "You have not checked all the resources that are going to be merged. Do you really want to proceed?"
     },
-    "ERROR": {
+    "templateError": {
       "templateExportTitle": "Template export error details",
-      "templateExport": "<pre><b>Unprocessable elements</b>: {{unprocessableElements}}</br><b>Invalid names</b>: {{invalidNames}}<br/><b>Incompatible pairs</b>: {{incompatiblePairs}}<br/></pre>",
+      "incompatiblePairs": "<b>Incompatible pairs</b>: {{incompatiblePairs}}<br/>",
+      "unprocessableElements": "<b>Unprocessable elements</b>: {{unprocessableElements}}<br/>",
+      "invalidNames": "<b>Invalid names</b>: {{invalidNames}}<br/>",
+      "otherErrors": "<b>Other errors</b>: {{errors}}<br/>",
       "unavailable": "The ARP Dataverse service is unavailable"
     },
     "CREATOR": {
