@@ -1209,6 +1209,7 @@ define([
           'termType'       : null,
           'term'           : null,
           "advanced"       : false,
+          'propertyId'     : $scope.getPropertyId(),
           "permission"     : ["read", "write"]
         };
         UIUtilService.showModal(options);

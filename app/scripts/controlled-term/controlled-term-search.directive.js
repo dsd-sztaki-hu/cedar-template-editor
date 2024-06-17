@@ -478,6 +478,8 @@ define([
             reset(false, false, false, false, true);
             vm.action = 'create';
             vm.searchScope = mode;
+            // always show the propertyUri
+            vm.propertyUri = vm.propertyId;
           }
 
           function switchToSearch(mode) {
@@ -617,6 +619,7 @@ define([
             // tell parent to update the property for this field
             $rootScope.$broadcast("cedar.templateEditor.controlledTerm.propertyCreated",
                 [vm.propertyUri, vm.propertyLabel, vm.propertyDescription]);
+            vm.propertyId = vm.propertyUri;
           }
         }
 
@@ -636,7 +639,8 @@ define([
             isCreatingVs         : '=',
             treeVisible          : '=',
             modalId              : '=',
-            searchScope          : '='
+            searchScope          : '=',
+            propertyId           : '='
           },
           controller      : controlledTermSearchDirectiveController,
           controllerAs    : 'tsc',

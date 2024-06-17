@@ -558,6 +558,7 @@ define([
       vm.selectedOntologies = [];
       vm.searchScope = vm.options.searchScope;
       vm.treeVisible = false;
+      vm.propertyId = vm.options.propertyId;
       var scrollTop = jQuery('#' + vm.modalId + ' .modal-body').scrollTop();
       jQuery('#' + vm.modalId + ' .modal-body').animate({scrollTop: 0}, 'fast');
 

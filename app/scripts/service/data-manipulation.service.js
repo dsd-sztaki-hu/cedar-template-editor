@@ -1739,8 +1739,8 @@ define([
           if (fieldProp) {
             // set the property as the field title and description
             const field = service.schemaOf(props[fieldProp]);
-            const title = service.getTitle(field);
-            const label = title === "Untitled" ? propertyLabel : title;
+            const propertyName = service.getPropertyLabels(parent)[fieldProp];
+            const label = propertyName === "Untitled" && propertyLabel !== "" ? propertyLabel : propertyName;
             const description = service.getDescription(field) || propertyDescription;
 
             // title and description
