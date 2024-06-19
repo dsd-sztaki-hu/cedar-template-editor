@@ -487,6 +487,10 @@ define([
             vm.action = 'search';
             vm.searchScope = mode;
           }
+          
+          $scope.$on('arpUpdatePropertyId', function (event, args) {
+            vm.propertyUri = args[0];
+          });
 
           function switchToCreateValue() {
             vm.isCreatingValue = true;
