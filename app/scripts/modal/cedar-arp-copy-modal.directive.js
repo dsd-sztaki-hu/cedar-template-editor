@@ -198,7 +198,7 @@ define([
                           newFolderId,
                           resource['schema:name'],
                           function (response) {
-                            saveOriginalFolderId(response, arpOriginalFolderId);
+                            saveDataFromOriginal(response, arpOriginalFolderId, resource["schema:identifier"]);
                           },
                           function (error) {
                             UIMessageService.showBackendError('SERVER.RESOURCE.copyToResource.error', error);
@@ -212,13 +212,14 @@ define([
                 });
           }
           
-          function saveOriginalFolderId(resource, originalFolderId) {
+          function saveDataFromOriginal(resource, originalFolderId, originalIdentifier) {
 
             const doUpdate = function (response) {
               ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
             };
             
             resource['_arpOriginalFolderId_'] = originalFolderId;
+            resource['schema:identifier'] = originalIdentifier;
             let mergePromise;
             const resourceType = getContentType(resource);
             if (resourceType === CONST.resourceType.TEMPLATE) {
