@@ -399,12 +399,13 @@ define([
                   await arpMergeResource();
                   $location.url(FrontendUrlService.getFolderContents(vm.originalFolderId));
                   $rootScope.$apply();
+                  $rootScope.$broadcast('arpMergeLoadingDone');
+                  UIMessageService.flashSuccess('ARP.merge.success', {},'ARP.GENERIC.Merged');
                 },
                 'GENERIC.AreYouSure',
                 resourcesChecked ? 'ARP.recursiveMerge.alertTextKey' : 'ARP.recursiveMerge.alertTextKeyNotAllChecked',
                 'ARP.recursiveMerge.confirmTextKey'
             );
-            $rootScope.$broadcast('arpMergeLoadingDone');
           }
 
           // @deprecated, use arpMergeResource() instead
