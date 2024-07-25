@@ -25,14 +25,15 @@ define([
           'TemplateService',
           'TemplateElementService',
           'AuthorizedBackendService',
-          'ValidationService'
+          'ValidationService',
+          'arpService'
         ];
 
         function cedarArpCopyModalController($scope, $uibModal, CedarUser, $timeout, $translate,
                                           resourceService,
                                           UIMessageService,UISettingsService,
                                           CONST, TemplateService, TemplateElementService, AuthorizedBackendService,
-                                             ValidationService) {
+                                             ValidationService, arpService) {
           var vm = this;
 
           // copy to...
@@ -198,7 +199,7 @@ define([
                           newFolderId,
                           resource['schema:name'],
                           function (response) {
-                            saveDataFromOriginal(response, arpOriginalFolderId, resource["schema:identifier"]);
+                            arpService.saveDataFromOriginal(response, arpOriginalFolderId, resource['schema:identifier'], resource['pav:version']);
                           },
                           function (error) {
                             UIMessageService.showBackendError('SERVER.RESOURCE.copyToResource.error', error);
@@ -210,43 +211,6 @@ define([
                 .catch(error => {
                   UIMessageService.showBackendError('ARP.copy.error', error);
                 });
-          }
-          
-          function saveDataFromOriginal(resource, originalFolderId, originalIdentifier) {
-
-            const doUpdate = function (response) {
-              ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
-            };
-            
-            resource['_arpOriginalFolderId_'] = originalFolderId;
-            resource['schema:identifier'] = originalIdentifier;
-            let mergePromise;
-            const resourceType = getContentType(resource);
-            if (resourceType === CONST.resourceType.TEMPLATE) {
-              mergePromise = TemplateService.updateTemplate(resource['@id'], resource);
-            } else if (resourceType === CONST.resourceType.ELEMENT) {
-              mergePromise = TemplateElementService.updateTemplateElement(resource['@id'], resource);
-            }
-
-            AuthorizedBackendService.doCall(
-                mergePromise,
-                function (response) {doUpdate(response)},
-                function (err) {
-                  UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
-                }
-            );
-          }
-
-          function getContentType(content) {
-            const typeStr = content['@type'];
-            const lastIndex = typeStr.lastIndexOf('/');
-            const contentType = typeStr.substring(lastIndex + 1);
-            switch (contentType) {
-              case 'TemplateElement':
-                return CONST.resourceType.ELEMENT;
-              case 'Template':
-                return CONST.resourceType.TEMPLATE;
-            }
           }
 
           function getFolderContentsByFolderId(folderId) {

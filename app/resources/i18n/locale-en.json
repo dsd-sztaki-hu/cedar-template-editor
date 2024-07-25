@@ -711,7 +711,7 @@
   "EDITOR": {
     "TOOLBAR": {
       "searchForMore": "Search for fields and elements",
-      "mergeTemplates" : "Merge with a chosen template"
+      "mergeTemplates" : "Merge with the published version"
     },
     "selectTimezone": "Select Timezone",
     "enterDecimalSeconds": "Enter Decimal Seconds",
@@ -799,6 +799,58 @@
       "error": "There was an error while merging the templates!<br /><br />VIEW TECHNICAL DETAILS!",
       "preview": {
         "error": "There was an error while previewing the merged template!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "moveFolderContents": {
+        "success": "The folder contents have been moved.",
+        "error": "There was an error while moving the folder contents!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "copyFolderContents": {
+        "success": "The folder contents have been copied.",
+        "error": "There was an error while copying the folder contents!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "getFolderContents": {
+        "success": "The folder contents have been loaded.",
+        "error": "There was an error while loading the folder contents!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "deleteFolder": {
+        "success": "The folder has been deleted.",
+        "error": "There was an error while deleting the folder!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "publishNewVersion": {
+        "success": "The resource has been published.",
+        "error": "There was an error while publishing the resource!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "getFolderContentsByFolderId": {
+        "success": "The folder contents have been loaded.",
+        "error": "There was an error while loading the folder contents!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "createVersionsFolder": {
+        "success": "The Versions folder has been created.",
+        "error": "There was an error while creating the Versions folder!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "setPermissions": {
+        "success": "The permissions have been set.",
+        "error": "There was an error while setting the permissions!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "findEverybodyGroup": {
+        "success": "The Everybody group has been found.",
+        "error": "There was an error while finding the Everybody group!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "getPublicPathInfo": {
+        "success": "The public path info has been loaded.",
+        "error": "There was an error while loading the public path info!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "findFolderByName": {
+        "success": "The folder has been found.",
+        "error": "There was an error while finding the folder!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "setPreviewCache": {
+        "success": "The preview cache has been set.",
+        "error": "There was an error while setting the preview cache!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "collectModifiedResources": {
+        "success": "The modified resources have been collected.",
+        "error": "There was an error while collecting the modified resources!<br /><br />VIEW TECHNICAL DETAILS!"
       }
     },
     "recursiveMerge": {
@@ -810,7 +862,11 @@
       "showJsonDiff": "Show JSON Diff",
       "confirmTextKey": "Yes, ARP Merge",
       "alertTextKey": "This operation is irreversible.",
-      "alertTextKeyNotAllChecked": "You have not checked all the resources that are going to be merged. Do you really want to proceed?"
+      "alertTextKeyNotAllChecked": "You have not checked all the resources that are going to be merged. Do you really want to proceed?",
+      "initVersionsFolderError": "There was an error creating the Versions folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
+      "buildVersionFolderForResourceError": "There was an error creating the Versions folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!",
+      "findEverybodyGroupError": "There was an error finding the share group during recursive merging!<br /><br />ARP MERGE OPERATION CANCELLED!",
+      "setPermissionsError": "There was an error setting the permissions for the Versions folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!"
     },
     "templateError": {
       "templateExportTitle": "Template export error details",

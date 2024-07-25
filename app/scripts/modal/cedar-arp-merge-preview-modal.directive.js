@@ -25,13 +25,18 @@ define([
           'CONST',
           'AuthorizedBackendService',
           'schemaService',
-          'arpService'
+          'arpService',
+          'UrlService',
+          'HttpBuilderService',
+          '$location',
+          'FrontendUrlService'
         ];
 
         function cedarArpMergePreviewModalController($scope, $rootScope, $uibModal, CedarUser, $timeout, $translate,
                                           resourceService,
                                           UIMessageService,UISettingsService,
-                                          CONST, AuthorizedBackendService, schemaService, arpService) {
+                                          CONST, AuthorizedBackendService, schemaService, arpService, UrlService, 
+                                          HttpBuilderService, $location, FrontendUrlService) {
           var vm = this;
           
           vm.openHome = openHome;
@@ -57,6 +62,11 @@ define([
           vm.getTemplateParentDir = getTemplateParentDir;
           vm.updatedResourcesTooltip = updatedResourcesTooltip;
           vm.showUpdatedResourcesInfo = showUpdatedResourcesInfo;
+          vm.canIncrement = canIncrement;
+          vm.canDecrement = canDecrement;
+          vm.increment = increment;
+          vm.decrement = decrement;
+          vm.change = change;
           vm.selectedDestination = null;
           vm.currentDestination = null;
           vm.previewCache = new Map();
@@ -70,6 +80,13 @@ define([
           vm.isCommunity = false;
           vm.parentFolderPath = null;
           vm.updatedResources = [];
+          vm.parts = null;
+          vm.min = null;
+          vm.homeFolderId = null;
+          vm.versionsFolderId = null;
+          vm.everybodyGroupId = null;
+          vm.dataverseFolderId = null;
+          vm.originalFolderId = null;
           $scope.destinationResources = [];
 
           vm.linkFolder = function (node) {
@@ -129,7 +146,268 @@ define([
             }
             return result;
           }
+          
+          async function arpMergeResource() {
+            if (vm.arpMergePreviewResource) {
+              $rootScope.$broadcast('arpMergeLoading');
+              await initVersionsFolder();
+              const resource = vm.arpMergePreviewResource;
+              vm.originalFolderId = resource['_arpOriginalFolderId_'];
+              const folderNames = await getPublicPathInfo(vm.originalFolderId);
+              const currentVersion = getVersion(resource);
+              const parts = currentVersion.split(".");
+              folderNames.push(parts[0] + '.' + parts[1] + '.' + parts[2]);
+              const versionFolderId = await buildVersionFolderForResource(folderNames, vm.versionsFolderId);
+              await moveFolderContents(vm.originalFolderId, versionFolderId);
+              await copyFolderContents(vm.currentFolderId, vm.originalFolderId);
+              await finalizedNewVersion(vm.originalFolderId);
+              await deleteFolder(vm.currentFolderId);
+            }
+          }
+          
+          function moveFolderContents(folderId, destinationFolderId) {
+            return new Promise((resolve, reject) => {
+              resourceService.getResources({
+                    folderId: folderId,
+                    resourceTypes: [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE],
+                  },
+                  async function(response) {
+                    const arrayResponse = Array.isArray(response.resources) ? response.resources : [response.resources];
 
+                    try {
+                      const movePromises = arrayResponse.map(res => {
+                        return new Promise((moveResolve, moveReject) => {
+                          resourceService.moveResource(res, destinationFolderId,
+                              function(response) {
+                                moveResolve(response);
+                              },
+                              function(error) {
+                                moveReject(error);
+                              });
+                        });
+                      });
+
+                      await Promise.all(movePromises);
+                      resolve();
+                    } catch (error) {
+                      reject(error);
+                    }
+                  },
+                  function(error) {
+                    reject(error);
+                    UIMessageService.showBackendError('ARP.merge.moveFolderContents.error', error);
+                  }
+              );
+            });
+          }
+
+          async function copyFolderContents(folderId, destinationFolderId) {
+            return new Promise((resolve, reject) => {
+              resourceService.getResources({
+                    folderId: folderId,
+                    resourceTypes: [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT],
+                  },
+                  async function(response) {
+                    const arrayResponse = Array.isArray(response.resources) ? response.resources : [response.resources];
+
+                    try {
+                      for (const res of arrayResponse) {
+                        if (res.resourceType === CONST.resourceType.FOLDER) {
+                          await new Promise((folderResolve, folderReject) => {
+                            resourceService.createFolder(
+                                destinationFolderId,
+                                res['schema:name'],
+                                res['schema:description'],
+                                async function(response) {
+                                  await copyFolderContents(res['@id'], response['@id']);
+                                  folderResolve();
+                                },
+                                function(error) {
+                                  UIMessageService.showBackendError('ARP.merge.copyFolderContents.error', error);
+                                  folderReject(error);
+                                }
+                            );
+                          });
+                        } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT].includes(res.resourceType)) {
+                          await new Promise((resourceResolve, resourceReject) => {
+                            resourceService.copyResource(
+                                res,
+                                destinationFolderId,
+                                res['schema:name'],
+                                function(response) {
+                                  delete response['pav:derivedFrom'];
+                                  arpService.saveDataFromOriginal(response, destinationFolderId, res['schema:identifier'], res['pav:version']);
+                                  resourceResolve();
+                                },
+                                function(error) {
+                                  UIMessageService.showBackendError('ARP.merge.copyFolderContents.error', error);
+                                  resourceReject(error);
+                                }
+                            );
+                          });
+                        }
+                      }
+                      resolve();
+                    } catch (error) {
+                      UIMessageService.showBackendError('ARP.merge.copyFolderContents.error', error);
+                      reject(error);
+                    }
+                  },
+                  function(error) {
+                    reject(error);
+                    UIMessageService.showBackendError('ARP.merge.copyFolderContents.error', error);
+                  });
+            });
+          }
+          
+          function finalizedNewVersion(folderId) {
+            return new Promise(async (resolve, reject) => {
+              const arrayResponse = await getFolderContents(folderId);
+              try {
+                // Process each resource sequentially
+                for (const res of arrayResponse) {
+                  if (res.resourceType === CONST.resourceType.FOLDER) {
+                    await finalizedNewVersion(res['@id']);
+                  } else {
+                    try {
+                      await publishNewVersion(res, vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2]);
+                    } catch (error) {
+                      // try again
+                      await publishNewVersion(res, vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2]);
+                    }
+                  }
+                }
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            });
+          }
+          
+          function getFolderContents(folderId) {
+            return new Promise((resolve, reject) => {
+              resourceService.getResources({
+                    folderId         : folderId,
+                    resourceTypes    : [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT]
+                  },
+                  function (response) {
+                    resolve(Array.isArray(response.resources) ? response.resources : [response.resources]); 
+                  },
+                  function (error) {
+                    UIMessageService.showBackendError('ARP.merge.getFolderContents.error', error);
+                    reject(error);
+                  });
+            });
+          }
+
+          async function deleteFolder(folderId) {
+            return new Promise(async (resolve, reject) => {
+              try {
+                const arrayResponse = await getFolderContents(folderId);
+
+                for (const res of arrayResponse) {
+                  if (res.resourceType === CONST.resourceType.FOLDER) {
+                    await deleteFolder(res['@id']);
+                  } else {
+                    await new Promise((resolve, reject) => {
+                      resourceService.deleteResource(res, function(response) {
+                        resolve(response);
+                      }, function(error) {
+                        UIMessageService.showBackendError('ARP.merge.deleteFolder.error', error);
+                        reject(error);
+                      });
+                    });
+                  }
+                }
+
+                await new Promise((resolve, reject) => {
+                  resourceService.deleteFolder(folderId, function(response) {
+                    resolve(response);
+                  }, function(error) {
+                    reject(error);
+                  });
+                });
+
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            });
+          }
+
+          async function publishNewVersion(resource, version) {
+            //TODO: try to fix this, but for now, it's a workaround for the following error:
+            // server-resource | org.metadatacenter.exception.CedarProcessingException: Failed to remove _doc _id:Jx4UxpABTEZUc03ilDWc from the cedar-search index
+            //await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const postData = {
+              '@id': resource['@id'],
+              'newVersion': version
+            };
+            const url = UrlService.publishResource();
+            await AuthorizedBackendService.doCall(
+                HttpBuilderService.post(url, postData),
+                function(response) {},
+                function(error) {
+                  UIMessageService.showBackendError('ARP.merge.publishNewVersion.error', error);
+                }
+            );
+          }
+
+          function buildVersionFolderForResource(folderNames, parentFolderId) {
+            return new Promise( (resolve, reject) => {
+              if (folderNames.length > 0) {
+                const folderName = folderNames.shift();
+                findFolderByName(folderName, parentFolderId).then(exists => {
+                  if (exists) {
+                    resolve(buildVersionFolderForResource(folderNames, exists['@id']));
+                  } else {
+                    resourceService.createFolder(
+                        parentFolderId,
+                        folderName,
+                        'description',
+                        function (response) {
+                          resolve(buildVersionFolderForResource(folderNames, response['@id']));
+                        },
+                        function (error) {
+                          reject(error);
+                          UIMessageService.showBackendError('ARP.recursiveMerge.buildVersionFolderForResourceError', error);
+                        }
+                    );
+                  }
+                });
+              } else {
+                resolve(parentFolderId);
+              }
+            });
+            }
+          
+          function everyResourceChecked() {
+            let result = true;
+            for (let [key, value] of vm.previewCache) {
+              if (value.hasOwnProperty('changed') && value['changed'] === true) {
+                result = result && (value.checked === true);
+              }
+            }
+            return result;
+          }
+
+          function confirmRecursiveMerge() {
+            const resourcesChecked = everyResourceChecked();
+            UIMessageService.confirmedExecution(
+                async function () {
+                  await arpMergeResource();
+                  $location.url(FrontendUrlService.getFolderContents(vm.originalFolderId));
+                  $rootScope.$apply();
+                },
+                'GENERIC.AreYouSure',
+                resourcesChecked ? 'ARP.recursiveMerge.alertTextKey' : 'ARP.recursiveMerge.alertTextKeyNotAllChecked',
+                'ARP.recursiveMerge.confirmTextKey'
+            );
+            $rootScope.$broadcast('arpMergeLoadingDone');
+          }
+
+          // @deprecated, use arpMergeResource() instead
           function recursiveMergeResource() {
             if (vm.arpMergePreviewResource) {
               const resource = vm.arpMergePreviewResource;
@@ -161,44 +439,8 @@ define([
                   });
             }
           }
-          
-          function everyResourceChecked() {
-            let result = true;
-            for (let [key, value] of vm.previewCache) {
-              if (value.hasOwnProperty('changed') && value['changed'] === true) {
-                result = result && (value.checked === true);
-              }
-            }
-            return result;
-          }
-          
-          function confirmRecursiveMerge() {
-            const resourcesChecked = everyResourceChecked();
-            if (resourcesChecked) {
-              UIMessageService.confirmedExecution(
-                  function () {
-                    $timeout(function () {
-                      recursiveMergeResource();
-                    });
-                  },
-                  'GENERIC.AreYouSure',
-                  'ARP.recursiveMerge.alertTextKey',
-                  'ARP.recursiveMerge.confirmTextKey'
-              );
-            } else {
-              UIMessageService.confirmedExecution(
-                  function () {
-                    $timeout(function () {
-                      recursiveMergeResource();
-                    });
-                  },
-                  'GENERIC.AreYouSure',
-                  'ARP.recursiveMerge.alertTextKeyNotAllChecked',
-                  'ARP.recursiveMerge.confirmTextKey'
-              );
-            }
-          }
 
+          // @deprecated
           function mergeRecursively(resources, arpOriginalFolderId) {
             resources.forEach(resource => {
               // mergeResource is the JSON content of the resource to merge, which is either a template or an element
@@ -284,7 +526,27 @@ define([
                   },
                   function (error) {
                     reject(error);
-                    UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
+                    UIMessageService.showBackendError('ARP.merge.getFolderContentsByFolderId.error', error);
+                  });
+            });
+          }
+          
+          function findFolderByName(folderName, parentFolderId) {
+            return new Promise((resolve, reject) => {
+              resourceService.getResources({
+                folderId         : parentFolderId,
+                resourceTypes    : [CONST.resourceType.FOLDER],
+              },
+                  function (response) {
+                    const resources = response.resources;
+                    resolve(Array.isArray(resources) ?
+                        resources.find(res => res['schema:name'] === folderName) :
+                        resources['schema:name'] === folderName ? resources : null
+                    );
+              },
+                  function (error) {
+                    reject(error);
+                    UIMessageService.showBackendError('ARP.merge.findFolderByName.error', error);
                   });
             });
           }
@@ -405,7 +667,7 @@ define([
                           .catch(error => reject(error));
                     },
                     function (error) {
-                      UIMessageService.showBackendError('SERVER.FOLDER.load.error', error);
+                      UIMessageService.showBackendError('ARP.merge.setPreviewCache.error', error);
                       reject(error);
                     }
                 );
@@ -415,7 +677,10 @@ define([
           
           async function collectModifiedResources(resources, parentFolder, arpOriginalFolderResources) {
             const promises = [];
-            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', '@id', 'pav:createdBy', 'schema:identifier', '_arpTmpIsNewResPropForBgColor_', '_arpOriginalFolderId_'];
+            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', 
+              '@id', 'pav:createdBy', 'schema:identifier', '_arpTmpIsNewResPropForBgColor_', '_arpOriginalFolderId_',
+              'oslc:modifiedBy', 'oslc:updatedBy', 'bibo:status'
+            ];
 
             for (const resource of resources) {
               const updatedResourceId = resource['@id'];
@@ -565,7 +830,6 @@ define([
                     resolve(response.data);
                   },
                   function (err) {
-                    console.log('err', err);
                     const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
                     reject(err);
                     UIMessageService.acknowledgedExecution(
@@ -701,6 +965,25 @@ define([
             $rootScope.$broadcast('arpMergeModalVisible', [{'original': previewResource.original, 'updated': previewResource.updated}, 'template']);
             resource.checked = true;
             previewResource.checked = true;
+            vm.previewCache.get(resource['@id']).checked = true;
+            isParentFolderChecked(resource);
+          }
+          
+          function isParentFolderChecked(resource) {
+            if (resource) {
+              let allChildResourcesChecked = true;
+              const parentFolderId = vm.previewCache.get(resource['@id']).parentFolderId;
+              const childResources = [];
+              for (let [key, value] of vm.previewCache) {
+                if (value.changed === true && value.hasOwnProperty('parentFolderId') && value.parentFolderId === parentFolderId) {
+                  childResources.push(value);
+                }
+              }
+              allChildResourcesChecked = childResources.length > 0 && childResources.every(res => res.checked === true);
+              if (parentFolderId && allChildResourcesChecked) {
+                vm.previewCache.get(parentFolderId).checked = true;
+              }
+            }
           }
           
           function isFolderChecked(resource) {
@@ -722,6 +1005,202 @@ define([
             vm.modalVisible = false;
             $rootScope.arpMergeModalVisible = false;
           }
+          
+          async function initVersionsFolder() {
+            const versionsFolder = await findFolderByName('Versions', vm.homeFolderId);
+            await findEverybodyGroup();
+            if (versionsFolder) {
+              vm.versionsFolderId = versionsFolder['@id'];
+              await setSharedWithEverybody(vm.versionsFolderId);
+            } else {
+                await createVersionsFolder();
+            }
+          }
+
+
+          async function createVersionsFolder() {
+            return new Promise((resolve, reject) => {
+              resourceService.createFolder(
+                  vm.homeFolderId,
+                  'Versions',
+                  'description',
+                  function (response) {
+                    vm.versionsFolderId = response['@id'];
+                    resolve(setSharedWithEverybody(vm.versionsFolderId));
+                  },
+                  function (error) {
+                    reject(error);
+                    UIMessageService.showBackendError('ARP.merge.createVersionsFolder.error', error);
+                  }
+              );
+            });
+          }
+          
+          async function setSharedWithEverybody(id) {
+            const url = UrlService.folderPermission(id);
+            AuthorizedBackendService.doCall(
+                HttpBuilderService.get(url),
+                function (response) {
+                  const isSharedWithEverybody = response.data.groupPermissions.find(groupPermission => 
+                      groupPermission.group['@id'] === vm.everybodyGroupId && groupPermission.permission === 'read');
+                  if (!isSharedWithEverybody) {
+                    const owner = response.data.owner;
+                    const permissions = {
+                      "owner": owner,
+                      "groupPermissions": [
+                        {
+                          "permission": "read",
+                          "group": {"@id": vm.everybodyGroupId}
+                        }
+                      ]
+                    };
+                    AuthorizedBackendService.doCall(
+                        HttpBuilderService.put(url, permissions),
+                        function (response) {
+                        },
+                        function (error) {
+                          UIMessageService.showBackendError('ARP.merge.setPermissions.error', error);
+                        });
+                  }
+                },
+                function (error) {
+                  UIMessageService.showBackendError('ARP.merge.setPermissions.error', error);
+                });
+          }
+
+          function findEverybodyGroup() {
+            return new Promise((resolve, reject) => {
+              const url = UrlService.getGroups();
+              AuthorizedBackendService.doCall(
+                  HttpBuilderService.get(url),
+                  function (response) {
+                    const group = response.data.groups.find(group => group['specialGroup'] === 'EVERYBODY');
+                    if (group) {
+                      vm.everybodyGroupId = group['@id'];
+                      resolve(group);
+                    } else {
+                      reject(null);
+                      UIMessageService.showBackendWarning($translate.instant('ARP.merge.findEverybodyGroup.error'), 'EVERYBODY group not found');
+                    }
+                  },
+                  function (error) {
+                    reject(error);
+                    UIMessageService.showBackendError('ARP.merge.findEverybodyGroup.error', error);
+                  }
+              );
+            });
+          }
+          
+          // Collects the path info of the folder and its parent folders inside the Public folder
+          function getPublicPathInfo(folderId) {
+            return new Promise((resolve, reject) => {
+              const originalPath = [];
+              let saveFolderName = false;
+              resourceService.getResources({
+                    folderId         : folderId,
+                    resourceTypes    : [CONST.resourceType.FOLDER],
+                  },
+                  function (response) {
+                    const pathInfo = response.pathInfo;
+                    for (const resource of pathInfo) {
+                      const folderName = resource['schema:name'];
+                      if (saveFolderName === false) {
+                        saveFolderName = folderName === 'Public';
+                      }
+                      if (saveFolderName === true) {
+                        originalPath.push(folderName);
+                        if (folderName === 'Dataverse') {
+                          vm.dataverseFolderId = resource['@id'];
+                        }
+                      }
+                    }
+                    // If the originalPath is empty, that means that the resource is not in the Public folder
+                    // This should not happen, but in this case return the parent folder's name
+                    if (originalPath.length === 0) {
+                      originalPath.push(pathInfo[pathInfo.length - 1]['schema:name']);
+                    }
+                    resolve(originalPath);
+                  },
+                  function (error) {
+                    reject(error);
+                    UIMessageService.showBackendError('ARP.merge.getPublicPathInfo.error', error);
+                  });
+            });
+          }
+          
+          //region Copied from cedar-publish-modal.directive.js
+          
+          function getVersion(resource) {
+            if (resource != null) {
+              return resource['pav:version'];
+            }
+          }
+
+          function canIncrement(index) {
+            return vm.parts && (vm.parts.length > index) && vm.parts[index] < 1000;
+          }
+
+          function getTotal(parts) {
+            if (parts.length === 3) {
+              return parts[0] * 1000000 + parts[1] * 1000 + parts[2];
+            }
+          }
+
+          function canDecrement(index) {
+            if (vm.parts && vm.parts.length > index && vm.parts[index] > 0) {
+              var value = vm.parts.slice();
+              value[index] = value[index] > 0 ? value[index] - 1 : 0;
+              return (getTotal(value) >= vm.min);
+            }
+          }
+
+          function increment(index) {
+            if (vm.parts && vm.parts.length > index) {
+              vm.parts[index] = vm.parts[index] < 1000 ? vm.parts[index] + 1 : vm.parts[index];
+              for (var i=index+1; i<vm.parts.length; i++) {
+                vm.parts[i] = 0;
+              }
+            }
+          }
+
+          function decrement(index) {
+            if (vm.parts && vm.parts.length > index) {
+              vm.parts[index] = vm.parts[index] > 0 ? vm.parts[index] - 1 : 0;
+              if (getTotal(vm.parts) < vm.min) {
+                vm.parts[index]++;
+              }
+            }
+          }
+
+          function change(index, newValue, oldValue) {
+            let value;
+            if (isNaN(parseInt(newValue))) {
+              value = parseInt(oldValue);
+            } else {
+              value = parseInt(newValue);
+            }
+
+            // got a new value
+            vm.parts[index] = value;
+            if (getTotal(vm.parts) < vm.min) {
+              // restore old value
+              vm.parts[index] = oldValue;
+            }
+          }
+
+          function getNextVersion(resource) {
+            const currentVersion = getVersion(resource);
+            const parts = currentVersion.split(".");
+            if (parts.length === 3) {
+              parts[0] = parseInt(parts[0]);
+              parts[1] = parseInt(parts[1]);
+              parts[2] = parseInt(parts[2]) + 1;
+              return parts;
+            }
+            return null;
+          }
+          
+          //endregion
 
           $scope.$on('arpMergePreviewModalVisible', async function (event, params) {
             vm.previewCache.clear();
@@ -729,6 +1208,8 @@ define([
             const resource = params[0];
             const currentFolderId = params[1];
             const sortOptionField = params[2];
+            vm.homeFolderId = params[3];
+            vm.userId = params[4];
             $scope.loading = true;
 
             if (resource) {
@@ -738,6 +1219,8 @@ define([
               vm.sortOptionField = sortOptionField;
               vm.selectedDestination = null;
               vm.offset = 0;
+              vm.parts = getNextVersion(resource);
+              vm.min = getTotal(vm.parts);
               
               $timeout(async function() {
                 try {

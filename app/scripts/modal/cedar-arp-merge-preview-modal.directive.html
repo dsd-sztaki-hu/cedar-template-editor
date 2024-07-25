@@ -93,6 +93,35 @@
 
         </div>
         <div class="modal-footer actions">
+          <div class="col-sm-5" style="display: flex; flex-direction: row; align-items: center">
+            <label style="text-align: left; float: left; margin-right: 10px;">New Version:</label>
+            <div class="version-number">
+              <input name="major" id="version-major" ng-model="arpmergepreview.parts[0]"
+                     ng-change="arpmergepreview.change(0, arpmergepreview.parts[0], '{{arpmergepreview.parts[0]}}')">
+              <div class="arp-incrementor" >
+              <i class="fa fa-caret-up" ng-class="{'disabled':!arpmergepreview.canIncrement(0)}" ng-disabled="!arpmergepreview.canIncrement(0)" ng-click="arpmergepreview.increment(0)"></i>
+                <i class="fa fa-caret-down" ng-class="{'disabled':!arpmergepreview.canDecrement(0)}" ng-disabled="!arpmergepreview.canDecrement(0)" ng-click="arpmergepreview.decrement(0)"></i>
+              </div>
+            </div>
+
+            <div class="version-number">
+            <input name="minor" id="version-minor" ng-model="arpmergepreview.parts[1]"
+                     ng-change="arpmergepreview.change(1, arpmergepreview.parts[1], '{{arpmergepreview.parts[1]}}')">
+              <div class="arp-incrementor" >
+              <i  class="fa fa-caret-up" ng-class="{'disabled':!arpmergepreview.canIncrement(1)}" ng-disabled="!arpmergepreview.canIncrement(1)" ng-click="arpmergepreview.increment(1)"></i>
+                <i  class="fa fa-caret-down" ng-class="{'disabled':!arpmergepreview.canDecrement(1)}" ng-disabled="!arpmergepreview.canDecrement(1)" ng-click="arpmergepreview.decrement(1)"></i>
+              </div>
+            </div>
+
+            <div class="version-number">
+            <input name="build" id="version-build" ng-model="arpmergepreview.parts[2]"
+                     ng-change="arpmergepreview.change(2, arpmergepreview.parts[2], '{{arpmergepreview.parts[2]}}')">
+              <div class="arp-incrementor" >
+                <i class="fa fa-caret-up" ng-class="{'disabled':!arpmergepreview.canIncrement(2)}" ng-disabled="!arpmergepreview.canIncrement(2)" ng-click="arpmergepreview.increment(2)"></i>
+                <i class="fa fa-caret-down" ng-class="{'disabled':!arpmergepreview.canDecrement(2)}" ng-disabled="!arpmergepreview.canDecrement(2)" ng-click="arpmergepreview.decrement(2)"></i> 
+              </div>
+            </div>
+          </div>
           <div class="clear-save" style="cursor: pointer; font-size: 32px; padding-left: 5px;"
                tooltip-append-to-body="true"
                uib-tooltip={{arpmergepreview.updatedResourcesTooltip()}}

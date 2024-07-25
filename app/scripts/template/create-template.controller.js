@@ -42,6 +42,7 @@ define([
         $scope.otherFieldTypes = FieldTypeService.getOtherFieldTypes();
         $scope.saveButtonDisabled = false;
         $scope.viewType = 'popup';
+        $scope.arpMergeLoading = false;
 
         // template details
         $scope.details;
@@ -60,6 +61,10 @@ define([
             return false;
           }
         }
+
+        $scope.arpMergeButtonDisabled = function() {
+          return UIUtilService.isDirty();
+        };
         
         $scope.checkLocking = function () {
           if ($scope.details) {
@@ -489,6 +494,14 @@ define([
         $scope.$on('arpMergeModalVisible', function (event, args) {
           $scope.arpMergeModalVisible = true;
         });
+
+        $scope.$on('arpMergeLoading', function (event) {
+          $scope.arpMergeLoading = true;
+        });
+
+        $scope.$on('arpMergeLoadingDone', function (event) {
+          $scope.arpMergeLoading = false;
+        });
         
         $scope.$on('invalidElementState', function (event, args) {
           if (args[0] == 'add') {
@@ -614,7 +627,7 @@ define([
         };
 
         $scope.showArpMergeModal = function () {
-          $scope.$broadcast('arpMergePreviewModalVisible', [$scope.form, QueryParamUtilsService.getFolderId(), CedarUser.getSort()]);
+          $scope.$broadcast('arpMergePreviewModalVisible', [$scope.form, QueryParamUtilsService.getFolderId(), CedarUser.getSort(), CedarUser.getHomeFolderId()]);
         };
 
         $scope.hideFinder = function () {

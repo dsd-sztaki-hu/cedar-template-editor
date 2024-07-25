@@ -6,13 +6,15 @@ define([
     angular.module('cedar.templateEditor.service.arpService', [])
         .service('arpService', arpService);
 
-    arpService.$inject = ["schemaService", "DataManipulationService"];
+    arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST"];
 
-    function arpService( schemaService, DataManipulationService) {
+    function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, AuthorizedBackendService, UIMessageService, ValidationService, CONST) {
         return {
             prepareResourceForMerge: prepareResourceForMerge,
             finalizeResourceForMerge: finalizeResourceForMerge,
-            doMergeResource: doMergeResource
+            doMergeResource: doMergeResource,
+            saveDataFromOriginal: saveDataFromOriginal,
+            updateResource: updateResource
         };
 
 
@@ -85,13 +87,52 @@ define([
             DataManipulationService.stripTmps(extendedResourceJson);
             return extendedResourceJson;
         }
+
+        function getContentType(content) {
+            const typeStr = content['@type'];
+            const lastIndex = typeStr.lastIndexOf('/');
+            const contentType = typeStr.substring(lastIndex + 1);
+            switch (contentType) {
+                case 'TemplateElement':
+                    return CONST.resourceType.ELEMENT;
+                case 'Template':
+                    return CONST.resourceType.TEMPLATE;
+            }
+        }
         
         function doMergeResource(resourceJson, originalResourceJson) {
             const mergedResourceJson = prepareResourceForMerge(originalResourceJson, resourceJson);
             return finalizeResourceForMerge(mergedResourceJson);
         }
+
+        function saveDataFromOriginal(resource, originalFolderId, originalIdentifier, publishedVersion) {
+            resource['_arpOriginalFolderId_'] = originalFolderId;
+            resource['schema:identifier'] = originalIdentifier;
+            resource['pav:version'] = publishedVersion;
+            updateResource(resource['@id'], resource);
+        }
         
-        
+        function updateResource(id, resourceJson) {
+            const doUpdate = function (response) {
+                ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+            };
+            
+            let updatePromise;
+            const resourceType = getContentType(resourceJson);
+            if (resourceType === CONST.resourceType.TEMPLATE) {
+                updatePromise = TemplateService.updateTemplate(id, resourceJson);
+            } else if (resourceType === CONST.resourceType.ELEMENT) {
+                updatePromise = TemplateElementService.updateTemplateElement(id, resourceJson);
+            }
+
+            AuthorizedBackendService.doCall(
+                updatePromise,
+                function (response) {doUpdate(response)},
+                function (err) {
+                    UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                }
+            );
+        }
         
     }
 });

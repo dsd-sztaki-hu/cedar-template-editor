@@ -680,6 +680,10 @@ define([
       } else {
         return false;
       }
-    }
+    };
+
+    $scope.arpMergeButtonDisabled = function() {
+      return UIUtilService.isDirty();
+    };
   }
 });
