@@ -428,6 +428,19 @@
 
   <!-- Dataverse tab  -->
   <div id="dataverse" ng-show="isTabActive('dataverse')">
+    {{'ARP.CREATOR.deprecatedPrompt' | translate }}
+    <div class="type-toggle date">
+      <div class="single-date d-option yesno-arp-dataverse-deprecated-no"
+           ng-click="setDirty();setArpDataverseDeprecated(false); $event.stopPropagation();"
+           ng-class="{active: !isArpDataverseDeprecated()}">
+        <span translate>GENERIC.No</span>
+      </div>
+      <div class="date-range d-option yesno-arp-dataverse-deprecated-yes"
+           ng-click="setDirty();setArpDataverseDeprecated(true);   $event.stopPropagation();"
+           ng-class="{active: isArpDataverseDeprecated()}">
+        <span translate>GENERIC.Yes</span>
+      </div>
+    </div>
     {{'ARP.CREATOR.displayOnCreatePrompt' | translate }}
     <div class="type-toggle date">
       <div class="single-date d-option yesno-arp-dataverse-displayoncreate-no"

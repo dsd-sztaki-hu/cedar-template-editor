@@ -1293,6 +1293,14 @@ define([
         return schemaService.isArpDataverseDisplayOnCreate($scope.field);
       };
 
+      $scope.setArpDataverseDeprecated = function (value) {
+        schemaService.setArpDataverseDeprecated($scope.field, value);
+      };
+
+      $scope.isArpDataverseDeprecated = function () {
+        return schemaService.isArpDataverseDeprecated($scope.field);
+      };
+
       $scope.setArpDataverseFacetable = function (value) {
         schemaService.setArpDataverseFacetable($scope.field, value);
       };

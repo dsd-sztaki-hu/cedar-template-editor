@@ -842,6 +842,15 @@ define([
       }
     };
 
+    service.setArpDataverseDeprecated = function (node, value) {
+      service.schemaOf(node)._arp.dataverse.deprecated = value;
+    };
+
+    service.isArpDataverseDeprecated = function (node) {
+      service.ensureDefaultDataverseValues(node);
+      return service.schemaOf(node)._arp.dataverse.deprecated || false;
+    };
+
     service.setArpDataverseDisplayOnCreate = function (node, value) {
       service.schemaOf(node)._arp.dataverse.displayoncreate = value;
     };
