@@ -6,15 +6,21 @@ define([
     angular.module('cedar.templateEditor.service.arpService', [])
         .service('arpService', arpService);
 
-    arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST"];
+    arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", 
+        "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService"];
 
-    function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, AuthorizedBackendService, UIMessageService, ValidationService, CONST) {
+    function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
+                         AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService) {
         return {
             prepareResourceForMerge: prepareResourceForMerge,
             finalizeResourceForMerge: finalizeResourceForMerge,
             doMergeResource: doMergeResource,
             saveDataFromOriginal: saveDataFromOriginal,
-            updateResource: updateResource
+            updateResource: updateResource,
+            arpResourceTypes: arpResourceTypes,
+            deleteFolder: deleteFolder,
+            getFolderContents: getFolderContents,
+            containsPublishedResource: containsPublishedResource
         };
 
 
@@ -132,6 +138,88 @@ define([
                     UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
                 }
             );
+        }
+
+        async function containsPublishedResource(folderId) {
+            const folderContents = await getFolderContents(folderId, arpResourceTypes());
+            
+            for (const res of folderContents) {
+                if (res.resourceType === CONST.resourceType.FOLDER) {
+                    const result = await containsPublishedResource(res['@id']);
+                    if (result) {
+                        return true;
+                    }
+                } else {
+                    if (res.hasOwnProperty('bibo:status') && res['bibo:status'] === 'bibo:published') {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        function getFolderContents(folderId, resourceTypes) {
+            return new Promise((resolve, reject) => {
+                resourceService.getResources({
+                        folderId         : folderId,
+                        resourceTypes    : resourceTypes,
+                    },
+                    function (response) {
+                        resolve(Array.isArray(response.resources) ? response.resources : [response.resources]);
+                    },
+                    function (error) {
+                        UIMessageService.showBackendError('ARP.merge.getFolderContents.error', error);
+                        reject(error);
+                    });
+            });
+        }
+
+        async function deleteFolder(folderId, silentDelete) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const arrayResponse = await getFolderContents(folderId, arpResourceTypes());
+                    
+                    for (const res of arrayResponse) {
+                        if (res.resourceType === CONST.resourceType.FOLDER) {
+                            await deleteFolder(res['@id'], true);
+                        } else {
+                            await new Promise((resolve, reject) => {
+                                resourceService.deleteResource(res, function(response) {
+                                    resolve(response);
+                                }, function(error) {
+                                    UIMessageService.showBackendError('ARP.merge.deleteFolder.error', error);
+                                    reject(error);
+                                });
+                            });
+                        }
+                    }
+
+                    await new Promise((resolve, reject) => {
+                        resourceService.deleteFolder(folderId, function(response) {
+                            if (!silentDelete) {
+                                UIMessageService.flashSuccess('ARP.delete.success',
+                                    {},
+                                    'ARP.delete.arpDeleted');
+                            }
+                            resolve(response);
+                        }, function(error) {
+                            if (!silentDelete) {
+                                UIMessageService.showBackendError('SERVER.' + r.resourceType.toUpperCase() + '.delete.error', error);
+                            }
+                            reject(error);
+                        });
+                    });
+
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        function arpResourceTypes() {
+            return [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD];
         }
         
     }

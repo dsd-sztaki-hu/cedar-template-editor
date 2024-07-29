@@ -30,7 +30,8 @@ define([
           'FrontendUrlService',
           'UIProgressService',
           'CONST',
-          'MessagingService'
+          'MessagingService',
+          'arpService'
         ];
 
         function cedarSearchBrowsePickerController($location, $timeout, $scope, $rootScope, $window, $translate, CedarUser,
@@ -38,7 +39,7 @@ define([
                                                    UIMessageService, UISettingsService, QueryParamUtilsService,
                                                    AuthorizedBackendService,
                                                    FrontendUrlService,
-                                                   UIProgressService, CONST, MessagingService) {
+                                                   UIProgressService, CONST, MessagingService, arpService) {
           const vm = this;
 
           vm.breadcrumbName = breadcrumbName;
@@ -50,6 +51,7 @@ define([
 
           vm.totalCount = null;
           vm.deleteResource = deleteResource;
+          vm.arpDelete = arpDelete;
           vm.doSearch = doSearch;
           vm.editResource = editResource;
           vm.facets = {};
@@ -117,6 +119,7 @@ define([
           vm.canNotPublish = false;
           vm.canNotCreateDraft = false;
           vm.canNotDelete = false;
+          vm.canNotArpDelete = false;
           vm.canNotRename = false;
           vm.currentFolder = null;
           vm.isAdmin = resourceService.isAdmin();
@@ -594,6 +597,7 @@ define([
             vm.canNotOpenOpen = !vm.canOpenOpen();
             vm.canNotOpenDatacite = !vm.canOpenDatacite();
             vm.isAdmin = resourceService.isAdmin();
+            vm.updateCanNotArpDelete();
             vm.getNumberOfInstances();
             vm.getResourcePublicationStatus();
           };
@@ -668,6 +672,21 @@ define([
 
           vm.canDelete = function () {
             return resourceService.canDelete(vm.getSelectedNode());
+          };
+          
+          vm.canArpDelete = async function () {
+            if (vm.getSelectedNode()['resourceType'] === CONST.resourceType.FOLDER) {
+              return resourceService.canDelete(vm.getSelectedNode()) && !await arpService.containsPublishedResource(vm.getSelectedNode()['@id']);
+            } else {
+              return false;
+            }
+          }
+
+          vm.updateCanNotArpDelete = function () {
+            vm.canArpDelete().then((canDelete) => {
+              vm.canNotArpDelete = !canDelete;
+              $scope.$apply();
+            });
           };
 
           vm.canChangeOwner = function () {
@@ -1654,6 +1673,24 @@ define([
                   'GENERIC.AreYouSure',
                   'DASHBOARD.delete.confirm.' + r.resourceType,
                   'GENERIC.YesDeleteIt'
+              );
+            }
+          }
+
+           function arpDelete(resource) {
+            const r = resource || getSelectedNode();
+            if (!vm.canNotArpDelete) {
+              UIMessageService.confirmedExecution(
+                  async function () {
+                   await arpService.deleteFolder(
+                        r['@id'],
+                        false
+                    );
+                    $scope.$broadcast('refreshWorkspace', [vm.currentFolderId]);
+                  },
+                  'GENERIC.AreYouSure',
+                  'ARP.delete.confirm',
+                  'ARP.delete.YesArpDeleteIt'
               );
             }
           }

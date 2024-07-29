@@ -53,7 +53,9 @@ define([
         copyParentFolderId2Clipboard: "=",
         isMeta                      : "=",
         isAdmin                     : "=",
-        arpCopy                     : "="
+        arpCopy                     : "=",
+        arpDelete                   : "=",
+        canNotArpDelete             : "="
       },
       controller : function ($scope, $element) {
       },

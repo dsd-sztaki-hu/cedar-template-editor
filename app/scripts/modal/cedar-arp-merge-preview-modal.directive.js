@@ -161,7 +161,7 @@ define([
               await moveFolderContents(vm.originalFolderId, versionFolderId);
               await copyFolderContents(vm.currentFolderId, vm.originalFolderId);
               await finalizedNewVersion(vm.originalFolderId);
-              await deleteFolder(vm.currentFolderId);
+              await arpService.deleteFolder(vm.currentFolderId, true);
             }
           }
           
@@ -262,7 +262,7 @@ define([
           
           function finalizedNewVersion(folderId) {
             return new Promise(async (resolve, reject) => {
-              const arrayResponse = await getFolderContents(folderId);
+              const arrayResponse = await arpService.getFolderContents(folderId, arpService.arpResourceTypes());
               try {
                 // Process each resource sequentially
                 for (const res of arrayResponse) {
@@ -277,57 +277,6 @@ define([
                     }
                   }
                 }
-                resolve();
-              } catch (error) {
-                reject(error);
-              }
-            });
-          }
-          
-          function getFolderContents(folderId) {
-            return new Promise((resolve, reject) => {
-              resourceService.getResources({
-                    folderId         : folderId,
-                    resourceTypes    : [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT]
-                  },
-                  function (response) {
-                    resolve(Array.isArray(response.resources) ? response.resources : [response.resources]); 
-                  },
-                  function (error) {
-                    UIMessageService.showBackendError('ARP.merge.getFolderContents.error', error);
-                    reject(error);
-                  });
-            });
-          }
-
-          async function deleteFolder(folderId) {
-            return new Promise(async (resolve, reject) => {
-              try {
-                const arrayResponse = await getFolderContents(folderId);
-
-                for (const res of arrayResponse) {
-                  if (res.resourceType === CONST.resourceType.FOLDER) {
-                    await deleteFolder(res['@id']);
-                  } else {
-                    await new Promise((resolve, reject) => {
-                      resourceService.deleteResource(res, function(response) {
-                        resolve(response);
-                      }, function(error) {
-                        UIMessageService.showBackendError('ARP.merge.deleteFolder.error', error);
-                        reject(error);
-                      });
-                    });
-                  }
-                }
-
-                await new Promise((resolve, reject) => {
-                  resourceService.deleteFolder(folderId, function(response) {
-                    resolve(response);
-                  }, function(error) {
-                    reject(error);
-                  });
-                });
-
                 resolve();
               } catch (error) {
                 reject(error);

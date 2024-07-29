@@ -15,6 +15,7 @@
   <li ng-if="!isMeta"><a ng-cloak class="createDraft"  ng-class="{'link-disabled': canNotCreateDraft}" href="#" ng-click="publishModal(draftCallback, 'Draft')"  translate>DASHBOARD.menu.draft</a></li>
   <li role="separator" class="divider"></li>
   <li><a ng-cloak class="delete" ng-class="{'link-disabled': canNotDelete}" href="#"  ng-click="delete(resource)" translate>DASHBOARD.menu.delete</a></li>
+  <li><a ng-cloak class="delete" ng-if="isFolder" ng-class="{'link-disabled': canNotArpDelete}" href="#"  ng-click="arpDelete(resource)" translate>ARP.MENU.arpDelete</a></li>
   <li role="separator" class="divider"></li>
   <li><a ng-cloak class="opendatacite" ng-class="{'link-disabled': canNotOpenDatacite}"  href="#" ng-click="openDatacite(resource)" translate>DASHBOARD.menu.opendatacite</a></li>
   <li role="separator" class="divider"></li>
