@@ -14,7 +14,7 @@ define([
                                           "controlledTermDataService", "StringUtilsService",
                                           "DataUtilService", "AuthorizedBackendService",
                                           "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", 
-                                          "TemplateElementService"];
+                                          "TemplateElementService", "arpService"];
 
       function CreateTemplateController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
                                         TrackingService, HeaderService, StagingService, DataTemplateService,
@@ -23,7 +23,7 @@ define([
                                         controlledTermDataService, StringUtilsService,
                                         DataUtilService, AuthorizedBackendService,
                                         FrontendUrlService, QueryParamUtilsService, CONST, CedarUser, 
-                                        TemplateElementService) {
+                                        TemplateElementService, arpService) {
 
         $rootScope.showSearch = false;
 
@@ -334,12 +334,12 @@ define([
 
         $scope.arpValidateTemplate = function () {
           AuthorizedBackendService.doCall(
-              TemplateService.arpValidateTemplate($scope.form),
+              arpService.validateResource($scope.form),
               function () {
                 $scope.doSaveTemplate();
               },
               function (err) {
-                UIMessageService.showArpError('ARP.ExportResult.error', err);
+                UIMessageService.showArpError('ARP.validate.errorTitle', 'ARP.validate.error', err);
               }
           );
         };
@@ -352,7 +352,7 @@ define([
                     {"title": schemaService.getTitle($scope.form)}, 'ARP.Exported');
               },
               function (err) {
-                UIMessageService.showArpError('ARP.ExportResult.error', err);
+                UIMessageService.showArpError('ARP.templateError.templateExportTitle','ARP.ExportResult.error', err);
               }
           );
         };

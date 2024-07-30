@@ -10,7 +10,7 @@ define([
                                      "$filter", "HeaderService", "StagingService", "DataTemplateService",
                                      "FieldTypeService", "TemplateElementService", "resourceService", "ValidationService","UIMessageService",
                                      "DataManipulationService", "schemaService","DataUtilService", "UIUtilService", "AuthorizedBackendService",
-                                     "FrontendUrlService", "QueryParamUtilsService", "CONST","CedarUser"];
+                                     "FrontendUrlService", "QueryParamUtilsService", "CONST","CedarUser", "arpService"];
 
 
   function CreateElementController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
@@ -18,7 +18,8 @@ define([
                                    TemplateElementService, resourceService, ValidationService,UIMessageService,
                                    DataManipulationService,schemaService,
                                    DataUtilService,UIUtilService,
-                                   AuthorizedBackendService, FrontendUrlService, QueryParamUtilsService, CONST,CedarUser) {
+                                   AuthorizedBackendService, FrontendUrlService, QueryParamUtilsService, CONST,
+                                   CedarUser, arpService) {
 
     var dms = DataManipulationService;
 
@@ -298,13 +299,25 @@ define([
         UIMessageService.conditionalOrConfirmedExecution(
             StagingService.isEmpty(),
             function () {
-              $scope.doSaveElement();
+              $scope.arpValidateElement();
             },
             'GENERIC.AreYouSure',
             'ELEMENTEDITOR.save.nonEmptyStagingConfirm',
             'GENERIC.YesSaveIt'
         );
       }
+    };
+
+    $scope.arpValidateElement = function () {
+      AuthorizedBackendService.doCall(
+          arpService.validateResource($scope.element),
+          function () {
+            $scope.doSaveElement();
+          },
+          function (err) {
+            UIMessageService.showArpError('ARP.validate.errorTitle', 'ARP.validate.error', err);
+          }
+      );
     };
 
     // Stores the element into the database

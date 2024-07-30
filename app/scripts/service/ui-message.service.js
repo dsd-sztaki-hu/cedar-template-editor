@@ -236,16 +236,22 @@ define([
       });
     }
 
-    service.showArpError = function (messageKey, response) {
+    service.showArpError = function (titleKey, messageKey, response) {
       toasty.error({
-        title  : $translate.instant('ARP.templateError.templateExportTitle'),
+        title  : $translate.instant(titleKey),
         msg    : $translate.instant(messageKey),
         onClick: function () {
           let content = ''
+          let resp;
           if (response.data == null) {
             content = '<pre>' + $translate.instant('ARP.templateError.unavailable') + '</pre>'
           } else if (response.data.message) {
-            let resp = response.data.message
+            resp = response.data.message
+          } else {
+            const errorString = response.data.match(/:\s*(\{.*})$/)[1];
+            resp = angular.fromJson(errorString);
+          }
+          if (resp) {
             let incompPairs = ''
             if (resp.incompatiblePairs) {
               for (const [key, value] of Object.entries(resp.incompatiblePairs)) {
@@ -261,11 +267,11 @@ define([
             if (resp.invalidNames) {
               content = content.concat($translate.instant('ARP.templateError.invalidNames', {invalidNames: '\n\t' + resp.invalidNames.join('\n\t')}));
             }
-            
+
             if (resp.unprocessableElements) {
               content = content.concat($translate.instant('ARP.templateError.unprocessableElements', {unprocessableElements: '\n\t' + resp.unprocessableElements.join('\n\t')}));
             }
-            
+
             if (resp.errors) {
               content = content.concat($translate.instant('ARP.templateError.otherErrors', {errors: '\n\t' + resp.errors.join('\n\t')}));
             }
@@ -274,7 +280,7 @@ define([
             content = '<pre>' + response.data + '</pre>'
           }
           swal({
-            title:   $translate.instant('ARP.templateError.templateExportTitle'),
+            title:   $translate.instant(titleKey),
             customClass: "arpErrorDetails",
             text:   content,
             type:   "error",

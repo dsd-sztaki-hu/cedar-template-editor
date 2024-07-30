@@ -10,7 +10,7 @@ define([
                                    "$filter", "HeaderService", "StagingService", "DataTemplateService", "schemaService",
                                    "FieldTypeService", "TemplateFieldService", "resourceService", "ValidationService","UIMessageService",
                                    "DataManipulationService", "UIUtilService", "AuthorizedBackendService",
-                                   "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser"];
+                                   "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", "arpService"];
 
 
   function CreateFieldController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
@@ -18,7 +18,7 @@ define([
                                  TemplateFieldService, resourceService, ValidationService,UIMessageService,
                                  DataManipulationService,
                                  UIUtilService, AuthorizedBackendService, FrontendUrlService, QueryParamUtilsService,
-                                 CONST,CedarUser) {
+                                 CONST,CedarUser, arpService) {
 
     // shortcut
     var dms = DataManipulationService;
@@ -245,13 +245,25 @@ define([
         UIMessageService.conditionalOrConfirmedExecution(
             StagingService.isEmpty(),
             function () {
-              $scope.doSaveField();
+              $scope.arpValidateField();
             },
             'GENERIC.AreYouSure',
             'ELEMENTEDITOR.save.nonEmptyStagingConfirm',
             'GENERIC.YesSaveIt'
         );
       }
+    };
+
+    $scope.arpValidateField = function () {
+      AuthorizedBackendService.doCall(
+          arpService.validateResource($scope.field),
+          function () {
+            $scope.doSaveField();
+          },
+          function (err) {
+            UIMessageService.showArpError('ARP.validate.errorTitle', 'ARP.validate.error', err);
+          }
+      );
     };
 
     $rootScope.$on("form:clear", function () {

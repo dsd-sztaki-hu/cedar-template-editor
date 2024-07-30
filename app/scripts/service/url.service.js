@@ -56,8 +56,8 @@ define([
       return arpService + "/cedarToMdb/" + arpDvCollection + "?key=" + key;
     };
 
-    service.arpValidateTemplateJson = function () {
-      return arpService + "/checkCedarTemplate";
+    service.arpValidateResourceJson = function () {
+      return arpService + "/checkCedarResource";
     };
 
     service.base = function () {

@@ -7,10 +7,12 @@ define([
         .service('arpService', arpService);
 
     arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", 
-        "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService"];
+        "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService",
+        "HttpBuilderService", "UrlService"];
 
     function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
-                         AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService) {
+                         AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
+                         HttpBuilderService, UrlService) {
         return {
             prepareResourceForMerge: prepareResourceForMerge,
             finalizeResourceForMerge: finalizeResourceForMerge,
@@ -20,7 +22,8 @@ define([
             arpResourceTypes: arpResourceTypes,
             deleteFolder: deleteFolder,
             getFolderContents: getFolderContents,
-            containsPublishedResource: containsPublishedResource
+            containsPublishedResource: containsPublishedResource,
+            validateResource: validateResource
         };
 
 
@@ -220,6 +223,11 @@ define([
 
         function arpResourceTypes() {
             return [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD];
+        }
+        
+        function validateResource(resource) {
+            return HttpBuilderService.post(UrlService.arpValidateResourceJson(), angular.toJson(resource));
+            
         }
         
     }

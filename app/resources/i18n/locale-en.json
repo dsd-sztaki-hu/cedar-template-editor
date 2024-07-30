@@ -794,6 +794,11 @@
       "success": "The template <b>{{title}}</b> has been exported to Dataverse.",
       "error": "There was an error while exporting the template to Dataverse!<br /><br />VIEW TECHNICAL DETAILS!"
     },
+    "validate": {
+      "success": "The resource <b>{{title}}</b> has been validated.",
+      "error": "There was an error while validating the resource!<br /><br />VIEW TECHNICAL DETAILS!",
+      "errorTitle": "Validation error"
+    },
     "merge": {
       "success": "The template has been successfully merged into its published version.",
       "error": "There was an error while merging the templates!<br /><br />VIEW TECHNICAL DETAILS!",
