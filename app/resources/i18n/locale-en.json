@@ -898,7 +898,8 @@
       "confirm": "Are you sure you want to recursively remove the selected folder?",
       "YesArpDeleteIt": "Yes, ARP Delete it!",
       "success": "The folder has been successfully ARP Deleted.",
-      "arpDeleted": "ARP Deleted"
+      "arpDeleted": "ARP Deleted",
+      "areYouSure": "Are you sure you want to delete '{{folderName}}'?"
 
     },
     "GENERIC": {

@@ -1688,7 +1688,7 @@ define([
                     );
                     $scope.$broadcast('refreshWorkspace', [vm.currentFolderId]);
                   },
-                  'GENERIC.AreYouSure',
+                  $translate.instant('ARP.delete.areYouSure', {folderName: r['schema:name']}),
                   'ARP.delete.confirm',
                   'ARP.delete.YesArpDeleteIt'
               );
