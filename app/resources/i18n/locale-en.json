@@ -861,6 +861,14 @@
       "enableOpenView": {
         "success": "The resource has been enabled for open view.",
         "error": "There was an error during enabling open view for the resource!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "jsonDiffChecked": {
+        "true": "Diff checked",
+        "false": "Diff not seen yet"
+      },
+      "jsonDiffCheckedFolder": {
+        "true": "All diffs checked",
+        "false": "Diffs not seen yet"
       }
     },
     "recursiveMerge": {
