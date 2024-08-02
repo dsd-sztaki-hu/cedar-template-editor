@@ -367,7 +367,7 @@ define([
                   $rootScope.$broadcast('arpMergeLoadingDone');
                   UIMessageService.flashSuccess('ARP.merge.success', {},'ARP.GENERIC.Merged');
                 },
-                'GENERIC.AreYouSure',
+                $translate.instant('ARP.merge.confirmationTitle', {title: vm.arpMergePreviewResource['schema:name'], version: vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2]}),
                 resourcesChecked ? 'ARP.recursiveMerge.alertTextKey' : 'ARP.recursiveMerge.alertTextKeyNotAllChecked',
                 'ARP.recursiveMerge.confirmTextKey'
             );
