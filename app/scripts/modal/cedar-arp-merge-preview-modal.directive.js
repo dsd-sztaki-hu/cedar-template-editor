@@ -271,9 +271,11 @@ define([
                   } else {
                     try {
                       await publishNewVersion(res, vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2]);
+                      await enableOpenView(res);
                     } catch (error) {
                       // try again
                       await publishNewVersion(res, vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2]);
+                      await enableOpenView(res);
                     }
                   }
                 }
@@ -282,6 +284,20 @@ define([
                 reject(error);
               }
             });
+          }
+          
+          async function enableOpenView(resource) {
+            const postData = {
+              '@id': resource['@id']
+            };
+            const url = UrlService.makeArtifactOpen();
+            await AuthorizedBackendService.doCall(
+                HttpBuilderService.post(url, postData),
+                function (response) {},
+                function (error) {
+                  UIMessageService.showBackendError('ARP.merge.enableOpenView.error', error);
+                }
+            );
           }
 
           async function publishNewVersion(resource, version) {

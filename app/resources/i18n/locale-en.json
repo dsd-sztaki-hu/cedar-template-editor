@@ -856,6 +856,10 @@
       "collectModifiedResources": {
         "success": "The modified resources have been collected.",
         "error": "There was an error while collecting the modified resources!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "enableOpenView": {
+        "success": "The resource has been enabled for open view.",
+        "error": "There was an error during enabling open view for the resource!<br /><br />VIEW TECHNICAL DETAILS!"
       }
     },
     "recursiveMerge": {
