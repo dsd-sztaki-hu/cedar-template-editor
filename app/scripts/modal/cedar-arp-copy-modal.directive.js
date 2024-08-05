@@ -26,14 +26,16 @@ define([
           'TemplateElementService',
           'AuthorizedBackendService',
           'ValidationService',
-          'arpService'
+          'arpService',
+          'FrontendUrlService',
+          '$location'
         ];
 
         function cedarArpCopyModalController($scope, $uibModal, CedarUser, $timeout, $translate,
                                           resourceService,
                                           UIMessageService,UISettingsService,
                                           CONST, TemplateService, TemplateElementService, AuthorizedBackendService,
-                                             ValidationService, arpService) {
+                                             ValidationService, arpService, FrontendUrlService, $location) {
           var vm = this;
 
           // copy to...
@@ -63,6 +65,7 @@ define([
           vm.destinationPath = null;
           vm.resourceTypes = null;
           vm.sortOptionField = null;
+          vm.isAdmin = null;
           vm.offset = 0;
           vm.totalCount = -1;
           vm.isCommunity = false;
@@ -165,6 +168,10 @@ define([
 
                       if (sameFolder) {
                         refresh();
+                      } else {
+                        if (!vm.isAdmin) {
+                          $location.url(FrontendUrlService.getFolderContents(newParentFolderId));
+                        }
                       }
                     },
                     function (error) {
@@ -452,6 +459,7 @@ define([
             const homeFolderId = params[4];
             const resourceTypes = params[5];
             const sortOptionField = params[6];
+            vm.isAdmin = params[7];
 
             if (visible && resource) {
               vm.modalVisible = visible;
@@ -464,8 +472,12 @@ define([
               vm.sortOptionField = sortOptionField;
               vm.selectedDestination = null;
               vm.offset = 0;
-              // TODO scroll to top
-              getDestinationById(vm.currentFolderId);
+              // users probably want to copy to their own folder, so we default to that
+              if (vm.isAdmin) {
+                getDestinationById(vm.currentFolderId);
+              } else {
+                getDestinationById(vm.homeFolderId);
+              }
             }
           });
         }

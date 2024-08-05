@@ -2390,7 +2390,8 @@ define([
               const folderId = vm.currentFolderId || homeFolderId;
               vm.arpCopyModalVisible = true;
               $scope.$broadcast('arpCopyModalVisible',
-                  [vm.arpCopyModalVisible, r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, CedarUser.getSort()]);
+                  [vm.arpCopyModalVisible, r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, 
+                    CedarUser.getSort(), CedarUser.getRoles().includes("userAdministrator")]);
             }
           }
 
