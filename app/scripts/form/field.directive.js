@@ -273,12 +273,25 @@ define([
         return schemaService.isFileFieldType($scope.field);
       };
 
+      $scope.isEmailField = function () {
+        return schemaService.isEmailFieldType($scope.field);
+      };
+      
+      $scope.isParagraphField = function () {
+        return schemaService.isParagraphFieldType($scope.field);
+      };
+      
+      $scope.isPhoneNumberField = function () {
+        return schemaService.isPhoneNumberFieldType($scope.field);
+      };
+
       $scope.isTemporalField = function () {
         return schemaService.isTemporalType($scope.field);
       };
 
       $scope.hasOptions = function () {
-        return $scope.isNumericField() || $scope.isTextField() || $scope.isTemporalField();
+        return $scope.isNumericField() || $scope.isTextField() || $scope.isTemporalField() || $scope.isEmailField()
+            || $scope.isPhoneNumberField() || $scope.isParagraphField();
       };
 
       $scope.canViewTerms = function () {

@@ -504,6 +504,18 @@ define([
       return service.getInputType(node) === 'file';
     };
 
+    service.isEmailFieldType = function (node) {
+      return service.getInputType(node) === 'email';
+    };
+
+    service.isParagraphFieldType = function (node) {
+      return service.getInputType(node) === 'textarea';
+    };
+
+    service.isPhoneNumberFieldType = function (node) {
+      return service.getInputType(node) === 'phone-number';
+    };
+
     service.isTemporalType = function (node) {
       return service.getInputType(node) === 'temporal';
     };
@@ -644,7 +656,6 @@ define([
         const hasBranches = vcst.branches && vcst.branches.length > 0;
         result = hasOntologies || hasValueSets || hasClasses || hasBranches;
       }
-
       return result;
     };
 

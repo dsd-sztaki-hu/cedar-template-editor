@@ -910,7 +910,8 @@
       "enterWatermark": "Enter Watermark",
       "displayFormatPrompt": "Display Format",
       "enterDisplayFormat": "Enter Display Format",
-      "deprecatedPrompt": "Deprecated"
+      "deprecatedPrompt": "Deprecated",
+      "enterDateFormat": "Enter Date Format"
     },
     "delete": {
       "confirm": "Are you sure you want to recursively remove the selected folder?",

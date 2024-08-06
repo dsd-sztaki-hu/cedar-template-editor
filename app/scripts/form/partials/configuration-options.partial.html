@@ -108,12 +108,12 @@
       </div>
     </div>
 
-    <div ng-if="isTextField()">
+    <div ng-if="isTextField() || isEmailField() || isParagraphField() || isPhoneNumberField()">
 
       <constrained-default ng-if="isConstrained()" class="form-group  has-feedback" field="field" model="getValueConstraints()"></constrained-default>
 
       <!-- default value -->
-      <div ng-if="!isConstrained()" class="form-group floating-label-wrapper">
+      <div ng-if="!isConstrained() && !isParagraphField() && !isPhoneNumberField() && !isEmailField()" class="form-group floating-label-wrapper">
         <input type="text" auto-focus
             class="form-control field-default-definition"
             placeholder="{{'CREATOR.enterDefaultvalue' | translate}}"
@@ -152,6 +152,17 @@
                placeholder="{{'CREATOR.enterRegex' | translate}}"
                aria-label="{{'CREATOR.enterRegex' | translate}}"
                ng-model="$root.schemaOf(field)._valueConstraints.regex"
+               ng-disabled="isPublished()"
+               with-floating-label>
+      </div>
+
+      <!-- dateFormat constraint -->
+      <div ng-if="!isConstrained() && isTextField()" class="form-group floating-label-wrapper">
+        <input type="text" auto-focus
+               class="form-control field-regex-definition"
+               placeholder="{{'ARP.CREATOR.enterDateFormat' | translate}}"
+               aria-label="{{'ARP.CREATOR.enterDateFormat' | translate}}"
+               ng-model="$root.schemaOf(field)._valueConstraints.dateFormat"
                ng-disabled="isPublished()"
                with-floating-label>
       </div>
@@ -246,8 +257,7 @@
 
     </div>
 
-    <!-- For all fields -->
-    <div class="form-group floating-label-wrapper">
+    <div ng-if="!isParagraphField() && !isPhoneNumberField() && !isEmailField()" class="form-group floating-label-wrapper">
       <tags-input
           use-strings="true"
           replace-spaces-with-dashes="false"
