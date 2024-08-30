@@ -43,6 +43,7 @@ define([
     $scope.details;
     $scope.cannotWrite;
     $scope.lockReason = '';
+    $scope.derivedFromPublished = true;
 
 
     // This function watches for changes in the _ui.title field and autogenerates the schema title and description fields
@@ -101,6 +102,25 @@ define([
           }
       );
     };
+    
+    const setIsDerivedFromPublished = function () {
+      if ($scope.element && $scope.element['pav:derivedFrom']) {
+        AuthorizedBackendService.doCall(
+            TemplateElementService.getTemplateElement($scope.element['pav:derivedFrom']),
+            function (response) {
+              $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
+            },
+            function (err) {
+              const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
+              UIMessageService.acknowledgedExecution(
+                  function () {
+                  },
+                  'GENERIC.Warning',
+                  message,
+                  'GENERIC.Ok');
+        });
+      }
+    }
 
     var getElement = function () {
       $scope.form = {};
@@ -143,7 +163,7 @@ define([
               ValidationService.checkValidation();
               $scope.setClean();
 
-
+              setIsDerivedFromPublished();
               getDetails(key);
 
             },
@@ -689,7 +709,9 @@ define([
 
     $scope.canArpMerge = function() {
       if ($scope.element) {
-        return TemplateElementService.canArpMergeTemplateElement() && $scope.element.hasOwnProperty('pav:derivedFrom');
+        return TemplateElementService.canArpMergeTemplateElement() && 
+            $scope.element.hasOwnProperty('pav:derivedFrom') &&
+            !$scope.derivedFromPublished;
       } else {
         return false;
       }

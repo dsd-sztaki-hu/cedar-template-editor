@@ -123,17 +123,8 @@ define([
                 });
             } else if (resourceType === CONST.resourceType.ELEMENT) {
                 const originalResourceId = updatedResource['pav:derivedFrom']
-                let promise;
-
-                if (resourceType === 'template') {
-                    promise = TemplateService.getTemplate(originalResourceId);
-                    vm.mergeResourceType = 'template';
-                } else if (resourceType === 'element') {
-                    promise = TemplateElementService.getTemplateElement(originalResourceId);
-                    vm.mergeResourceType = 'element';
-                } else {
-                    // Invalid resource type
-                }
+                let promise = TemplateElementService.getTemplateElement(originalResourceId);
+                vm.mergeResourceType = 'element';
 
                 AuthorizedBackendService.doCall(
                     promise,
@@ -151,9 +142,11 @@ define([
                         // create a copy of the updated resource
                         const updatedResourceCopy = JSON.parse(JSON.stringify(updatedResource));
                         vm.mergeResult = arpService.prepareResourceForMerge(vm.mergeResource.before, updatedResourceCopy);
+                        const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalResource));
+                        const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedResource));
                         postTemplates({
-                            'before': originalResource,
-                            'after': vm.mergeResult
+                            'before': originalExcludedKeys,
+                            'after': updatedExcludedKeys
                         });
                     },
                     function (err) {

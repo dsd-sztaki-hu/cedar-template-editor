@@ -8,11 +8,11 @@ define([
 
     arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", 
         "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService",
-        "HttpBuilderService", "UrlService"];
+        "HttpBuilderService", "UrlService", "TemplateFieldService"];
 
     function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
                          AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
-                         HttpBuilderService, UrlService) {
+                         HttpBuilderService, UrlService, TemplateFieldService) {
         return {
             prepareResourceForMerge: prepareResourceForMerge,
             finalizeResourceForMerge: finalizeResourceForMerge,
@@ -23,7 +23,8 @@ define([
             deleteFolder: deleteFolder,
             getFolderContents: getFolderContents,
             containsPublishedResource: containsPublishedResource,
-            validateResource: validateResource
+            validateResource: validateResource,
+            omitDeep: omitDeep
         };
 
 
@@ -46,17 +47,18 @@ define([
 
             else if (resourceJson !== null && typeof resourceJson === 'object') {
                 // If the object has an "id" and "pav:derivedFrom" property, replace "id" with "pav:derivedFrom"
-                if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
-                    resourceJson['@id'] = resourceJson['pav:derivedFrom'];
-                    delete resourceJson['pav:derivedFrom'];
-                }
+                // if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
+                //     resourceJson['@id'] = resourceJson['pav:derivedFrom'];
+                //     delete resourceJson['pav:derivedFrom'];
+                // }
+                
                 // If the object has a "pav:createdOn" property, replace "pav:createdOn" with the original "pav:createdOn"
-                if (resourceJson.hasOwnProperty('pav:createdOn') && typeof resourceJson['pav:createdOn'] === 'string') {
-                    const originalObject = find(originalResourceJson, '@id', resourceJson['@id']);
-                    if (originalObject) {
-                        resourceJson['pav:createdOn'] = originalObject['pav:createdOn'];
-                    }
-                }
+                // if (resourceJson.hasOwnProperty('pav:createdOn') && typeof resourceJson['pav:createdOn'] === 'string') {
+                //     const originalObject = find(originalResourceJson, '@id', resourceJson['@id']);
+                //     if (originalObject) {
+                //         resourceJson['pav:createdOn'] = originalObject['pav:createdOn'];
+                //     }
+                // }
 
                 // If the object has a "pav:createdBy" property, replace "pav:createdBy" with the original "pav:createdBy"
                 if (resourceJson.hasOwnProperty('pav:createdBy') && typeof resourceJson['pav:createdBy'] === 'string') {
@@ -106,6 +108,8 @@ define([
                     return CONST.resourceType.ELEMENT;
                 case 'Template':
                     return CONST.resourceType.TEMPLATE;
+                case 'TemplateField':
+                    return CONST.resourceType.FIELD;
             }
         }
         
@@ -132,8 +136,9 @@ define([
                 updatePromise = TemplateService.updateTemplate(id, resourceJson);
             } else if (resourceType === CONST.resourceType.ELEMENT) {
                 updatePromise = TemplateElementService.updateTemplateElement(id, resourceJson);
+            } else if (resourceType === CONST.resourceType.FIELD) {
+                updatePromise = TemplateFieldService.updateTemplateField(id, resourceJson);
             }
-
             AuthorizedBackendService.doCall(
                 updatePromise,
                 function (response) {doUpdate(response)},
@@ -228,6 +233,30 @@ define([
         function validateResource(resource) {
             return HttpBuilderService.post(UrlService.arpValidateResourceJson(), angular.toJson(resource));
             
+        }
+
+        // remove the keys that are not needed for the preview
+        function omitDeep(obj) {
+            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn',
+                '@id', 'pav:createdBy', 'schema:identifier', '_arpTmpIsNewResPropForBgColor_', '_arpOriginalFolderId_',
+                'oslc:modifiedBy', 'oslc:updatedBy', 'bibo:status'
+            ];
+            if (_.isArray(obj)) {
+                obj.forEach((element, index) => {
+                    if (_.isObject(element)) {
+                        omitDeep(element, keysToExclude);
+                    }
+                });
+            } else if (_.isObject(obj)) {
+                _.forIn(obj, function(value, key) {
+                    if (_.isObject(value)) {
+                        omitDeep(value, keysToExclude);
+                    } else if (keysToExclude.includes(key)) {
+                        delete obj[key];
+                    }
+                });
+            }
+            return obj;
         }
         
     }

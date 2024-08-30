@@ -200,7 +200,7 @@ define([
                             UIMessageService.showBackendError('SERVER.FOLDER.create.error', error);
                           }
                       );
-                    } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT].includes(resource['resourceType'])) {
+                    } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD].includes(resource['resourceType'])) {
                       resourceService.copyResource(
                           resource,
                           newFolderId,

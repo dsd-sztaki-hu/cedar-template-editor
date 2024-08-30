@@ -205,7 +205,7 @@ define([
             return new Promise((resolve, reject) => {
               resourceService.getResources({
                     folderId: folderId,
-                    resourceTypes: [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT],
+                    resourceTypes: [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD],
                   },
                   async function(response) {
                     const arrayResponse = Array.isArray(response.resources) ? response.resources : [response.resources];
@@ -228,7 +228,7 @@ define([
                                 }
                             );
                           });
-                        } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT].includes(res.resourceType)) {
+                        } else if ([CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD].includes(res.resourceType)) {
                           await new Promise((resourceResolve, resourceReject) => {
                             resourceService.copyResource(
                                 res,
@@ -643,10 +643,6 @@ define([
           
           async function collectModifiedResources(resources, parentFolder, arpOriginalFolderResources) {
             const promises = [];
-            const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn', 
-              '@id', 'pav:createdBy', 'schema:identifier', '_arpTmpIsNewResPropForBgColor_', '_arpOriginalFolderId_',
-              'oslc:modifiedBy', 'oslc:updatedBy', 'bibo:status'
-            ];
 
             for (const resource of resources) {
               const updatedResourceId = resource['@id'];
@@ -659,11 +655,11 @@ define([
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const parentFolderId = parentFolder ? parentFolder['@id'] : null;
-                        const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
+                        const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedContent));
                         const original = arpOriginalFolderResources ? arpOriginalFolderResources.find(res => res['schema:name'] === updatedContent['schema:name']) : null;
                         if (original) {
                           getResourceById(original['@id'], original['resourceType']).then(originalContent => {
-                            const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
+                            const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalContent));
                             compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent, originalContent);
                           });
                         } else {
@@ -680,8 +676,8 @@ define([
                         const originalId = updatedContent['pav:derivedFrom'];
                         return getResourceById(originalId, originalContentType)
                             .then(originalContent => {
-                              const originalExcludedKeys = omitDeep(_.cloneDeep(originalContent), keysToExclude);
-                              const updatedExcludedKeys = omitDeep(_.cloneDeep(updatedContent), keysToExclude);
+                              const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalContent));
+                              const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedContent));
                               compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent, originalContent);
                             });
                       }
@@ -745,27 +741,6 @@ define([
             const translatedText = $translate.instant('ARP.recursiveMerge.originalUpdated');
             return  translatedText + '\n' + JSON.stringify(vm.updatedResources);
           }
-          
-
-          function omitDeep(obj, keysToExclude) {
-            if (_.isArray(obj)) {
-              obj.forEach((element, index) => {
-                if (_.isObject(element)) {
-                  omitDeep(element, keysToExclude);
-                }
-              });
-            } else if (_.isObject(obj)) {
-              _.forIn(obj, function(value, key) {
-                if (_.isObject(value)) {
-                  omitDeep(value, keysToExclude);
-                } else if (keysToExclude.includes(key)) {
-                  delete obj[key];
-                }
-              });
-            }
-            return obj;
-          }
-
           
           function getContentType(content) {
             const typeStr = content['@type'];
