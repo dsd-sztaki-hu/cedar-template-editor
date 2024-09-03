@@ -57,7 +57,7 @@ define([
     };
 
     service.arpValidateResourceJson = function () {
-      return arpService + "/checkCedarResource";
+      return arpService + "/checkCedarTemplate";
     };
 
     service.base = function () {
