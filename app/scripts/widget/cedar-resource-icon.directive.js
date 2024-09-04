@@ -19,9 +19,11 @@ define([
 
         switch (scope.resourceType) {
           case CONST.resourceType.FOLDER:
+            console.log("FOLDER")
             result += CONST.resourceIcon.FOLDER;
             break;
           case CONST.resourceType.TEMPLATE:
+            console.log("TEMPLATE")
             result += CONST.resourceIcon.TEMPLATE;
             break;
           case CONST.resourceType.METADATA:
