@@ -43,6 +43,8 @@ define([
         $scope.saveButtonDisabled = false;
         $scope.viewType = 'popup';
         $scope.arpMergeLoading = false;
+        $scope.derivedFromPublished = true;
+        
 
         // template details
         $scope.details;
@@ -56,7 +58,9 @@ define([
         
         $scope.canArpMerge= function() {
           if ($scope.form) {
-            return TemplateService.canArpExportTemplate() && $scope.form.hasOwnProperty('pav:derivedFrom');
+            return TemplateService.canArpExportTemplate() && 
+                $scope.form.hasOwnProperty('pav:derivedFrom') &&
+                !$scope.derivedFromPublished;
           } else {
             return false;
           }
@@ -98,6 +102,24 @@ define([
           );
         };
 
+        const setIsDerivedFromPublished = function () {
+          if ($scope.element && $scope.element['pav:derivedFrom']) {
+            AuthorizedBackendService.doCall(
+                TemplateService.getTemplate($scope.element['pav:derivedFrom']),
+                function (response) {
+                  $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
+                },
+                function (err) {
+                  const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
+                  UIMessageService.acknowledgedExecution(
+                      function () {
+                      },
+                      'GENERIC.Warning',
+                      message,
+                      'GENERIC.Ok');
+                });
+          }
+        }
 
         var getTemplate = function () {
           // Load existing form if $routeParams.id parameter is supplied
@@ -132,6 +154,7 @@ define([
                           $rootScope.$broadcast('form:clean');
                           //$rootScope.$broadcast(CONST.eventId.form.VALIDATION, {state: true});
                           ValidationService.checkValidation();
+                          setIsDerivedFromPublished();
                           getReport($scope.form["@id"]);
                           // } else {
                           //   // TODO validate before loading template-controller
