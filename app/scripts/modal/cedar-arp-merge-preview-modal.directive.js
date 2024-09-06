@@ -8,9 +8,9 @@ define([
         'cedar.templateEditor.service.cedarUser'
       ]).directive('cedarArpMergePreviewModal', cedarArpMergePreviewModalDirective);
 
-  cedarArpMergePreviewModalDirective.$inject = ['CedarUser', "DataManipulationService", "TemplateService", "TemplateElementService"];
+  cedarArpMergePreviewModalDirective.$inject = ['CedarUser', "DataManipulationService", "TemplateService", "TemplateElementService", "TemplateFieldService"];
 
-      function cedarArpMergePreviewModalDirective(CedarUser, DataManipulationService, TemplateService, TemplateElementService) {
+      function cedarArpMergePreviewModalDirective(CedarUser, DataManipulationService, TemplateService, TemplateElementService, TemplateFieldService) {
 
         cedarArpMergePreviewModalController.$inject = [
           '$scope',
@@ -169,7 +169,7 @@ define([
             return new Promise((resolve, reject) => {
               resourceService.getResources({
                     folderId: folderId,
-                    resourceTypes: [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE],
+                    resourceTypes: [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD],
                   },
                   async function(response) {
                     const arrayResponse = Array.isArray(response.resources) ? response.resources : [response.resources];
@@ -648,7 +648,7 @@ define([
               const updatedResourceId = resource['@id'];
               const updatedResourceType = resource['resourceType'];
 
-              if ([CONST.resourceType.ELEMENT, CONST.resourceType.TEMPLATE].includes(resource['resourceType'])
+              if ([CONST.resourceType.ELEMENT, CONST.resourceType.TEMPLATE, CONST.resourceType.FIELD].includes(resource['resourceType'])
                   && !vm.previewCache.has(resource['@id'])) {
 
                 const promise = getResourceById(updatedResourceId, updatedResourceType)
@@ -656,7 +656,7 @@ define([
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const parentFolderId = parentFolder ? parentFolder['@id'] : null;
                         const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedContent));
-                        const original = arpOriginalFolderResources ? arpOriginalFolderResources.find(res => res['schema:name'] === updatedContent['schema:name']) : null;
+                        const original = arpOriginalFolderResources !== null ? arpOriginalFolderResources.find(res => res['schema:name'] === updatedContent['schema:name']) : null;
                         if (original) {
                           getResourceById(original['@id'], original['resourceType']).then(originalContent => {
                             const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalContent));
@@ -687,15 +687,19 @@ define([
                     });
                 promises.push(promise);
 
-              } else if (CONST.resourceType.FOLDER === updatedResourceType) {
+              }  else if (CONST.resourceType.FOLDER === updatedResourceType) {
                 const folderContents = await getFolderContentsByFolderId(resource['@id']);
                 if (arpOriginalFolderResources) {
                   const originalFolderId = arpOriginalFolderResources.find(folder => folder['schema:name'] === resource['schema:name']);
                   if (originalFolderId) {
                     const originalFolderContents = await getFolderContentsByFolderId(originalFolderId['@id']);
                     promises.push(collectModifiedResources(folderContents, resource, originalFolderContents));
+                  } else {
+                    // the original folder does not exist
+                    promises.push(collectModifiedResources(folderContents, resource, null));
                   }
                 } else {
+                  // the original folder is empty
                   promises.push(collectModifiedResources(folderContents, resource, null));
                 }
               }
@@ -751,6 +755,8 @@ define([
                 return CONST.resourceType.ELEMENT;
               case 'Template':
                 return CONST.resourceType.TEMPLATE;
+              case 'Field':
+                return CONST.resourceType.FIELD;
             }
           }
           
@@ -763,6 +769,8 @@ define([
                 promise = TemplateService.getTemplate(originalResourceId);
               } else if (updatedResourceType === CONST.resourceType.ELEMENT) {
                 promise = TemplateElementService.getTemplateElement(originalResourceId);
+              } else if (updatedResourceType === CONST.resourceType.FIELD) {
+                promise = TemplateFieldService.getTemplateField(originalResourceId);
               }
 
               AuthorizedBackendService.doCall(
@@ -853,7 +861,7 @@ define([
           }
 
           function activeResourceTypes() {
-            return [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT];
+            return [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD];
           }
 
           function getResourceIconClass(resource) {

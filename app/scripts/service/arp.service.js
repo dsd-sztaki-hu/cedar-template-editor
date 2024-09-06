@@ -39,18 +39,29 @@ define([
 
         // prepare the resource for merge
         // keep the original "pav:createdOn" values and the original "@id" values
-        function prepareResourceForMerge(originalResourceJson, resourceJson) {
+        function prepareResourceForMerge(originalResourceJson, resourceJson, elementOnly) {
 
             if (Array.isArray(resourceJson)) {
-                return resourceJson.map(element => prepareResourceForMerge(originalResourceJson, element));
+                return resourceJson.map(element => prepareResourceForMerge(originalResourceJson, element, elementOnly));
             }
 
             else if (resourceJson !== null && typeof resourceJson === 'object') {
                 // If the object has an "id" and "pav:derivedFrom" property, replace "id" with "pav:derivedFrom"
-                // if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
-                //     resourceJson['@id'] = resourceJson['pav:derivedFrom'];
-                //     delete resourceJson['pav:derivedFrom'];
-                // }
+                if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
+                    console.log('elementOnlyTest', elementOnly);
+                    resourceJson['@id'] = resourceJson['pav:derivedFrom'];
+                    if (!elementOnly) {
+                        delete resourceJson['pav:derivedFrom'];
+                    } else {
+                        console.log('elementOnly', originalResourceJson);
+                        console.log('elementOnly2', resourceJson);
+                        if (originalResourceJson.hasOwnProperty('pav:derivedFrom')) {
+                            resourceJson['pav:derivedFrom'] = originalResourceJson['pav:derivedFrom'];
+                        } else {
+                            delete resourceJson['pav:derivedFrom'];
+                        }
+                    }
+                }
                 
                 // If the object has a "pav:createdOn" property, replace "pav:createdOn" with the original "pav:createdOn"
                 // if (resourceJson.hasOwnProperty('pav:createdOn') && typeof resourceJson['pav:createdOn'] === 'string') {
@@ -81,7 +92,7 @@ define([
                 const values = Object.values(resourceJson);
                 values.forEach(value => {
                     if (typeof value === 'object') {
-                        return prepareResourceForMerge(originalResourceJson, value);
+                        return prepareResourceForMerge(originalResourceJson, value, elementOnly);
                     }
                 });
             }
@@ -114,7 +125,7 @@ define([
         }
         
         function doMergeResource(resourceJson, originalResourceJson) {
-            const mergedResourceJson = prepareResourceForMerge(originalResourceJson, resourceJson);
+            const mergedResourceJson = prepareResourceForMerge(originalResourceJson, resourceJson, false);
             return finalizeResourceForMerge(mergedResourceJson);
         }
 
