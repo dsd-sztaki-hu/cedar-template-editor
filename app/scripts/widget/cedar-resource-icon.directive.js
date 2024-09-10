@@ -19,7 +19,7 @@ define([
 
         switch (scope.resourceType) {
           case CONST.resourceType.FOLDER:
-            console.log("FOLDER")
+            console.log("FOLDERR")
             result += CONST.resourceIcon.FOLDER;
             break;
           case CONST.resourceType.TEMPLATE:
