@@ -103,9 +103,9 @@ define([
         };
 
         const setIsDerivedFromPublished = function () {
-          if ($scope.element && $scope.element['pav:derivedFrom']) {
+          if ($scope.form && $scope.form['pav:derivedFrom']) {
             AuthorizedBackendService.doCall(
-                TemplateService.getTemplate($scope.element['pav:derivedFrom']),
+                TemplateService.getTemplate($scope.form['pav:derivedFrom']),
                 function (response) {
                   $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
                 },
