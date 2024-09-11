@@ -120,6 +120,7 @@ define([
           vm.canNotCreateDraft = false;
           vm.canNotDelete = false;
           vm.canNotArpDelete = false;
+          vm.canNotArpCopy = false;
           vm.canNotRename = false;
           vm.currentFolder = null;
           vm.isAdmin = resourceService.isAdmin();
@@ -598,6 +599,7 @@ define([
             vm.canNotOpenDatacite = !vm.canOpenDatacite();
             vm.isAdmin = resourceService.isAdmin();
             vm.updateCanNotArpDelete();
+            vm.updateCanNotArpCopy();
             vm.getNumberOfInstances();
             vm.getResourcePublicationStatus();
           };
@@ -685,6 +687,21 @@ define([
           vm.updateCanNotArpDelete = function () {
             vm.canArpDelete().then((canDelete) => {
               vm.canNotArpDelete = !canDelete;
+              $scope.$apply();
+            });
+          };
+
+          vm.canArpCopy = async function () {
+            if (vm.getSelectedNode()['resourceType'] === CONST.resourceType.FOLDER) {
+              return !await arpService.containsPublishedResource(vm.getSelectedNode()['@id']);
+            } else {
+              return false;
+            }
+          }
+
+          vm.updateCanNotArpCopy = function () {
+            vm.canArpCopy().then((canCopy) => {
+              vm.canNotArpCopy = !canCopy;
               $scope.$apply();
             });
           };
