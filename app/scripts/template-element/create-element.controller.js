@@ -63,6 +63,8 @@ define([
 
     $scope.saveButtonDisabled = false;
 
+    $scope.openOriginalVersionLoading = false;
+
     $scope.setClean = function() {
       $rootScope.$broadcast('form:clean');
       UIUtilService.setDirty(false);
@@ -716,6 +718,27 @@ define([
         return false;
       }
     };
+
+    $scope.hasDerivedFrom = function() {
+      if ($scope.element) {
+        return $scope.element.hasOwnProperty('pav:derivedFrom');
+      }
+      return false;
+    }
+
+    $scope.openOriginalVersion = function() {
+      $scope.openOriginalVersionLoading = true;
+      $timeout(async function() {
+        try {
+          const url = await arpService.openOriginalVersionEditor($scope.element);
+          $location.url(url);
+        } catch (error) {
+        } finally {
+          $scope.openOriginalVersionLoading = false;
+          $scope.$apply();
+        }
+      }, 0);
+    }
 
     $scope.arpMergeButtonDisabled = function() {
       return UIUtilService.isDirty();

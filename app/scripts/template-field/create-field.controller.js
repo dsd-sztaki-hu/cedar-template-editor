@@ -482,6 +482,27 @@ define([
       });
     };
 
+    $scope.hasDerivedFrom = function() {
+      if ($scope.form) {
+        return $scope.form.hasOwnProperty('pav:derivedFrom');
+      }
+      return false;
+    }
+
+    $scope.openOriginalVersion = function() {
+      $scope.openOriginalVersionLoading = true;
+      $timeout(async function() {
+        try {
+          const url = await arpService.openOriginalVersionEditor($scope.form);
+          $location.url(url);
+        } catch (error) {
+        } finally {
+          $scope.openOriginalVersionLoading = false;
+          $scope.$apply();
+        }
+      }, 0);
+    }
+
     // init
 
     $rootScope.keyOfRootElement = null;

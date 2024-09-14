@@ -52,6 +52,7 @@ define([
           vm.totalCount = null;
           vm.deleteResource = deleteResource;
           vm.arpDelete = arpDelete;
+          vm.hasDerivedFrom = false;
           vm.doSearch = doSearch;
           vm.editResource = editResource;
           vm.facets = {};
@@ -600,6 +601,7 @@ define([
             vm.isAdmin = resourceService.isAdmin();
             vm.updateCanNotArpDelete();
             vm.updateCanNotArpCopy();
+            vm.updateHasDerivedFrom();
             vm.getNumberOfInstances();
             vm.getResourcePublicationStatus();
           };
@@ -705,6 +707,25 @@ define([
               $scope.$apply();
             });
           };
+
+          vm.updateHasDerivedFrom = async function () {
+            if (vm.getSelectedNode()['resourceType'] !== CONST.resourceType.FOLDER) {
+              const resourceContent = await arpService.getResourceContentById(vm.getSelectedNode()['@id'], vm.getSelectedNode()['resourceType']);
+              vm.hasDerivedFrom = resourceContent.hasOwnProperty('pav:derivedFrom');
+            } else {
+              vm.hasDerivedFrom = false;
+            }
+          }
+
+          vm.arpGoToOriginal = async function () {
+            if(vm.getSelectedNode().hasOwnProperty('pav:derivedFrom')) {
+              const resourceReport = await arpService.getResourceReportById(vm.getSelectedNode()['pav:derivedFrom']['id'], vm.getSelectedNode()['resourceType']);
+              const pathInfo = resourceReport['pathInfo'];
+              const parentFolderId = pathInfo[pathInfo.length - 2]['@id'];
+              $location.url(FrontendUrlService.getFolderContents(parentFolderId));
+              $rootScope.$apply();
+            }
+          }
 
           vm.canChangeOwner = function () {
             return resourceService.canChangeOwner(vm.getSelectedNode());

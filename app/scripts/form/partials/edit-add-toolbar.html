@@ -50,6 +50,17 @@
           tooltip-placement="left"
       ><i class="fa fa-search "></i></a>
     </li>
+    <div ng-if="hasDerivedFrom()">
+      <li class="divider"></li>
+      <li>
+        <a ng-click="openOriginalVersion()"
+            id='button-open-original'
+            uib-tooltip='{{"EDITOR.TOOLBAR.openOriginal" | translate}}'
+            tooltip-placement="left">
+          <i class="fa fa-history"></i>
+        </a>
+      </li>
+    </div>
     <div ng-if="canArpMerge()">
       <li ng-if="!isField" class="divider"></li>
       <li ng-if="!isField" ng-style="{'pointer-events': arpMergeButtonDisabled() ? 'none' : 'auto', 'opacity': arpMergeButtonDisabled() ? '0.5' : '1'}">

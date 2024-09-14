@@ -44,7 +44,7 @@ define([
         $scope.viewType = 'popup';
         $scope.arpMergeLoading = false;
         $scope.derivedFromPublished = true;
-        
+        $scope.openOriginalVersionLoading = false;
 
         // template details
         $scope.details;
@@ -64,6 +64,27 @@ define([
           } else {
             return false;
           }
+        }
+
+        $scope.hasDerivedFrom = function() {
+          if ($scope.form) {  
+            return $scope.form.hasOwnProperty('pav:derivedFrom');
+          }
+          return false;
+        }
+
+        $scope.openOriginalVersion = function() {
+          $scope.openOriginalVersionLoading = true;
+          $timeout(async function() {
+            try {
+              const url = await arpService.openOriginalVersionEditor($scope.form);
+              $location.url(url);
+            } catch (error) {
+            } finally {
+              $scope.openOriginalVersionLoading = false;
+              $scope.$apply();
+            }
+          }, 0);
         }
 
         $scope.arpMergeButtonDisabled = function() {

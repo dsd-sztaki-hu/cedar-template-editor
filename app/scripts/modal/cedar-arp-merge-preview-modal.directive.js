@@ -651,14 +651,14 @@ define([
               if ([CONST.resourceType.ELEMENT, CONST.resourceType.TEMPLATE, CONST.resourceType.FIELD].includes(resource['resourceType'])
                   && !vm.previewCache.has(resource['@id'])) {
 
-                const promise = getResourceById(updatedResourceId, updatedResourceType)
+                const promise = arpService.getResourceContentById(updatedResourceId, updatedResourceType)
                     .then(updatedContent => {
                       if (!updatedContent.hasOwnProperty('pav:derivedFrom')) {
                         const parentFolderId = parentFolder ? parentFolder['@id'] : null;
                         const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedContent));
                         const original = arpOriginalFolderResources !== null ? arpOriginalFolderResources.find(res => res['schema:name'] === updatedContent['schema:name']) : null;
                         if (original) {
-                          getResourceById(original['@id'], original['resourceType']).then(originalContent => {
+                          arpService.getResourceContentById(original['@id'], original['resourceType']).then(originalContent => {
                             const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalContent));
                             compareAndCacheResource(originalExcludedKeys, updatedExcludedKeys, parentFolder, resource, updatedContent, originalContent);
                           });
@@ -674,7 +674,7 @@ define([
                       } else {
                         const originalContentType = getContentType(updatedContent);
                         const originalId = updatedContent['pav:derivedFrom'];
-                        return getResourceById(originalId, originalContentType)
+                        return arpService.getResourceContentById(originalId, originalContentType)
                             .then(originalContent => {
                               const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalContent));
                               const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedContent));
@@ -758,36 +758,6 @@ define([
               case 'Field':
                 return CONST.resourceType.FIELD;
             }
-          }
-          
-          function getResourceById(updatedResourceId, updatedResourceType) {
-            return new Promise((resolve, reject) => {
-              const originalResourceId = updatedResourceId
-              let promise;
-
-              if (updatedResourceType === CONST.resourceType.TEMPLATE) {
-                promise = TemplateService.getTemplate(originalResourceId);
-              } else if (updatedResourceType === CONST.resourceType.ELEMENT) {
-                promise = TemplateElementService.getTemplateElement(originalResourceId);
-              } else if (updatedResourceType === CONST.resourceType.FIELD) {
-                promise = TemplateFieldService.getTemplateField(originalResourceId);
-              }
-
-              AuthorizedBackendService.doCall(
-                  promise,
-                  function (response) {
-                    resolve(response.data);
-                  },
-                  function (err) {
-                    const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
-                    reject(err);
-                    UIMessageService.acknowledgedExecution(
-                        function () {},
-                        'GENERIC.Warning',
-                        message,
-                        'GENERIC.Ok');
-                  });
-            });
           }
           
           function calculateDestinationPathInfo(pathInfo) {

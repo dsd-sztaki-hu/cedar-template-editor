@@ -711,7 +711,8 @@
   "EDITOR": {
     "TOOLBAR": {
       "searchForMore": "Search for fields and elements",
-      "mergeTemplates" : "Merge with the published version"
+      "mergeTemplates" : "Merge with the published version",
+      "openOriginal": "Open original version"
     },
     "selectTimezone": "Select Timezone",
     "enterDecimalSeconds": "Enter Decimal Seconds",
@@ -926,11 +927,13 @@
       "SchemaDescriptionHun": "Hungarian Description",
       "Merged": "Merged",
       "Merge": "Merge",
-      "CopyOfTitle": "ARP Copy of {{title}}"
+      "CopyOfTitle": "ARP Copy of {{title}}",
+      "loadingOriginalVersion": "Loading Original Version..."
     },
     "MENU": {
       "arpCopy": "ARP Copy to...",
-      "arpDelete": "ARP Delete"
+      "arpDelete": "ARP Delete",
+      "arpGoToOriginal": "ARP Go to original"
     },
     "copy": {
       "copied": "ARP Copied",

@@ -24,7 +24,10 @@ define([
             getFolderContents: getFolderContents,
             containsPublishedResource: containsPublishedResource,
             validateResource: validateResource,
-            omitDeep: omitDeep
+            omitDeep: omitDeep,
+            getResourceContentById: getResourceContentById,
+            getResourceReportById: getResourceReportById,
+            openOriginalVersionEditor: openOriginalVersionEditor,
         };
 
 
@@ -121,6 +124,8 @@ define([
                     return CONST.resourceType.TEMPLATE;
                 case 'TemplateField':
                     return CONST.resourceType.FIELD;
+                case 'TemplateInstance':
+                    return CONST.resourceType.INSTANCE;
             }
         }
         
@@ -269,6 +274,84 @@ define([
             }
             return obj;
         }
-        
+
+        function getResourceContentById(updatedResourceId, updatedResourceType) {
+            return new Promise((resolve, reject) => {
+              const originalResourceId = updatedResourceId
+              let promise;
+
+              if (updatedResourceType === CONST.resourceType.TEMPLATE) {
+                promise = TemplateService.getTemplate(originalResourceId);
+              } else if (updatedResourceType === CONST.resourceType.ELEMENT) {
+                promise = TemplateElementService.getTemplateElement(originalResourceId);
+              } else if (updatedResourceType === CONST.resourceType.FIELD) {
+                promise = TemplateFieldService.getTemplateField(originalResourceId);
+              }
+
+              AuthorizedBackendService.doCall(
+                  promise,
+                  function (response) {
+                    resolve(response.data);
+                  },
+                  function (err) {
+                    const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
+                    reject(err);
+                    UIMessageService.acknowledgedExecution(
+                        function () {},
+                        'GENERIC.Warning',
+                        message,
+                        'GENERIC.Ok');
+                  });
+            });
+          }
+
+          function getResourceReportById(resourceId, resourceType) {
+            return new Promise((resolve, reject) => {
+              let url;
+              switch (resourceType) {
+                case CONST.resourceType.FOLDER:
+                  url = UrlService.folders() + '/' + encodeURIComponent(resourceId);
+                  break;
+                case CONST.resourceType.ELEMENT:
+                  url = UrlService.getTemplateElement(resourceId) + '/report';
+                  break;
+                case CONST.resourceType.FIELD:
+                  url = UrlService.getTemplateField(resourceId) + '/report';
+                  break;
+                case CONST.resourceType.TEMPLATE:
+                  url = UrlService.getTemplate(resourceId) + '/report';
+                  break;
+                case CONST.resourceType.INSTANCE:
+                  url = UrlService.getTemplateInstance(resourceId) + '/report';
+                  break;
+              }
+              AuthorizedBackendService.doCall(
+                  HttpBuilderService.get(url),
+                  function (response) {
+                    resolve(response.data);
+                  },
+                  function (error) {
+                    reject(error);
+                  }
+              );
+            });
+          }
+
+          async function openOriginalVersionEditor(resource) {
+            const resourceId = resource['pav:derivedFrom'];
+            const resourceType = getContentType(resource);
+            const report = await getResourceReportById(resourceId, resourceType);
+            const parentFolderId = report.pathInfo[report.pathInfo.length - 2]['@id'];
+            switch (resourceType) {
+              case CONST.resourceType.INSTANCE:
+                return '/instances/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+              case CONST.resourceType.ELEMENT:
+                return '/elements/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+              case CONST.resourceType.FIELD:
+                return '/fields/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+              case CONST.resourceType.TEMPLATE:
+                return '/templates/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+            }
+        }
     }
 });

@@ -56,7 +56,9 @@ define([
         arpCopy                     : "=",
         arpDelete                   : "=",
         canNotArpDelete             : "=",
-        canNotArpCopy               : "="
+        canNotArpCopy               : "=",
+        arpGoToOriginal             : "=",
+        hasDerivedFrom              : "="
       },
       controller : function ($scope, $element) {
       },
