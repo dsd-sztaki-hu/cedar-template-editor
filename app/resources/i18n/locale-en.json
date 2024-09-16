@@ -800,7 +800,7 @@
       "errorTitle": "Validation error",
       "warning" : {
         "title": "Warning",
-        "text": "The template can not be converted to Dataverse Metadata Block."
+        "text": "The template has deeply nested elements and can not be exported as a Dataverse Metadata Block later."
       }
     },
     "merge": {
