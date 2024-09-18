@@ -59,8 +59,7 @@ define([
         $scope.canArpMerge= function() {
           if ($scope.form) {
             return TemplateService.canArpExportTemplate() && 
-                $scope.form.hasOwnProperty('pav:derivedFrom') &&
-                !$scope.derivedFromPublished;
+                $scope.form.hasOwnProperty('pav:derivedFrom')
           } else {
             return false;
           }
