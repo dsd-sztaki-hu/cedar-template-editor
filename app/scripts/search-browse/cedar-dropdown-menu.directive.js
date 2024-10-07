@@ -58,7 +58,8 @@ define([
         canNotArpDelete             : "=",
         canNotArpCopy               : "=",
         arpGoToOriginal             : "=",
-        hasDerivedFrom              : "="
+        hasDerivedFrom              : "=",
+        arpZipDownload                 : "=",
       },
       controller : function ($scope, $element) {
       },

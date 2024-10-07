@@ -62,6 +62,7 @@ define([
           // modals
           vm.showCopyModal = showCopyModal;
           vm.showArpCopyModal = showArpCopyModal;
+          vm.showArpZipDownloadModal = showArpZipDownloadModal;
           vm.showMoveModal = showMoveModal;
           vm.showPublishModal = showPublishModal;
           vm.showShareModal = showShareModal;
@@ -2430,6 +2431,18 @@ define([
               $scope.$broadcast('arpCopyModalVisible',
                   [vm.arpCopyModalVisible, r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, 
                     CedarUser.getSort(), CedarUser.getRoles().includes("userAdministrator")]);
+            }
+          }
+          
+          // open the 'ARP zip download' modal
+          function showArpZipDownloadModal(resource) {
+            let r = resource || getSelected();
+            if (r) {
+              const homeFolderId = CedarUser.getHomeFolderId();
+              const folderId = vm.currentFolderId || homeFolderId;
+              vm.arpZipDownloadModalVisible = true;
+              $scope.$broadcast('arpZipDownloadModalVisible',
+                  [r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, CedarUser.getSort()]);
             }
           }
 

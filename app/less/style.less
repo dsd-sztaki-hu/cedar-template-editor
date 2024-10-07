@@ -7013,7 +7013,7 @@ table.apiKey {
   background: transparent;
 }
 
-#rename-modal, #publish-modal, #new-folder-modal, #move-modal, #copy-modal, #arp-copy-modal, #arp-merge-preview-modal, #share-modal, #airr-submission-modal, #flow-modal, #terms-modal, #import-modal {
+#rename-modal, #publish-modal, #new-folder-modal, #move-modal, #copy-modal, #arp-copy-modal, #arp-zip-download-modal, #arp-merge-preview-modal, #share-modal, #airr-submission-modal, #flow-modal, #terms-modal, #import-modal {
 
   i.fa-globe {
     color: @published;
@@ -8035,7 +8035,7 @@ table.apiKey {
   }
 }
 
-#move-modal, #copy-modal, #arp-copy-modal, #arp-merge-preview-modal{
+#move-modal, #copy-modal, #arp-copy-modal, #arp-zip-download-modal, #arp-merge-preview-modal{
   .modal-content {
     .modal-body {
       height: 300px;
@@ -9083,7 +9083,7 @@ div.resource-icon {
 
 }
 
-#move-modal, #copy-modal, #arp-copy-modal {
+#move-modal, #copy-modal, #arp-copy-modal, #arp-zip-download-modal {
   .modal-content {
     border-radius: 0;
     border: 0;
@@ -9161,5 +9161,34 @@ div.resource-icon {
 
 .arpNewResource {
   background-color: #a1cba1;
+}
+
+#arp-zip-download-modal {
+  .checkbox-container {
+
+  }
+  
+  .checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .checkbox-container input[type="checkbox"]:checked::before {
+    content: "\2713"; /* Check mark */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 18px;
+    color: green;
+  }
+
+  .checkbox-container input[type="checkbox"].indeterminate::before {
+    content: "\2013"; /* Dash (line) */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 18px;
+    color: orange;
+  }
 }
 

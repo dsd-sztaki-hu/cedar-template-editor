@@ -933,7 +933,8 @@
     "MENU": {
       "arpCopy": "ARP Copy to...",
       "arpDelete": "ARP Delete",
-      "arpGoToOriginal": "ARP Go to original"
+      "arpGoToOriginal": "ARP Go to original",
+      "arpZipDownload": "ARP Download ZIP"
     },
     "copy": {
       "copied": "ARP Copied",
@@ -949,6 +950,15 @@
     "DATASET_ELEMENT": {
       "load": {
         "error": "There was an error while loading the ARP Dataset Element!<br /><br />VIEW TECHNICAL DETAILS!"
+      }
+    },
+    "zipDownload": {
+      "preview": {
+        "error": "There was an error while loading the content for the zip download preview!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "status": {
+        "message": "The zipping process has started. Please wait until the download is completed.",
+        "title": "Download started"
       }
     }
   }

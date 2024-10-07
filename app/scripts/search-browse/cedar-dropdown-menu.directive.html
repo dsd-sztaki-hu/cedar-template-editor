@@ -25,6 +25,8 @@
   <li ng-if="isFolder && !hasDerivedFrom" role="separator" class="divider"></li>
   <li ng-if="isFolder"><a href="#" class="copy" ng-click="arpCopy(resource)" translate>ARP.MENU.arpCopy</a></li>
   <li ng-if="isFolder"><a ng-cloak class="delete" ng-class="{'link-disabled': canNotArpDelete}" href="#" ng-click="arpDelete(resource)" translate>ARP.MENU.arpDelete</a></li>
+  <li role="separator" class="divider"></li>
+  <li><a href="#" ng-click="arpZipDownload(resource)" translate>ARP.MENU.arpZipDownload</a></li>
 </ul>
 
 

@@ -279,6 +279,7 @@
                                                copy="dc.showCopyModal"
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
+                                               arp-zip-download="dc.showArpZipDownloadModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
                                                can-not-arp-copy="dc.canNotArpCopy"
                                                has-derived-from="dc.hasDerivedFrom"
@@ -378,6 +379,7 @@
                                                copy="dc.showCopyModal"
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
+                                               arp-zip-download="dc.showArpZipDownloadModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
                                                can-not-arp-copy="dc.canNotArpCopy"
                                                has-derived-from="dc.hasDerivedFrom"
@@ -546,6 +548,7 @@
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
+                                           arp-zip-download="dc.showArpZipDownloadModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
                                            can-not-arp-copy="dc.canNotArpCopy"
                                            has-derived-from="dc.hasDerivedFrom"
@@ -707,6 +710,7 @@
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
+                                           arp-zip-download="dc.showArpZipDownloadModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
                                            can-not-arp-copy="dc.canNotArpCopy"
                                            has-derived-from="dc.hasDerivedFrom"
@@ -1079,6 +1083,14 @@
                     tabindex="-1" role="dialog" aria-labelledby="arpCopyModalHeader"
                     data-keyboard="true" data-backdrop="static" arp-copy-resource="resource">
   </cedar-arp-copy-modal>
+</section>
+
+<!-- ARP zip download modal -->
+<section>
+  <cedar-arp-zip-download-modal cedar-modal-show modal-visible="dc.arpZipDownloadModalVisible" class="modal fade" id="arp-zip-download-modal"
+                                 tabindex="-1" role="dialog" aria-labelledby="arpZipDownloadModalHeader"
+                                 data-keyboard="true" data-backdrop="static" arp-zip-download-resource="resource">
+  </cedar-arp-zip-download-modal>
 </section>
 
 <!-- move modal -->

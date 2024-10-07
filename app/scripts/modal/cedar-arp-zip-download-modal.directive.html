@@ -1,0 +1,72 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="row copyToModalContainer">
+
+      <div class="col-sm-12 copyToModalRightPanel">
+
+        <div class="modal-header row" id="arpZipDownloadModalHeader">
+
+          <div class="col-sm-11">
+            <p>
+               <span class="folder-path" ng-repeat="folder in arpzipdownload.destinationPathInfo track by $index">
+                  <a ng-click="arpzipdownload.openDestination(folder)" class="breadcrumbs" ng-if="dc.linkFolder(folder)">{{dc.breadcrumbName(dc.getTitle(folder))}}</a>
+                  <span class="breadcrumbs"
+                        ng-if="!dc.linkFolder(folder)">{{dc.breadcrumbName(dc.getTitle(folder))}}</span>
+                  /
+                </span> 
+            </p>
+          </div>
+
+          <div class="col-sm-1 pull-right">
+            <button class="close" type="button" ng-click="dc.arpZipDownloadModalVisible=false;arpzipdownload.hideModal()" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+          </div>
+
+        </div>
+
+        <div id="arpZipDownloadModalContent" class="modal-body scrollable-content" cedar-infinite-scroll load-more="arpzipdownload.loadMore()">
+
+          <!-- show the clickable folders  -->
+          <div class="box-row row"
+               ng-repeat="(index, resource) in destinationResources">
+            <div class="col-sm-1 ">
+              <i style="color:#9e9e9e;font-size:20px;padding-right:5px" 
+                 class="fa" ng-class="arpzipdownload.getResourceIconClass(resource)">
+              </i>
+            </div>
+            <a class="contents-folder-title col-sm-9">{{resource['schema:name']}}
+            </a>
+            <div class="col-sm-1 checkbox-container">
+              <input type="checkbox" id="checkbox-{{index}}" ng-model="resource.checked" ng-click="arpzipdownload.selectResource(resource)">
+            </div>
+            <div ng-if="arpzipdownload.isFolder(resource)"
+                 class="col-sm-1 arrow-click"
+                 ng-click="arpzipdownload.openDestination(resource)"
+                 uib-tooltip="{{'HELP.openFolder' | translate}}"
+                 tooltip-trigger
+                 tooltip-animation="false"
+                 tooltip-placement="left"
+                 data-toggle="tooltip"><i class="fa fa-arrow-right"></i></div>
+          </div>
+
+        </div>
+        <div class="modal-footer actions">
+          <div class="clear-save">
+            <button ng-disabled="arpzipdownload.copyDisabled()" ng-click="arpzipdownload.downloadZip();dc.arpZipDownloadModalVisible=false;arpzipdownload.hideModal()"
+                    type="button"
+                    class="btn btn-save confirm"> ARP Download ZIP
+            </button>
+          </div>
+          <div class="clear-save">
+            <button type="button" class="btn btn-clear" ng-click="arpzipdownload.arpZipDownloadModalVisible=false;arpzipdownload.refresh();arpzipdownload.hideModal()" translate="">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
