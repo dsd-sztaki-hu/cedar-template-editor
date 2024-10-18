@@ -27,6 +27,8 @@
                      ng-href="/templates/create?folderId={{dc.currentFolderId | encodeURIComponent}}">Template</a></li>
               <li class="divider"></li>
               <li><a id="button-import" ng-click="dc.showImportModal()">Import</a></li>
+              <li class="divider"></li>
+              <li><a id="button-arp-import" ng-click="dc.showArpImportModal()">ARP Import</a></li>
             </ul>
           </div>
         </div>
@@ -1136,4 +1138,16 @@
                       id="import-modal" tabindex="-1" role="dialog" aria-labelledby="importModalHeader"
                       data-keyboard="true" data-backdrop="static">
   </cedar-import-modal>
+</section>
+
+<!-- ARP import modal -->
+<section>
+  <cedar-arp-import-modal cedar-modal-show
+                      modal-visible="dc.arpImportModalVisible"
+                      import-folder-id="dc.currentFolderId"
+                      refresh-workspace="dc.refreshWorkspace"
+                      class="modal fade"
+                      id="arp-import-modal" tabindex="-1" role="dialog" aria-labelledby="arpImportModalHeader"
+                      data-keyboard="true" data-backdrop="static">
+  </cedar-arp-import-modal>
 </section>

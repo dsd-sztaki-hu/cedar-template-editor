@@ -29,6 +29,8 @@ define([
             getResourceReportById: getResourceReportById,
             openOriginalVersionEditor: openOriginalVersionEditor,
             downloadZip: downloadZip,
+            createResource: createResource,
+            createFolderAsync: createFolderAsync,
         };
 
 
@@ -165,6 +167,29 @@ define([
             );
         }
 
+        function createResource(folderId, resourceJson) {
+            const doCreate = function (response) {
+                ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+            };
+
+            let createPromise;
+            const resourceType = getContentType(resourceJson);
+            if (resourceType === CONST.resourceType.TEMPLATE) {
+                createPromise = TemplateService.saveTemplate(folderId, resourceJson);
+            } else if (resourceType === CONST.resourceType.ELEMENT) {
+                createPromise = TemplateElementService.saveTemplateElement(folderId, resourceJson);
+            } else if (resourceType === CONST.resourceType.FIELD) {
+                createPromise = TemplateFieldService.saveTemplateField(folderId, resourceJson);
+            }
+            AuthorizedBackendService.doCall(
+                createPromise,
+                function (response) {doCreate(response)},
+                function (err) {
+                    UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                }
+            );
+        }
+
         async function containsPublishedResource(folderId) {
             const folderContents = await getFolderContents(folderId, arpResourceTypes());
             
@@ -188,7 +213,7 @@ define([
             return new Promise((resolve, reject) => {
                 resourceService.getResources({
                         folderId         : folderId,
-                        resourceTypes    : resourceTypes,
+                        resourceTypes    : resourceTypes ?? arpResourceTypes(),
                     },
                     function (response) {
                         resolve(Array.isArray(response.resources) ? response.resources : [response.resources]);
@@ -378,5 +403,23 @@ define([
                     deferred.resolve(content);
                 });
         }
+
+        function createFolderAsync(parentFolderId, newFolderName, description) {
+            return new Promise((resolve, reject) => {
+                resourceService.createFolder(
+                    parentFolderId,
+                    newFolderName,
+                    description,
+                    function (response) {
+                        const newFolderId = response['@id'];
+                        resolve(newFolderId);
+                    },
+                    function (error) {
+                        UIMessageService.showBackendError('ARP.resourceImport.error', error);
+                        reject(error);
+                    }
+                );
+            });
+        };
     }
 });

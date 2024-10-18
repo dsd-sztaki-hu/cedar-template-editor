@@ -1,0 +1,151 @@
+<div class="modal-dialog">
+  <!-- The modal uses ng-flow to manage the file uploads (documentation available at https://github.com/flowjs/ng-flow).
+  Note that in flow-init we set the chunkSize to less than 1MB because that's the default max size allowed by ningx
+  -->
+
+  <div class="modal-content">
+
+    <div class="modal-header" id="arpImportModalHeader">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">ARP import</h4>
+    </div>
+
+    <div class="modal-body" style="display: flex;">
+      <uib-tabset active="importStatus.active">
+        <uib-tab index="0" heading="{{'ARP.resourceImport.uploadFiles' | translate}}">
+          <div class="fileUpload">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
+                      Click the button below to select the files that will be imported into CEDAR.
+                      <br>Accepted file types:
+                      <ul>
+                        <li>.json</li>
+                        <li>.zip</li>
+                        <li>folders</li>
+                      </ul>
+                      <div style="margin-top: 20px; text-align: center">
+                        <label class="btn btn-save" for="fileInput"
+                          style="cursor: pointer;">{{isFileAndDirectoryUploadSupported ?
+                          'Select resources' : 'Select files'}}
+                          <input id="fileInput" type="file" webkitdirectory multiple style="display: none;" />
+                        </label>
+                        <label ng-if="!isFileAndDirectoryUploadSupported" class="btn btn-save" for="folderInput"
+                          style="margin-top: 10px; cursor: pointer;">Select folders
+                          <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <p style="text-align: center;">Drag and drop files below</p>
+                <div id="jstree-valid">
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-tab>
+        <uib-tab index="1" heading="{{'ARP.resourceImport.conflictingFiles' | translate}}" disable="importStatus.conflictingFiles.length === 0">
+          <uib-tabset active="importStatus.active">
+            <div class="fileUpload">
+              <div class="row">
+                <div class="col-sm-5">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
+                        The following files are already present in the destination directory,
+                        please choose a method to resolve the conflicts:
+                        <div style="margin-top: 20px; text-align: center; align-self: center;">
+                          <label class="btn btn-save" for="fileInput"
+                            style="cursor: pointer;">Keep all
+                            <input id="fileInput" type="file" webkitdirectory multiple style="display: none;" />
+                          </label>
+                          <label class="btn btn-save" for="folderInput"
+                            style="margin-top: 10px; cursor: pointer;">Replace all
+                            <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
+                          </label>
+                          <label class="btn btn-save" for="folderInput"
+                            style="margin-top: 10px; cursor: pointer;">Skip all
+                            <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-7">
+                  <div id="jstree-conflicting">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </uib-tabset>
+        </uib-tab>
+        <uib-tab index="2" heading="{{'ARP.resourceImport.invalidFiles' | translate}}" disable="importStatus.invalidFiles.length === 0">
+        <uib-tabset active="importStatus.active">
+          <div class="fileUpload">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
+                      The following files are not going to be uploaded because their filetype is not supported.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <div id="jstree-invalid">
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-tabset>
+      </uib-tab>
+
+      </uib-tabset>
+    </div>
+
+    <!-- Validation messages -->
+    <div ng-if="showValidation==true" style="color:red; margin: 20px">
+      <span>Please correct the following errors and try again:</span>
+      <ul>
+        <li ng-repeat="message in validationMessages">
+          {{message}}
+        </li>
+      </ul>
+    </div>
+
+    <!-- footer closes the dialog -->
+    <div class="modal-footer actions">
+      <div style="display: flex;justify-content:space-between;align-items: center;">
+
+        <div class="clear-save" style="width:100%">
+
+          <button type="button" ng-click="arpimport.resetModal()"
+            class="btn done btn-clear" translate>
+            Reset
+          </button>
+
+          <button type="button" data-dismiss="modal" aria-label="Close" class="btn done btn-clear" translate>
+            Close
+          </button>
+
+          <span ng-if="!importStatus.submitted">
+            <button type="button" ng-click="arpimport.startUpload($flow)" ng-disabled="$flow.files.length == 0"
+              aria-label="Import" class="btn btn-save" translate>
+              Import
+            </button>
+          </span>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

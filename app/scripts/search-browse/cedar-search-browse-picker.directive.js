@@ -70,6 +70,7 @@ define([
           vm.showNewFolderModal = showNewFolderModal;
           vm.showFlowModal = showFlowModal;
           vm.showImportModal = showImportModal;
+          vm.showArpImportModal = showArpImportModal;
 
           vm.copyModalVisible = false;
           vm.arpCopyModalVisible = false;
@@ -80,6 +81,7 @@ define([
           vm.newFolderModalVisible = false;
           vm.flowModalVisible = false;
           vm.importModalVisible = false;
+          vm.arpImportModalVisible = false;
 
           vm.getFacets = getFacets;
           vm.getForms = getForms;
@@ -2507,6 +2509,12 @@ define([
           function showImportModal() {
             vm.importModalVisible = true;
             $scope.$broadcast('importModalVisible', [vm.importModalVisible, vm.getFolderId()]);
+          }
+
+          // open the 'ARP import' modal
+          function showArpImportModal() {
+            vm.arpImportModalVisible = true;
+            $scope.$broadcast('arpImportModalVisible', [vm.resources]);
           }
 
           vm.getFolderId = function () {

@@ -960,6 +960,18 @@
         "message": "The zipping process has started. Please wait until the download is completed.",
         "title": "Download started"
       }
+    },
+    "resourceImport": {
+      "error": {
+        "unzip": "There was an error while unzipping the file. Please check the file and try again.",
+        "unsupportedFileFormat": "Unsupported file format!",
+        "unsupportedFileFormatText": "Only JSON and ZIP files are supported.",
+        "folderCreation": "There was an error while creating the folder."
+      },
+      "folderDescription": "This folder was created by the ARP Importer",
+      "uploadFiles": "Upload files",
+      "conflictingFiles": "Conflicting files",
+      "invalidFiles": "Invalid files"
     }
   }
 }

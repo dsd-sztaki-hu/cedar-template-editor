@@ -290,6 +290,26 @@ define([
       });
     }
 
+    service.showArpImportError = function (titleKey, messageKey, fileList) {
+      toasty.error({
+        title  : $translate.instant(titleKey),
+        msg    : $translate.instant(messageKey),
+        onClick: function () {
+          let files = fileList.join('\n');
+          const errorMessage = '<b>Some of the files you selected have been removed from the upload list because they are duplicates of files that are already being uploaded.<br><br>Please review your selection and try again if needed.<br><br>The list of the removed files can be checked below:<b>'
+          const content = errorMessage + '<pre>' + files + '</pre>'
+
+          swal({
+            title:   $translate.instant(titleKey),
+            customClass: "arpImportError",
+            text:   content,
+            type:   "error",
+            html:   true
+          })
+        }
+      });
+    }
+
     return service;
   }
 
