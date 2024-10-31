@@ -29,7 +29,6 @@ define([
   'jquery',
   'lib/jquery-ui/jquery-ui.min',
   'lib/perfnow-polyfill/perfnow-polyfill',
-  'lib/sweetalert/dist/sweetalert.min',
   '3rdparty/angular-fitvids/angular-fitvids',
   'lib/angulartics/dist/angulartics.min',
   'lib/angulartics-google-analytics/dist/angulartics-google-analytics.min',

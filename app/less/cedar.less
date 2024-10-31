@@ -86,6 +86,7 @@
 .spreadsheetViewContainer {
   display: none;
   overflow: auto;
+
   //width: 590px;
   //height: 130px;
   //border:1px solid red;
@@ -115,12 +116,15 @@ div.htCedarCheckboxContainer {
   font-weight: bold;
 }
 
-html, body {
+html,
+body {
   display: block;
 }
 
 .roleSelectorCreator {
-  &.cedar-svg, &.name {
+
+  &.cedar-svg,
+  &.name {
     color: #5795ba !important;
   }
 
@@ -130,7 +134,9 @@ html, body {
 }
 
 .roleSelectorInstantiator {
-  &.cedar-svg, &.name {
+
+  &.cedar-svg,
+  &.name {
     color: #71a69c !important;
   }
 
@@ -142,8 +148,10 @@ html, body {
 .visibilitySwitch {
   position: relative;
   left: -13px;
+
   i {
-    position: relative;;
+    position: relative;
+    ;
     color: @brand-primary;
     top: -2px;
   }
@@ -175,6 +183,7 @@ html, body {
       &.field {
         margin-bottom: 0px;
       }
+
       &.values {
         margin-bottom: 0px;
       }
@@ -189,15 +198,17 @@ html, body {
   }
 }
 
+.cedar-confirm-button {
+  background-color: @brand-primary;
+}
+
 .cedarSWAL {
-  .sa-confirm-button-container {
-    button.confirm {
-      background-color: @brand-primary;
-    }
+  .swal2-confirm {
+    background-color: @brand-primary;
   }
 
-  .sweet-alert .sa-icon.sa-warning .sa-body {
-    background-color: red;
+  .swal2-icon.swal2-warning {
+    color: red;
   }
 }
 
@@ -205,6 +216,7 @@ html, body {
   0% {
     border-color: @brand-primary;
   }
+
   100% {
     border-color: @brand-secondary;
   }
@@ -214,6 +226,7 @@ html, body {
   0% {
     border-color: @brand-primary;
   }
+
   100% {
     border-color: @brand-secondary;
   }
@@ -228,6 +241,7 @@ html, body {
   0% {
     border-color: @brand-primary;
   }
+
   100% {
     border-color: @brand-secondary;
   }
@@ -237,6 +251,7 @@ html, body {
   0% {
     border-color: @brand-primary;
   }
+
   100% {
     border-color: @brand-secondary;
   }
@@ -249,7 +264,9 @@ html, body {
 
 .sweet-alert {
   .sa-icon.sa-warning {
-    .sa-body, .sa-dot {
+
+    .sa-body,
+    .sa-dot {
       background-color: @brand-primary;
     }
   }
@@ -258,6 +275,7 @@ html, body {
 .field-instance {
   padding-left: 14px;
   padding-right: 14px;
+
   &.multiple-instance-field {
     border: 1px solid #ddd;
     padding-top: 12px;
@@ -301,12 +319,15 @@ html, body {
   top: 0;
 }
 
-[ng\:cloak], [ng-cloak], .ng-cloak {
+[ng\:cloak],
+[ng-cloak],
+.ng-cloak {
   display: none;
 }
 
 div.errorTechnicalDetails {
   width: 1000px;
+
   textarea {
     width: 900px;
     height: 300px;
@@ -314,14 +335,35 @@ div.errorTechnicalDetails {
   }
 }
 
-div.arpErrorDetails {
+.arpErrorDetails {
   width: 1000px;
   display: flex;
   justify-content: start;
   text-align: justify;
   text-justify: inter-word;
+  height: 500px;
 }
 
+.arpErrorPopup {
+  width: fit-content;
+
+  .swal2-confirm {
+    background-color: @brand-primary;
+  }
+}
+
+.arpErrorInstructions {
+  white-space: normal;
+  text-align: left;
+}
+
+.arpErrorInstructionsLi {
+  padding: 0px;
+}
+
+.arpHtmlAlignedPre {
+  text-align: left;
+}
 
 #toasty .toast.toasty-theme-bootstrap .close-button::after {
   font-weight: bold !important;
@@ -338,6 +380,7 @@ div.arpErrorDetails {
   .more {
     font-size: 20px;
   }
+
   .search {
     border-top: 1px solid #d2d2d2;
   }
@@ -388,28 +431,32 @@ div.arpErrorDetails {
   background: @white;
   padding: 10px;
 
-  .pull-left, .pull-right {
+  .pull-left,
+  .pull-right {
     width: 50%;
     text-transform: uppercase;
+
     .item {
       div {
         padding: 10px;
-        cursor:pointer;
-        width:100%;
+        cursor: pointer;
+        width: 100%;
         color: @graytxt;
         font-weight: 500;
+
         i {
           color: @brand-primary;
           padding-right: 10px;
         }
+
         &:hover {
-          background:#efefef;
+          background: #efefef;
         }
       }
 
       .tooltip {
         text-transform: none;
-        width:auto;
+        width: auto;
       }
     }
   }
@@ -460,6 +507,7 @@ div.arpErrorDetails {
         background: #5A96B8;
         border: 2px solid #5A90B8;
       }
+
       &.canc {
         color: #375E71;
         background: transparent;
@@ -506,25 +554,29 @@ body.modal-open {
     margin-bottom: -1px;
     font-size: 13px;
     line-height: 20px;
+
     .category-link-wrapper {
-      border:0px solid green;
+      border: 0px solid green;
+
       .category-open-link {
         border: 0px solid red;
-        position:absolute;
-        top:0;
-        left:0;
+        position: absolute;
+        top: 0;
+        left: 0;
+
         .category-leaf {
-          font-size:0.5em;
-          position:relative;
-          top:-2px;
+          font-size: 0.5em;
+          position: relative;
+          top: -2px;
         }
       }
+
       .category-search-link {
         border: 0px solid blue;
-        padding-left:15px;
+        padding-left: 15px;
 
         a:hover {
-          text-decoration:underline;
+          text-decoration: underline;
         }
       }
     }
@@ -532,8 +584,8 @@ body.modal-open {
 }
 
 .category-tree-container {
-  width:290px;
-  border:0px solid red;
+  width: 290px;
+  border: 0px solid red;
   overflow: hidden;
 }
 
@@ -562,6 +614,7 @@ body.modal-open {
     margin-right: 0px;
   }
 }
+
 .menu-icons-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -573,7 +626,9 @@ body.modal-open {
   height: 4em;
 }
 
-.Icons { grid-area: Icons; }
+.Icons {
+  grid-area: Icons;
+}
 
 .Version {
   justify-self: end;
@@ -581,7 +636,7 @@ body.modal-open {
   font-size: 10px;
 }
 
-.btn-folder-id:hover{
+.btn-folder-id:hover {
   background-color: rgba(21, 53, 53, 0.98);
   color: white;
 }
@@ -601,6 +656,7 @@ body.modal-open {
 .copy-to-clipboard:hover {
   color: #0a4e58;
 }
+
 /*
 ================================================
 === CEDAR Customization END

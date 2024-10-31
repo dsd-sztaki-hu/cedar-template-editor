@@ -210,7 +210,7 @@
     "Header": "Header Information",
     "Footer": "Footer Information",
     "NothingFound": "Nothing found",
-    "CopyToClipboard" : "Copy to clipboard"
+    "CopyToClipboard": "Copy to clipboard"
   },
   "HELP": {
     "createFolder": "Create folder",
@@ -570,12 +570,12 @@
   "METADATAEDITOR": {
     "invalidTerm": "Invalid term",
     "draftTemplateWarning": "You are populating an unpublished template which may be modified at a later date.",
-    "JsonLDCopied" : "JSON-LD copied to clipboard",
-    "JsonLDCopyFail" : "JSON-LD can not be copied to clipboard",
-    "JsonSchemaCopied" : "JSON Schema copied to clipboard",
-    "JsonSchemaCopyFail" : "JSON Schema can not be copied to clipboard",
-    "RdfCopied" : "RDF copied to clipboard",
-    "RdfCopyFail" : "RDF can not be copied to clipboard"
+    "JsonLDCopied": "JSON-LD copied to clipboard",
+    "JsonLDCopyFail": "JSON-LD can not be copied to clipboard",
+    "JsonSchemaCopied": "JSON Schema copied to clipboard",
+    "JsonSchemaCopyFail": "JSON Schema can not be copied to clipboard",
+    "RdfCopied": "RDF copied to clipboard",
+    "RdfCopyFail": "RDF can not be copied to clipboard"
   },
   "TEMPLATEEDITOR": {
     "clear": {
@@ -711,7 +711,7 @@
   "EDITOR": {
     "TOOLBAR": {
       "searchForMore": "Search for fields and elements",
-      "mergeTemplates" : "Merge with the published version"
+      "mergeTemplates": "Merge with the published version"
     },
     "selectTimezone": "Select Timezone",
     "enterDecimalSeconds": "Enter Decimal Seconds",
@@ -774,14 +774,14 @@
     "DataCite": {
       "NOT-OPEN": {
         "title": "Can not start DOI process Datacite wizard",
-        "text" : {
+        "text": {
           "template": "You need to make the template open in order to get a DOI",
           "template-instance": "You need to make the metadata instance open in order to get a DOI"
         }
       },
       "NOT-PUBLISHED": {
         "title": "Can not start DOI process Datacite wizard",
-        "text" : {
+        "text": {
           "template": "You need to publish the template open in order to get a DOI"
         }
       }
@@ -798,7 +798,7 @@
       "success": "The resource <b>{{title}}</b> has been validated.",
       "error": "There was an error while validating the resource!<br /><br />VIEW TECHNICAL DETAILS!",
       "errorTitle": "Validation error",
-      "warning" : {
+      "warning": {
         "title": "Warning",
         "text": "The template has deeply nested elements and can not be exported as a Dataverse Metadata Block later."
       }
@@ -891,12 +891,19 @@
       "setPermissionsError": "There was an error setting the permissions for the Versions folder during recursive merging!<br /><br />VIEW TECHNICAL DETAILS!"
     },
     "templateError": {
-      "templateExportTitle": "Template export error details",
+      "templateExportTitle": "Template export error details"
+    },
+    "validationError": {
       "incompatiblePairs": "<b>Incompatible pairs</b>: {{incompatiblePairs}}<br/>",
       "unprocessableElements": "<b>Unprocessable elements</b>: {{unprocessableElements}}<br/>",
       "invalidNames": "<b>Invalid names</b>: {{invalidNames}}<br/>",
       "otherErrors": "<b>Other errors</b>: {{errors}}<br/>",
-      "unavailable": "The ARP Dataverse service is unavailable"
+      "unavailable": "The ARP Dataverse service is unavailable",
+      "footerText": "Need help?"
+    },
+    "errorInstructions": {
+      "title": "Additional Instructions",
+      "header": "The section below describes how to solve the most common errors that may occur during resource validation <br/>",
     },
     "CREATOR": {
       "enterPrefLabelHun": "Enter Preferred Hungarian Label",
@@ -923,7 +930,6 @@
       "success": "The folder has been successfully ARP Deleted.",
       "arpDeleted": "ARP Deleted",
       "areYouSure": "Are you sure you want to delete '{{folderName}}'?"
-
     },
     "GENERIC": {
       "SchemaNameHun": "Hungarian Name",
