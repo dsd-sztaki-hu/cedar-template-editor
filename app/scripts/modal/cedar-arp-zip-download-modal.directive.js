@@ -134,15 +134,24 @@ define([
             const alreadyCached = vm.zipDownloadCache.has(resource['@id'])
             let parentFolderId;
             if (alreadyCached) {
-              parentFolderId = vm.zipDownloadCache.get(resource['@id'])['parentFolderId'];
-              vm.zipDownloadCache.delete(resource['@id']);
+              const cachedResource = vm.zipDownloadCache.get(resource['@id']);
+              parentFolderId = cachedResource['parentFolderId'];
+              if (cachedResource['resourceType'] !== CONST.resourceType.FOLDER) {
+                vm.zipDownloadCache.delete(resource['@id']);
+              }
             } else {
               cacheResource(resource['@id'], resource['resourceType'], 'checked', vm.zipFolderPath);
               parentFolderId = vm.currentDestinationID;
             }
             if (resource['resourceType'] === CONST.resourceType.FOLDER) {
               if (alreadyCached) {
-                await cacheFolder(resource['@id'], resource['schema:name'], 'unchecked');
+                if (vm.zipDownloadCache.get(resource['@id'])['status'] === 'indeterminate') {
+                  cacheResource(resource['@id'], resource['resourceType'], 'checked', vm.zipFolderPath);
+                  await cacheFolder(resource['@id'], resource['schema:name'], 'checked');
+                } else {
+                  vm.zipDownloadCache.delete(resource['@id']);
+                  await cacheFolder(resource['@id'], resource['schema:name'], 'unchecked');
+                }
               } else {
                 await cacheFolder(resource['@id'], resource['schema:name'], 'checked');
               }
