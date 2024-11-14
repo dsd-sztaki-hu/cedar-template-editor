@@ -229,12 +229,32 @@ define([
 
       populateCreatingFieldOrElement();
       if (dontHaveCreatingFieldOrElement()) {
-        StagingService.addFieldToElement($scope.element, fieldType);
-        $scope.toggleMore();
-        $timeout(function () {
-          UIUtilService.setDirty(true);
-          ValidationService.checkValidation($scope.element);
-        });
+        const domId = DataManipulationService.createDomId();
+        if (fieldType === 'file' || fieldType === 'dataset') {
+          AuthorizedBackendService.doCall(
+              fieldType === 'file' ? TemplateElementService.getArpFileElement() : TemplateElementService.getArpDatasetElement(),
+              function (response) {
+                const dvElement = response.data;
+                DataManipulationService.createDomIds(dvElement);
+                StagingService.addElementToForm($scope.element, dvElement["@id"], domId, function (e) {
+                  // now we are sure that the element was successfully added, scroll to it and hide its nested contents
+                  UIUtilService.scrollToDomId(domId);
+                  UIUtilService.setDirty(true);
+                  ValidationService.checkValidation($scope.form);
+                  $rootScope.$broadcast("form:update", dvElement);
+                });
+              }, function (err) {
+                UIMessageService.showBackendError(fieldType === 'file' ? 'ARP.FILE_ELEMENT.load.error' : 'ARP.DATASET_ELEMENT.load.error', err);
+              }
+          )
+        } else {
+          StagingService.addFieldToElement($scope.element, fieldType);
+          $scope.toggleMore();
+          $timeout(function () {
+            UIUtilService.setDirty(true);
+            ValidationService.checkValidation($scope.element);
+          });
+        }
       }
       $scope.showMenuPopover = false;
     };
