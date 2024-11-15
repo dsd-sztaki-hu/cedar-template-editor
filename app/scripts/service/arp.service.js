@@ -384,15 +384,24 @@ define([
             const deferred = $q.defer();
             const zip = new JSZip();
             for(let [resourceId, resourceDetails] of resources) {
-                console.log('resourceId', resourceId);
-                console.log('resourceDetails', resourceDetails);
-                await getResourceContentById(resourceId, resourceDetails['resourceType']).then(content => {
-                    const fileName = resourceDetails['zipFolderPath'] === '' ? 
-                        content['schema:name'] + '.json' : 
-                        resourceDetails['zipFolderPath'] + '/' + content['schema:name'] + '.json';
-                    const prettyContent = JSON.stringify(content, null, 2);
-                    zip.file(fileName, prettyContent, { binary: false });
-                });
+                const resourceType = resourceDetails['resourceType'];
+                if (resourceType === CONST.resourceType.FOLDER) {
+                    await getResourceReportById(resourceId, resourceType).then(content => {
+                        const fileName = resourceDetails['zipFolderPath'] === '' ?
+                            '.' + content['schema:name'] + '_metadata.json' :
+                            resourceDetails['zipFolderPath'] + '/.' + content['schema:name'] + '_metadata.json';
+                        const prettyContent = JSON.stringify(content, null, 2);
+                        zip.file(fileName, prettyContent, { binary: false });
+                    })
+                } else {
+                    await getResourceContentById(resourceId, resourceType).then(content => {
+                        const fileName = resourceDetails['zipFolderPath'] === '' ?
+                            content['schema:name'] + '.json' :
+                            resourceDetails['zipFolderPath'] + '/' + content['schema:name'] + '.json';
+                        const prettyContent = JSON.stringify(content, null, 2);
+                        zip.file(fileName, prettyContent, { binary: false });
+                    });
+                }
             }
             
             const zipFileNameWithExtension = zipFileName.replace(' ', '_') + '_export.zip';

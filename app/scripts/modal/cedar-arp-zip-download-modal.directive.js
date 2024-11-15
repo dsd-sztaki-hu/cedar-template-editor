@@ -66,9 +66,8 @@ define([
           vm.zipFolderPath = null;
           
           function downloadZip() {
-            const zipContentWithoutEmptyFolders = new Map(Array.from(vm.zipDownloadCache).filter(([key, value]) => value['resourceType'] !== CONST.resourceType.FOLDER));
             UIMessageService.flashSuccess('ARP.zipDownload.status.message', {}, 'ARP.zipDownload.status.title');
-            arpService.downloadZip(zipContentWithoutEmptyFolders, vm.arpZipDownloadResource['schema:name']);
+            arpService.downloadZip(vm.zipDownloadCache, vm.arpZipDownloadResource['schema:name']);
           }
 
           function parentTitle() {
@@ -328,11 +327,7 @@ define([
           }
           
           function cacheResource(resourceId, resourceType, status, zipFolderPath) {
-            if (resourceType === CONST.resourceType.FOLDER) {
-              vm.zipDownloadCache.set(resourceId, {resourceType: resourceType, status: status});
-            } else {
-              vm.zipDownloadCache.set(resourceId, {resourceType: resourceType, status: status, zipFolderPath: zipFolderPath});
-            }
+            vm.zipDownloadCache.set(resourceId, {resourceType: resourceType, status: status, zipFolderPath: zipFolderPath});
           }
 
 
