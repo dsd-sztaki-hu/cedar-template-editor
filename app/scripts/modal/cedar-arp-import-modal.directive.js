@@ -217,28 +217,59 @@ define([
         $timeout(function () {
           $.noConflict();
           vm.jsTreesInitialized = true;
+
+          // Add custom CSS for conflicting nodes
+          const styleId = 'jstree-custom-styles';
+          if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+              .jstree-node[data-conflicting="true"] > .jstree-anchor {
+                background-color: #e7d26e !important;
+              }
+            `;
+            document.head.appendChild(style);
+          }
+
           $('#jstree-valid').jstree({
             'core': {
               'check_callback': true,
               'data': function (obj, callback) {
-                callback($scope.importStatus.validFiles);
+                const treeData = $scope.importStatus.validFiles.map(resource => ({
+                  ...resource,
+                  li_attr: {
+                    'data-conflicting': resource.status === resourceImportStatus.CONFLICTING ? 'true' : 'false'
+                  }
+                }));
+                callback(treeData);
               }
-            },
+            }
           })
-            .on('dragover', function (event) {
-              event.preventDefault();
-              event.stopPropagation();
-            })
-            .on('drop', async function (event) {
-              event.preventDefault();
-              event.stopPropagation();
-              const items = event.originalEvent.dataTransfer.items;
-              if (items) {
-                await handleDnd(items);
-              } else {
-                //TODO: Throw error
+          .on('ready.jstree refresh.jstree', function(e, data) {
+            // Re-apply the data attributes after refresh
+            $scope.importStatus.validFiles.forEach(resource => {
+              if (resource.status === resourceImportStatus.CONFLICTING) {
+                const node = $(this).find('li').filter(function() {
+                  return this.id === resource.id;
+                });
+                if (node.length) {
+                  node.attr('data-conflicting', 'true');
+                }
               }
             });
+          })
+          .on('dragover', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+          })
+          .on('drop', async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const items = event.originalEvent.dataTransfer.items;
+            if (items) {
+              await handleDnd(items);
+            }
+          });
           $('#jstree-conflicting').jstree({
             'core': {
               'check_callback': true,
@@ -860,6 +891,7 @@ define([
 
       function refreshJsTrees() {
         $timeout(function () {
+          const uploadableResourcesMap = new Map();
           function updateInvalidResourceParent(resource, parentId, invalidResources) {
             const defaultParentId = jsTreeRootFolder + '/';
             const newParentId = parentId.endsWith('/') ? defaultParentId + parentId : defaultParentId + parentId + '/';
@@ -872,7 +904,7 @@ define([
                 const parentFolderClone = structuredClone(parentFolder);
                 parentFolderClone.parent = parentFolderClone.parent === jsTreeRootFolder ? parentFolderClone.parent.replace(jsTreeRootFolder, newParentId) : parentFolderClone.parent.replace(defaultParentId, newParentId);
                 parentFolderClone.id = parentFolderClone.id.replace(defaultParentId, newParentId);
-                addFileToMap(vm.invalidResourcesMap, parentFolderClone.id, parentFolderClone);
+                addResourceToMap(vm.invalidResourcesMap, parentFolderClone.id, parentFolderClone);
               }
             });
             const invalidRes = structuredClone(resource);
@@ -881,9 +913,14 @@ define([
             return invalidRes;
           }
 
-          function addFileToMap(map, key, file) {
-            if (!map.has(key)) {
-              map.set(key, file);
+          function addResourceToMap(map, id, resource) {
+            if (!map.has(id)) {
+              map.set(id, resource);
+            } else if (map.has(id)) {
+              const existingResource = map.get(id);
+              if (existingResource.status === resourceImportStatus.VALID && resource.status === resourceImportStatus.CONFLICTING) {
+                existingResource.status = resourceImportStatus.CONFLICTING;
+              }
             }
           }
 
@@ -931,16 +968,16 @@ define([
             if (parentFolder) {
               if (status === resourceImportStatus.VALID) {
                 parentFolder.status = status;
-                addFileToMap(vm.validResourcesMap, parentFolderId, parentFolder);
+                addResourceToMap(uploadableResourcesMap, parentFolderId, parentFolder);
               } else if (status === resourceImportStatus.CONFLICTING) {
                 parentFolder.status = status;
-                addFileToMap(vm.conflictingResourcesMap, parentFolderId, parentFolder);
+                addResourceToMap(uploadableResourcesMap, parentFolderId, parentFolder);
               } else if (status === resourceImportStatus.DUPLICATE) {
                 parentFolder.status = status;
-                addFileToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
+                addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
               } else if (status === resourceImportStatus.UNSUPPORTED) {
                 parentFolder.status = status;
-                addFileToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
+                addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
               }
               const directParent = parentFolderId.endsWith('/')
                 ? parentFolderId.substring(0, parentFolderId.lastIndexOf('/', parentFolderId.length - 2) + 1)
@@ -953,23 +990,23 @@ define([
             if (item.type === 'file') {
               // Process file based on status
               if (item.status === resourceImportStatus.VALID) {
-                addFileToMap(vm.validResourcesMap, item.id, item);
+                addResourceToMap(uploadableResourcesMap, item.id, item);
                 updateParentFoldersRecursively(item.parent, item.status);
               } else if (item.status === resourceImportStatus.CONFLICTING) {
-                addFileToMap(vm.conflictingResourcesMap, item.id, item);
+                addResourceToMap(uploadableResourcesMap, item.id, item);
                 updateParentFoldersRecursively(item.parent, item.status);
               } else if (item.status === resourceImportStatus.DUPLICATE) {
                 item = updateInvalidResourceParent(item, duplicatedResFolderId, vm.invalidResourcesMap)
-                addFileToMap(vm.invalidResourcesMap, item.id, item);
+                addResourceToMap(vm.invalidResourcesMap, item.id, item);
                 if (addDuplicatedResFolder) {
-                  addFileToMap(vm.invalidResourcesMap, duplicatedResFolderId, duplicatedResFolder);
+                  addResourceToMap(vm.invalidResourcesMap, duplicatedResFolderId, duplicatedResFolder);
                 }
                 addDuplicatedResFolder = false;
               } else if (item.status === resourceImportStatus.UNSUPPORTED) {
                 item = updateInvalidResourceParent(item, unsupportedResFolderId, vm.invalidResourcesMap)
-                addFileToMap(vm.invalidResourcesMap, item.id, item)
+                addResourceToMap(vm.invalidResourcesMap, item.id, item)
                 if (addUnsupportedResFolder) {
-                  addFileToMap(vm.invalidResourcesMap, unsupportedResFolderId, unsupportedResFolder);
+                  addResourceToMap(vm.invalidResourcesMap, unsupportedResFolderId, unsupportedResFolder);
                 }
                 addUnsupportedResFolder = false;
               }
@@ -977,9 +1014,11 @@ define([
           });
 
           // Update the import status
-          $scope.importStatus.validFiles = getFilesFromMap(vm.validResourcesMap);
+          $scope.importStatus.validFiles = getFilesFromMap(uploadableResourcesMap);
           $scope.importStatus.conflictingFiles = getFilesFromMap(vm.conflictingResourcesMap);
           $scope.importStatus.invalidFiles = getFilesFromMap(vm.invalidResourcesMap);
+
+          console.log('uploadableResourcesMap', uploadableResourcesMap)
 
           // Refresh jsTrees
           $('#jstree-valid').jstree(true).refresh();
