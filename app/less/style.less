@@ -9246,4 +9246,56 @@ div.resource-icon {
     max-height: 95%; 
     overflow-y: auto;
   }
+  .conflict-resolution-method {
+    background-color: #a8afb6; /* Change this to your desired color */
+    color: white; /* Optional: change text color for better contrast */
+  }
+  .default-btn-bg {
+    background-color: @brand-primary;
+  }
+  .btn {
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border: none;
+    .link-transition;
+
+    color: @white;
+
+    &:hover,
+    &:focus {
+      background-color: @brand-primary-hover;
+    }
+  }
+  .disabled-button {
+    background-color: @gray3; // Use a light gray color to indicate disabled state
+    color: @very-lt-gray; // Use a lighter gray for the text
+    border: 1px solid @gray3; // Match the border color to the background
+    cursor: not-allowed; // Change the cursor to indicate the button is not clickable
+    pointer-events: none; // Disable all pointer events
+    opacity: 0.6; // Reduce opacity to give a faded look
+    .link-transition; // Apply any existing transition effects for consistency
+    content: attr(data-tooltip); /* Use the data attribute for the tooltip text */
+  }
+  .tooltip-wrapper {
+    position: relative; /* Required for positioning the tooltip */
+    display: inline-block; /* Ensures the wrapper does not stretch */
+    cursor: not-allowed; /* Match the cursor style for a disabled button */
+  }
+  .disabled-button-wrapper {
+    &:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%; /* Position above the button */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333; /* Tooltip background color */
+      color: #fff; /* Tooltip text color */
+      padding: 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+      opacity: 0.8; /* Slight transparency */
+      pointer-events: none; /* Ensure the tooltip itself doesn't capture events */
+    }
+  }
 }

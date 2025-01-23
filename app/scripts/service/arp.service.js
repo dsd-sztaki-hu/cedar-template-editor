@@ -31,6 +31,9 @@ define([
             downloadZip: downloadZip,
             createResource: createResource,
             createFolderAsync: createFolderAsync,
+            getContentType: getContentType,
+            getResourceIconClass: getResourceIconClass,
+            getResourceIcon: getResourceIcon
         };
 
 
@@ -117,9 +120,24 @@ define([
         }
 
         function getContentType(content) {
+            // Ensure content is an object and '@type' exists
+            if (!content || typeof content !== "object" || !content['@type'] || typeof content['@type'] !== "string") {
+                console.warn("Invalid content:", content);
+                return null; // Return null for invalid or unexpected content
+            }
+
             const typeStr = content['@type'];
             const lastIndex = typeStr.lastIndexOf('/');
+
+            // Check if '/' exists in the string
+            if (lastIndex === -1) {
+                console.warn("Invalid '@type' format:", typeStr);
+                return null; // Return null if the type string doesn't have a '/'
+            }
+
             const contentType = typeStr.substring(lastIndex + 1);
+
+            // Map the extracted type to the resource type
             switch (contentType) {
                 case 'TemplateElement':
                     return CONST.resourceType.ELEMENT;
@@ -129,6 +147,9 @@ define([
                     return CONST.resourceType.FIELD;
                 case 'TemplateInstance':
                     return CONST.resourceType.INSTANCE;
+                default:
+                    console.warn("Unknown content type:", contentType);
+                    return null; // Return null for unknown content types
             }
         }
         
@@ -429,6 +450,32 @@ define([
                     }
                 );
             });
-        };
+        }
+
+        function getResourceIconClass(resource) {
+            let result = "";
+            if (resource) {
+                result += resource.resourceType + " ";
+                result += getResourceIcon(resource.resourceType);
+            }
+            return result;
+        }
+        
+        function getResourceIcon(resourceType) {
+            switch (resourceType) {
+                case CONST.resourceType.FOLDER:
+                    return "fa-folder";
+                case CONST.resourceType.TEMPLATE:
+                    return "fa-file-text";
+                case CONST.resourceType.INSTANCE:
+                    return "fa-tag";
+                case CONST.resourceType.ELEMENT:
+                    return "fa-cubes";
+                case CONST.resourceType.FIELD:
+                    return "fa-cube";
+                default:
+                    return "fa-question-circle";
+            }            
+        }
     }
 });

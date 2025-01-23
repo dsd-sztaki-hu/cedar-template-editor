@@ -1,8 +1,4 @@
 <div class="modal-dialog">
-  <!-- The modal uses ng-flow to manage the file uploads (documentation available at https://github.com/flowjs/ng-flow).
-  Note that in flow-init we set the chunkSize to less than 1MB because that's the default max size allowed by ningx
-  -->
-
   <div class="modal-content">
 
     <div class="modal-header" id="arpImportModalHeader">
@@ -28,13 +24,16 @@
                         <li>folders</li>
                       </ul>
                       <div style="margin-top: 20px; text-align: center">
-                        <label class="btn btn-save" for="fileInput"
-                          style="cursor: pointer;">{{isFileAndDirectoryUploadSupported ?
-                          'Select resources' : 'Select files'}}
-                          <input id="fileInput" type="file" webkitdirectory multiple style="display: none;" />
+                        <label ng-if="isFileAndDirectoryUploadSupported" class="btn btn-save" for="resourcesInput"
+                          style="cursor: pointer;">Select resources
+                          <input id="resourcesInput" type="file" webkitdirectory multiple style="display: none;" />
+                        </label>
+                        <label ng-if="!isFileAndDirectoryUploadSupported" class="btn btn-save" for="filesInput"
+                          style="cursor: pointer;">Select files
+                          <input id="filesInput" type="file" multiple style="display: none;" />
                         </label>
                         <label ng-if="!isFileAndDirectoryUploadSupported" class="btn btn-save" for="folderInput"
-                          style="margin-top: 10px; cursor: pointer;">Select folders
+                          style="margin-top: 10px; cursor: pointer;">Select folder
                           <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
                         </label>
                       </div>
@@ -57,22 +56,21 @@
                 <div class="col-sm-5">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
+                      <div style="text-align:left; border-right: 1px solid #ddd;">
                         The following files are already present in the destination directory,
                         please choose a method to resolve the conflicts:
-                        <div style="margin-top: 20px; text-align: center; align-self: center;">
-                          <label class="btn btn-save" for="fileInput"
-                            style="cursor: pointer;">Keep all
-                            <input id="fileInput" type="file" webkitdirectory multiple style="display: none;" />
-                          </label>
-                          <label class="btn btn-save" for="folderInput"
-                            style="margin-top: 10px; cursor: pointer;">Replace all
-                            <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
-                          </label>
-                          <label class="btn btn-save" for="folderInput"
-                            style="margin-top: 10px; cursor: pointer;">Skip all
-                            <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
-                          </label>
+                        <div style="margin-top: 20px; display: flex; justify-content: center;">
+                          <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                            <label class="btn btn-save" ng-click="arpimport.setConflictResolutionMethod('createCopy')"
+                                   ng-class="{'conflict-resolution-method': arpimport.conflictResolutionMethod === 'createCopy', 'default-btn-bg': arpimport.conflictResolutionMethod !== 'createCopy'}"
+                                   style="cursor: pointer; margin-bottom: 10px; width: 80%;">Create copy</label>
+                            <label class="btn btn-save" ng-click="arpimport.setConflictResolutionMethod('replace')"
+                                   ng-class="{'conflict-resolution-method': arpimport.conflictResolutionMethod === 'replace', 'default-btn-bg': arpimport.conflictResolutionMethod !== 'replace'}"
+                                   style="cursor: pointer; margin-bottom: 10px; width: 80%;">Replace all</label>
+                            <label class="btn btn-save" ng-click="arpimport.setConflictResolutionMethod('skip')"
+                                   ng-class="{'conflict-resolution-method': arpimport.conflictResolutionMethod === 'skip', 'default-btn-bg': arpimport.conflictResolutionMethod !== 'skip'}"
+                                   style="cursor: pointer; width: 80%;">Skip all</label>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -94,7 +92,7 @@
                 <div class="row">
                   <div class="col-sm-12">
                     <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
-                      The following files are not going to be uploaded because their filetype is not supported.
+                      The following files are not going to be uploaded.
                     </div>
                   </div>
                 </div>
@@ -137,10 +135,15 @@
           </button>
 
           <span ng-if="!importStatus.submitted">
-            <button type="button" ng-click="arpimport.startUpload($flow)" ng-disabled="$flow.files.length == 0"
-              aria-label="Import" class="btn btn-save" translate>
-              Import
-            </button>
+            <div class="tooltip-wrapper" data-tooltip="Select a method to resolve conflicts."
+              ng-class="{'disabled-button-wrapper': importStatus.conflictingFiles.length > 0 && arpimport.conflictResolutionMethod === null}">
+
+              <button type="button" ng-click="arpimport.startImport()" 
+                aria-label="Import" class="btn btn-save" translate
+                ng-class="{'disabled-button': importStatus.conflictingFiles.length > 0 && arpimport.conflictResolutionMethod === null}">
+                Import
+              </button>
+           </div>
           </span>
 
         </div>

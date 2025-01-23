@@ -835,31 +835,7 @@ define([
           }
 
           function getResourceIconClass(resource) {
-            let result = "";
-            if (resource) {
-              result += resource.resourceType + " ";
-
-              switch (resource.resourceType) {
-                case CONST.resourceType.FOLDER:
-                  result += "fa-folder";
-                  break;
-                case CONST.resourceType.TEMPLATE:
-                  result += "fa-file-text";
-                  break;
-                case CONST.resourceType.INSTANCE:
-                  result += "fa-tag";
-                  break;
-                case CONST.resourceType.ELEMENT:
-                  result += "fa-sitemap";
-                  break;
-                case CONST.resourceType.FIELD:
-                  result += "fa-file-code-o";
-                  break;
-                  //result += "fa-sitemap";
-                  //break;
-              }
-            }
-            return result;
+            return arpService.getResourceIconClass(resource);
           }
 
           function isFolder(resource) {

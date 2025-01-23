@@ -3,32 +3,24 @@
 define([
   'angular'
 ], function (angular) {
-  angular.module('cedar.templateEditor.modal.cedarArpImportModalDirective', []).directive('cedarArpImportModal',
-    cedarArpImportModalDirective);
+  angular.module('cedar.templateEditor.modal.cedarArpImportModalDirective', [])
+    .directive('cedarArpImportModal', cedarArpImportModalDirective);
 
 
   function cedarArpImportModalDirective() {
 
-
     cedarArpImportModalController.$inject = [
       '$scope',
-      '$rootScope',
       '$timeout',
-      'QueryParamUtilsService',
-      'UISettingsService',
-      'UIMessageService',
-      'resourceService',
-      'TemplateInstanceService',
-      'AuthorizedBackendService',
       'UrlService',
-      'ImportService',
-      'arpService'
+      'arpService',
+      'CONST',
+      '$window',
+      '$translate'
     ];
 
-    function cedarArpImportModalController($scope, $rootScope, $timeout, QueryParamUtilsService, UISettingsService,
-      UIMessageService, resourceService, TemplateInstanceService,
-      AuthorizedBackendService,
-      UrlService, ImportService, arpService) {
+    function cedarArpImportModalController($scope, $timeout,
+      UrlService, arpService, CONST, $window, $translate) {
 
       let vm = this;
 
@@ -39,9 +31,18 @@ define([
         'invalidFiles': []
       };
 
-      vm.alreadyPresentCedarResources = {};
+      vm.alreadyPresentCedarResources = null;
       vm.uploadedResources = [];
       vm.jsTreesInitialized = false;
+      vm.conflictResolutionMethod = null;
+      vm.repoDomain = null;
+      vm.validResourcesMap = new Map();
+      vm.conflictingResourcesMap = new Map();
+      vm.invalidResourcesMap = new Map();
+      vm.folderIds = new Map();
+      vm.userCanUpload = false;
+      vm.userHomeFolderId = null;
+      vm.destinationFolderId = null;
 
       vm.importFileStatus = {
         UPLOADING: { "value": "uploading", "message": "Uploading" },
@@ -55,25 +56,21 @@ define([
       $scope.isDragOver = false;
       $scope.activeTabIndex = 0;
 
+      const resourceImportStatus = {
+        VALID: "VALID",
+        CONFLICTING: "CONFLICTING",
+        REJECTED: "REJECTED",
+        DUPLICATE: "DUPLICATE",
+        UNSUPPORTED: "UNSUPPORTED"
+      }
 
-      // Statuses used in the Impex Server. Update if the Api changes
-      const importFileStatusRestApi = {
-        PENDING: "PENDING",
-        IN_PROGRESS: "IN_PROGRESS",
-        COMPLETE: "COMPLETE",
-        ERROR: "ERROR"
-      };
+      const jsTreeRootFolder = "#";
 
       /**
        * Public functions
        */
       vm.getImportUrl = getImportUrl;
-      vm.startUpload = startUpload;
-      vm.getImportStatus = getImportStatus;
-      vm.isImportComplete = isImportComplete;
-      vm.isImportSuccessful = isImportSuccessful;
-      vm.importFileErrored = importFileErrored;
-      vm.getImportFileReport = getImportFileReport;
+      vm.startImport = startImport;
       vm.resetModal = resetModal;
 
       /**
@@ -84,204 +81,105 @@ define([
         return UrlService.importCadsrForms(folderId);
       };
 
-      let importRefreshInterval; // Used to stop refreshing the status once the import is complete
+      // Getter for conflict resolution method
+      vm.getConflictResolutionMethod = function () {
+        return vm.conflictResolutionMethod;
+      };
 
-      const inputElement = document.querySelector('input[type="file"]');
+      // Setter for conflict resolution method
+      vm.setConflictResolutionMethod = function (method) {
+        vm.conflictResolutionMethod = method;
+      };
 
-      //todo: remove if check is done
-
-      // original function, before adding the pre chech
-      /*function startUpload(flow) {
-        const zip = new JSZip();
-        const fileReader = new FileReader();
-        const destinationFolderId = QueryParamUtilsService.getFolderId();
-        const folderIds = new Map();
-
-        flow.upload();
-        vm.importStatus.submitted = true;
-
-        importRefreshInterval = setInterval(() => {
-          refreshAllImportStatuses(flow.files);
-        }, 1000);
-
-        for (const flowFile of flow.files) {
-          vm.importStatus[flowFile.name] = vm.importFileStatus.UPLOADING;
-          if (flowFile.file.type === 'application/zip') {
-            zip.loadAsync(flowFile.file)
-                .then(async function (unzipped) {
-                  // Iterate through each file in the ZIP
-                  console.log("FILES", unzipped.files);
-                  for (let filename in unzipped.files) {
-                    const unzippedFile = unzipped.files[filename];
-                    const folderPath = filename.split('/');
-                    if (folderPath[folderPath.length - 1] === '') {
-                      folderPath.pop();
-                    }
-                    const newFolderName = folderPath.pop();
-                    const parentFolderId = folderPath.length > 1 ? folderIds.get(folderPath.join('/') + '/') : destinationFolderId;
-                    console.log('filename', filename);
-                    console.log('parentFolderId', parentFolderId);
-                    console.log('newFolderName', newFolderName);
-                    console.log('folderPath', folderPath)
-                    if (unzippedFile.dir) {
-                      try {
-                        const newFolderId = await arpService.createFolderAsync(parentFolderId, newFolderName, 'ARP.resourceImport.folderDescription');
-                        folderIds.set(filename, newFolderId);
-                        console.log('folderIds', folderIds);
-                      } catch (error) {
-                        console.error('ARP.resourceImport.error.folderCreation', error);
-                      }
-                    } else {
-                      const fileContent = await unzippedFile.async('string');
-                      await createResource(fileContent, parentFolderId);
-                    }
-                  }
-                })
-                .catch(function (error) {
-                  UIMessageService.showBackendWarning('ARP.resourceImport.error.unzip', error);
-                });
-          } else if (flowFile.file.type === 'application/json') {
-            readFlowFileContentAsString(flowFile, async function (fileContent) {
-              await createResource(fileContent, destinationFolderId)
-            });
-
+      async function startImport() {
+        for (const resource of vm.uploadedResources) {
+          if (resource.resourceType === CONST.resourceType.FOLDER) {
+            await handleFolderImport(resource);
           } else {
-            UIMessageService.showBackendWarning('ARP.resourceImport.error.unsupportedFileFormat', 'ARP.resourceImport.error.unsupportedFileFormatText');
+            handleResourceImport(resource, vm.folderIds.get(resource.parent));
           }
-          isImportSuccessful();
-        }
-      }*/
-
-      function startUpload(flow) {
-        const zip = new JSZip();
-        const fileReader = new FileReader();
-        const destinationFolderId = QueryParamUtilsService.getFolderId();
-        const folderIds = new Map();
-
-        flow.upload();
-        vm.importStatus.submitted = true;
-        console.log('importStatus', vm.importStatus);
-
-        importRefreshInterval = setInterval(() => {
-          refreshAllImportStatuses(flow.files);
-        }, 1000);
-
-        for (const flowFile of flow.files) {
-          vm.importStatus[flowFile.name] = vm.importFileStatus.UPLOADING;
-          if (flowFile.file.type === 'application/zip') {
-            zip.loadAsync(flowFile.file)
-              .then(async function (unzipped) {
-                console.log("FILES", unzipped.files);
-                const destinationFolderContents = await arpService.getFolderContents(destinationFolderId);
-                console.log(destinationFolderContents);
-                const alreadyPresentCedarResources = { "topLevelFolders": [], "topLevelFiles": [] }
-                for (let resource of destinationFolderContents) {
-                  if (resource.resourceType === 'folder') {
-                    alreadyPresentCedarResources.topLevelFolders.push(resource['schema:name']);
-                  } else {
-                    alreadyPresentCedarResources.topLevelFiles.push(resource['schema:name'] + '.json');
-                  }
-                }
-                console.log('alreadyPresentCedarResources', alreadyPresentCedarResources);
-                for (let filename in unzipped.files) {
-                  const unzippedFile = unzipped.files[filename];
-                  if (unzippedFile.dir) {
-                    const folderPath = filename.split('/');
-                    //drop the empty string
-                    folderPath.pop();
-                    if (folderPath.length === 1) {
-                      if (alreadyPresentCedarResources.topLevelFolders.some(folderName => folderName === folderPath[0])) {
-                        console.log('folder already present', folderPath[0]);
-                      }
-                    }
-                  } else {
-                    const zipFilePath = filename.split('/');
-                    const zipFileName = zipFilePath.pop();
-                    if (zipFilePath.length === 0 && alreadyPresentCedarResources.topLevelFiles.some(fileName => fileName === zipFileName)) {
-                      console.log('file already present', zipFileName);
-                    }
-                  }
-                }
-                // for (let filename in unzipped.files) {
-                //   const unzippedFile = unzipped.files[filename];
-                //   const folderPath = filename.split('/');
-                //   if (folderPath[folderPath.length - 1] === '') {
-                //     folderPath.pop();
-                //   }
-                //   const newFolderName = folderPath.pop();
-                //   const parentFolderId = folderPath.length > 1 ? folderIds.get(folderPath.join('/') + '/') : destinationFolderId;
-                //   console.log('filename', filename);
-                //   console.log('parentFolderId', parentFolderId);
-                //   console.log('newFolderName', newFolderName);
-                //   console.log('folderPath', folderPath)
-                //   if (unzippedFile.dir) {
-                //     try {
-                //       const newFolderId = await arpService.createFolderAsync(parentFolderId, newFolderName, 'ARP.resourceImport.folderDescription');
-                //       folderIds.set(filename, newFolderId);
-                //       console.log('folderIds', folderIds);
-                //     } catch (error) {
-                //       console.error('ARP.resourceImport.error.folderCreation', error);
-                //     }
-                //   } else {
-                //     const fileContent = await unzippedFile.async('string');
-                //     await createResource(fileContent, parentFolderId);
-                //   }
-                // }
-              })
-              .catch(function (error) {
-                UIMessageService.showBackendWarning('ARP.resourceImport.error.unzip', error);
-              });
-          }
-          // else if (flowFile.file.type === 'application/json') {
-          //   readFlowFileContentAsString(flowFile, async function (fileContent) {
-          //     await createResource(fileContent, destinationFolderId)
-          //   });
-          //
-          // } 
-          else {
-            UIMessageService.showBackendWarning('ARP.resourceImport.error.unsupportedFileFormat', 'ARP.resourceImport.error.unsupportedFileFormatText');
-          }
-          isImportSuccessful();
         }
       }
 
-      async function createResource(resourceContent, parentFolderId) {
-        const resourceJson = JSON.parse(resourceContent);
-        delete resourceJson['@id'];
-        delete resourceJson['_arpOriginalFolderId_'];
-        delete resourceJson['pav:derivedFrom'];
-        arpService.createResource(parentFolderId, resourceJson);
+      function handleResourceImport(resourceJson, parentFolderId) {
+        const shouldImport = (
+          (vm.conflictResolutionMethod === 'replace' && vm.conflictingResourcesMap.has(resourceJson.id)) ||
+          (vm.conflictResolutionMethod === 'createCopy' && (vm.validResourcesMap.has(resourceJson.id) || vm.conflictingResourcesMap.has(resourceJson.id))) ||
+          (vm.conflictResolutionMethod === 'skip' && vm.validResourcesMap.has(resourceJson.id))
+        );
+
+        if (!shouldImport) return;
+
+        const resourceContent = resourceJson.content;
+        
+        if (vm.conflictResolutionMethod === 'replace' && vm.conflictingResourcesMap.has(resourceJson.id)) {
+          arpService.updateResource(resourceContent['@id'], resourceContent);
+        } else {
+          delete resourceContent['@id'];
+          delete resourceContent['_arpOriginalFolderId_'];
+          delete resourceContent['pav:derivedFrom'];
+          arpService.createResource(parentFolderId, resourceContent);
+        }
       }
 
-      function readFlowFileContentAsString(flowFile, callback) {
-        const fileReader = new FileReader();
-
-        fileReader.onload = function (event) {
-          const fileContent = event.target.result;  // This is the file content as a string
-          callback(fileContent);  // Call the callback function with the file content
-        };
-
-        fileReader.onerror = function (error) {
-          console.error("Error reading file:", error);
-        };
-
-        // Read the flowFile's content as text
-        fileReader.readAsText(flowFile.file);
-      }
-
-      // Function to check if all files are processed
-      function checkIfAllFilesProcessed() {
-        let allProcessed = true;
-        for (const flowFile of flow.files) {
-          if (vm.importStatus[flowFile] !== vm.importFileStatus.IMPORT_COMPLETE) {
-            allProcessed = false;
-            break;
+      async function handleFolderImport(folderResource) {
+        // For createCopy method
+        if (vm.conflictResolutionMethod === 'createCopy') {
+          if (vm.validResourcesMap.has(folderResource.id) || vm.conflictingResourcesMap.has(folderResource.id)) {
+            const cedarFolderId = await arpService.createFolderAsync(
+              vm.folderIds.get(folderResource.parent),
+              folderResource.text,
+              folderResource.cedarDescription || $translate.instant('ARP.resourceImport.folderDescription')
+            );
+            vm.folderIds.set(folderResource.id, cedarFolderId);
           }
+          return;
         }
 
-        if (allProcessed) {
-          clearInterval(importRefreshInterval);
-          vm.refreshWorkspace();
+        // For replace method
+        if (vm.conflictResolutionMethod === 'replace') {
+          // Check if folder contains template that will be replaced
+          // in this case the imported folder content will be uploaded to the CEDAR folder of the template
+          const templateToReplace = vm.uploadedResources.find(resource =>
+            resource.resourceType === CONST.resourceType.TEMPLATE &&
+            vm.conflictingResourcesMap.has(resource.id) &&
+            resource.parent.startsWith(folderResource.id)
+          );
+
+
+          if (templateToReplace) {
+            // Use templateToReplace parent id as the CEDAR folder id for the folder contents
+            const templateToReplaceReport = await arpService.getResourceReportById(templateToReplace.content['@id'], templateToReplace.resourceType);
+            vm.folderIds.set(folderResource.id, templateToReplaceReport.pathInfo[templateToReplaceReport.pathInfo.length - 2]['@id']);
+          } else {
+            // Create folder if it is not already present in CEDAR
+            const alreadyPresentFolders = await arpService.getFolderContents(vm.folderIds.get(folderResource.parent), [CONST.resourceType.FOLDER]);
+            const alreadyPresentFolder = alreadyPresentFolders.find(folder => folder['schema:name'] === folderResource.text);
+            if (alreadyPresentFolder) {
+              vm.folderIds.set(folderResource.id, alreadyPresentFolder['@id']);
+            } else {
+              const cedarFolderId = await arpService.createFolderAsync(
+                vm.folderIds.get(folderResource.parent),
+                folderResource.text,
+                folderResource.cedarDescription || $translate.instant('ARP.resourceImport.folderDescription')
+              );
+              vm.folderIds.set(folderResource.id, cedarFolderId);
+            }
+          }
+          return;
+        }
+
+        // For skip method
+        if (vm.conflictResolutionMethod === 'skip') {
+          if (vm.validResourcesMap.has(folderResource.id)) {
+            const cedarFolderId = await arpService.createFolderAsync(
+              vm.folderIds.get(folderResource.parent),
+              folderResource.text,
+              folderResource.cedarDescription || $translate.instant('ARP.resourceImport.folderDescription')
+            );
+            vm.folderIds.set(folderResource.id, cedarFolderId);
+          }
+          return;
         }
       }
 
@@ -289,71 +187,7 @@ define([
         // Check if the browser is Safari
         var ua = navigator.userAgent;
         var isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-        console.log("isSafari", isSafari);
         return isSafari;
-      }
-
-      console.log(supportsFileAndDirectoryUpload())
-
-      function refreshAllImportStatuses(resources) {
-        for (const flowFile of resources) {
-          refreshImportStatus(flowFile.name);
-        }
-      }
-
-      function refreshImportStatus(fileName) {
-        console.log('refreshImportStatus', fileName);
-        console.log('importStatus', vm.importStatus);
-        if (vm.importStatus.complete) {
-          vm.importStatus[fileName] = vm.importFileStatus.IMPORT_COMPLETE;
-        }
-      }
-
-      function getImportStatus(fileName) {
-        if (vm.importStatus[fileName]) {
-          return vm.importStatus[fileName];
-        }
-      }
-
-      // Checks if the import process is complete or errored
-      function isImportSuccessful() {
-        if (!vm.importStatus.complete) { // Upload is not complete yet, so import is not complete either
-          return false;
-        }
-        for (const key of Object.keys(vm.importStatus)) {
-          if (vm.importStatus[key] !== vm.importFileStatus.IMPORT_COMPLETE) {
-            return false;
-          }
-        }
-        clearInterval(importRefreshInterval);
-        vm.refreshWorkspace();
-        return true;
-      }
-
-      function isImportComplete() {
-        // if (!vm.importStatus.complete) { // Upload is not complete yet, so import is not complete either
-        //   return false;
-        // }
-        // for (const key of Object.keys(vm.importStatus)) {
-        //   if (vm.importStatus[key] != vm.importFileStatus.IMPORT_COMPLETE && vm.importStatus[key] != vm.importFileStatus.ERROR) {
-        //     return false;
-        //   }
-        // }
-        return true;
-      }
-
-      function importFileErrored(file) {
-        if (file.error || getImportStatus(file.name) == vm.importFileStatus.ERROR) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      function getImportFileReport(fileName) {
-        if (vm.importFileReport[fileName]) {
-          return vm.importFileReport[fileName];
-        }
       }
 
       function resetModal() {
@@ -364,14 +198,18 @@ define([
           'invalidFiles': []
         };
         vm.uploadedResources = []
+        vm.conflictResolutionMethod = null
+        vm.validResourcesMap = new Map();
+        vm.conflictingResourcesMap = new Map();
+        vm.invalidResourcesMap = new Map();
+        initializeFolderIds();
         refreshJsTrees();
       };
 
-      function truncateString(str, maxLength) {
-        if (str.length <= maxLength) {
-          return str
-        }
-        return str.slice(0, maxLength) + '...'
+      function initializeFolderIds() {
+        vm.folderIds = new Map();
+        const rootFolderId = vm.userCanUpload ? vm.destinationFolderId : vm.userHomeFolderId;
+        vm.folderIds.set(jsTreeRootFolder, rootFolderId);
       }
 
       // Function to initialize jsTree
@@ -379,13 +217,11 @@ define([
         $timeout(function () {
           $.noConflict();
           vm.jsTreesInitialized = true;
-          console.log("initJsTree");
           $('#jstree-valid').jstree({
             'core': {
               'check_callback': true,
               'data': function (obj, callback) {
                 callback($scope.importStatus.validFiles);
-                console.log("DATA UPDATED")
               }
             },
           })
@@ -398,8 +234,7 @@ define([
               event.stopPropagation();
               const items = event.originalEvent.dataTransfer.items;
               if (items) {
-                await checkUploads(items);
-                console.log("DONEZO", vm.uploadedResources)
+                await handleDnd(items);
               } else {
                 //TODO: Throw error
               }
@@ -409,46 +244,252 @@ define([
               'check_callback': true,
               'data': function (obj, callback) {
                 callback($scope.importStatus.conflictingFiles);
-                console.log("CONF UPDATED")
               }
             },
-          });
+          })
+            .on('dragover', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+            })
+            .on('drop', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+            });
           $('#jstree-invalid').jstree({
             'core': {
               'check_callback': true,
               'data': function (obj, callback) {
                 callback($scope.importStatus.invalidFiles);
-                console.log("INVALID UPDATED")
               }
             },
-          });
+          })
+            .on('dragover', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+            })
+            .on('drop', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+            });
 
         }, 0);
-      };
+
+        angular.element($window).on('dragover', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        });
+
+        angular.element($window).on('drop', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        });
+      }
 
       $scope.$on('arpImportModalVisible', function (event, params) {
-        const parentFolderResources = params[0];
-        const alreadyPresentFolders = [];
-        const alreadyPresentFiles = [];
-        parentFolderResources.forEach(res => {
-          if (res.resourceType === 'folder') {
-            alreadyPresentFolders.push(res['schema:name'])
-          } else if (res.resourceType === 'file') {
-            alreadyPresentFolders.push(res['schema:name'])
-          }
-        });
-        vm.alreadyPresentCedarResources.folders = alreadyPresentFolders;
-        vm.alreadyPresentCedarResources.files = alreadyPresentFiles;
+        vm.alreadyPresentCedarResources = params[0];
+        vm.destinationFolderId = params[1];
+        vm.userHomeFolderId = params[2];
+        vm.userCanUpload = params[3];
+        const url = new URL(vm.destinationFolderId);
+        const domain = url.hostname; // This will give you "repo.arp.orgx"
+        vm.repoDomain = domain;
         if (!vm.jsTreesInitialized) {
           initJsTrees();
+          const filesInput = document.getElementById('filesInput');
+          if (filesInput) {
+            filesInput.addEventListener('change', (event) => handleUpload(event.target.files));
+          }
+
+          const resourcesInput = document.getElementById('resourcesInput');
+          if (resourcesInput) {
+            resourcesInput.addEventListener('change', (event) => handleUpload(event.target.files));
+          }
+
+          const folderInput = document.getElementById('folderInput');
+          if (folderInput) {
+            folderInput.addEventListener('change', (event) => handleUpload(event.target.files));
+          }
         }
+        initializeFolderIds();
       });
 
-      async function checkUploads(uploadedResources) {
+      function replaceRepoDomain(json, newDomain) {
+        if (typeof json === "object" && json !== null) {
+          for (const key in json) {
+            if (key === "@id" && typeof json[key] === "string") {
+              // Replace the entire domain in the URL
+              json[key] = json[key].replace(/https?:\/\/[^/]+/, `https://${newDomain}`);
+            } else {
+              // Recursively process nested objects or arrays
+              replaceRepoDomain(json[key], newDomain);
+            }
+          }
+        } else if (Array.isArray(json)) {
+          json.forEach(item => replaceRepoDomain(item, newDomain));
+        }
+      }
 
-        UIMessageService.showArpImportError("Title", "Message", ["a","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c"])
+      function getZipParentDirectory(filePath, zipRenameMap) {
+        const sanitizedPath = filePath.endsWith('/') ? filePath.slice(0, -1) : filePath;
+        const pathParts = sanitizedPath.split('/').filter(Boolean);
+        let status = resourceImportStatus.VALID;
 
+        if (pathParts.length < 2) {
+          return { parentPath: jsTreeRootFolder, status: status };
+        }
 
+        // remove the last part of the path which is the file/folder name
+        pathParts.pop();
+        let parentName = pathParts[0];
+
+        if (zipRenameMap.has(parentName)) {
+          const renameInfo = zipRenameMap.get(parentName);
+          pathParts[0] = renameInfo.name;
+          status = renameInfo.status;
+        }
+
+        // add the jsTree root folder to the path
+        pathParts.unshift(jsTreeRootFolder)
+        return { parentPath: pathParts.join('/') + '/', status: status };
+      }
+
+      function createJSZipLikeStructure(files) {
+        const zipStructure = {};
+        const fileArray = Array.from(files);
+
+        fileArray.forEach((file) => {
+          const { webkitRelativePath, name, size, type } = file;
+          const pathParts = webkitRelativePath.split('/');
+
+          pathParts.reduce((currentPath, part, index) => {
+            const isFile = index === pathParts.length - 1;
+            const fullPath = currentPath + part + (isFile ? '' : '/');
+
+            if (!zipStructure[fullPath]) {
+              zipStructure[fullPath] = {
+                name: fullPath,
+                dir: !isFile,
+                date: new Date(file.lastModified),
+                comment: '',
+                _data: isFile ? file : null,
+              };
+            }
+
+            return fullPath;
+          }, '');
+        });
+
+        return zipStructure;
+      }
+
+      async function handleUpload(uploadedResources) {
+        const uploadPromises = [];
+        const folderRenameMap = new Map();
+        const jsZipLike = createJSZipLikeStructure(uploadedResources);
+        for (const relativePath in jsZipLike) {
+          const resource = jsZipLike[relativePath];
+          const { parentPath, status } = getZipParentDirectory(relativePath, folderRenameMap);
+          const isTopLevel = parentPath === '#';
+
+          if (resource.dir) {
+            uploadPromises.push(processDirectory(resource, parentPath, status, jsZipLike, folderRenameMap));
+          } else {
+            // we do not want to process nested zip files
+            if (resource['_data'].type === 'application/zip' && isTopLevel) {
+              const unzipped = await JSZip.loadAsync(resource['_data']);
+              const zipRenameMap = new Map();
+
+              for (const relativePath in unzipped.files) {
+                const zipEntry = unzipped.files[relativePath];
+                const { parentPath, status } = getZipParentDirectory(relativePath, zipRenameMap);
+
+                if (zipEntry.dir) {
+                  uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files, zipRenameMap));
+                } else {
+                  uploadPromises.push(processFile(zipEntry, parentPath, status));
+                }
+              }
+            } else {
+              uploadPromises.push(processFile(resource, parentPath, status));
+            }
+          }
+        }
+
+        await Promise.all(uploadPromises);
+        refreshJsTrees();
+      }
+
+      async function handleDnd(dndResources) {
+
+        // UIMessageService.showArpImportError("Title", "Message", ["a","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c","b","c"])
+
+        const uploadPromises = [];
+
+        for (let i = 0; i < dndResources.length; i++) {
+          const resource = dndResources[i];
+          if (resource.type === 'application/zip') {
+            const file = await new Promise(resolve => resource.webkitGetAsEntry().file(resolve));
+            const unzipped = await JSZip.loadAsync(file);
+            const zipRenameMap = new Map();
+
+            for (const relativePath in unzipped.files) {
+              const zipEntry = unzipped.files[relativePath];
+              const { parentPath, status } = getZipParentDirectory(relativePath, zipRenameMap);
+
+              if (zipEntry.dir) {
+                uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files, zipRenameMap));
+              } else {
+                uploadPromises.push(processFile(zipEntry, parentPath, status));
+              }
+            }
+          } else {
+            const entry = resource.webkitGetAsEntry();
+            if (entry) {
+              if (entry.isDirectory) {
+                uploadPromises.push(processDirectory(entry, jsTreeRootFolder, resourceImportStatus.VALID, null, null));
+              } else {
+                uploadPromises.push(processFile(entry, jsTreeRootFolder, resourceImportStatus.VALID));
+              }
+            } else {
+              // Handle unknown resource error
+            }
+          }
+        }
+
+        await Promise.all(uploadPromises);
+        refreshJsTrees();
+      }
+
+      function isJSZipEntry(entry) {
+        return entry && typeof entry.dir === "boolean" && entry.options !== undefined;
+      }
+
+      function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => resolve(event.target.result);
+          reader.onerror = () => reject(`Error reading file: ${file.name}`);
+          reader.readAsText(file);
+        });
+      }
+
+      function getFile(metadataEntry) {
+        return new Promise((resolve, reject) => {
+          metadataEntry.file(resolve, reject);
+        });
+      }
+
+      async function readMetadata(metadataEntry) {
+        try {
+          const file = await getFile(metadataEntry);
+          const metadata = await readFileAsText(file);
+          return metadata;
+        } catch (err) {
+          console.error("Error processing metadata entry:", err);
+        }
+      }
+
+      async function processDirectory(directoryEntry, parentDirectory, status, otherEntries, folderRenameMap = null) {
         function replaceAfterLastSlash(str, newString) {
           const lastSlashIndex = str.lastIndexOf('/');
 
@@ -456,370 +497,491 @@ define([
             return newString;
           }
 
-          return str.substring(0, lastSlashIndex + 1) + newString;
+          return str.substring(0, lastSlashIndex + 1) + newString + '/';
         }
 
-        const uploadPromises = [];
+        return new Promise(async (resolve, reject) => {
+          const isZipEntry = isJSZipEntry(directoryEntry);
+          const isFse = directoryEntry instanceof FileSystemDirectoryEntry;
+          const directoryName = isFse ? directoryEntry.name : directoryEntry.name.slice(0, -1).split('/').pop();
+          let resolvedFullPath = parentDirectory.endsWith('/') ? parentDirectory + directoryName : parentDirectory + '/' + directoryName;
+          // let resolvedFullPath = parentDirectory.endsWith('/') ? parentDirectory : parentDirectory + '/';
+          let resolvedDirName = directoryName;
+          let resolvedDirStatus = status;
+          let cedarDescription = ''
 
-        for (let i = 0; i < uploadedResources.length; i++) {
-          let entry = uploadedResources[i].webkitGetAsEntry();
-          if (entry) {
-            const [name, alreadyPresent] = generateNewResourceProps(entry);
-            let status = alreadyPresent ? 'conflicting' : 'valid';
-            if (entry.isDirectory) {
-              uploadPromises.push(processDirectory(entry, replaceAfterLastSlash(entry.fullPath, name), name, '#', status));
-            } else if (entry.isFile) {
-              const file = uploadedResources[i].getAsFile();
-              // if (file.type !== 'application/json') {
-              //   status = 'invalid';
-              // }
-              uploadPromises.push(processFile(entry, "#", status));
+          const { resolvedName, resolvedStatus } = await prepareResource(directoryEntry, CONST.resourceType.FOLDER, parentDirectory, vm.uploadedResources, folderRenameMap);
+          resolvedDirName = resolvedName;
+          if (resolvedStatus !== resourceImportStatus.VALID) {
+            resolvedFullPath = replaceAfterLastSlash(resolvedFullPath, resolvedDirName);
+            resolvedDirStatus = resolvedStatus;
+          }
+
+          if (!resolvedFullPath.endsWith('/')) {
+            resolvedFullPath += '/';
+          }
+
+          // Find the hidden metadata file for the folder and set the description from it
+          if (isZipEntry) {
+            const dirNameWithFolder = directoryEntry.name.slice(0, -1);
+            const folderMetadataName = replaceAfterLastSlash(dirNameWithFolder, '.' + resolvedDirName + '_metadata.json');
+            for (const zipEntryName in otherEntries) {
+              if (zipEntryName === folderMetadataName) {
+                try {
+                  const metadataJson = await otherEntries[zipEntryName].async("string");
+                  const metadata = parseJSON(metadataJson);
+                  if (metadata['schema:description']) {
+                    cedarDescription = metadata['schema:description'];
+                  }
+                } catch (error) {
+                  console.error(`Error reading metadata for ${zipEntryName}:`, error);
+                }
+                break; // No need to check further as only one match is possible
+              }
+            }
+          } else if (otherEntries !== null) {
+            if (!isFse) {
+              const dirNameWithFolder = directoryEntry.name.slice(0, -1);
+              const folderMetadataName = replaceAfterLastSlash(dirNameWithFolder, '.' + resolvedDirName + '_metadata.json')
+              for (const entryName in otherEntries) {
+                if (entryName === folderMetadataName) {
+                  const metadata = await readFileAsText(otherEntries[entryName]['_data']);
+                  const parsedMeta = parseJSON(metadata)
+                  if (parsedMeta["schema:description"]) {
+                    cedarDescription = parsedMeta["schema:description"];
+                  }
+                  break;
+                }
+              }
             } else {
-              //TODO: throw error unkown resource
-            }
-          }
-        }
-
-        function generateNewResourceProps(resource) {
-          // check if the resource is already present in CEDAR
-          // if present mark it conflicting
-          //
-          // if the resource is already present in CEDAR 
-          // or it is a duplicate among the uploaded files,
-          // generate new name for the resource with a suffix
-          function preProcessResource(name, existingNames, extension = null) {
-            console.log('existingNames', existingNames, 'name', name)
-            let newName = name;
-            let suffix = 1;
-
-            while (existingNames.includes(newName)) {
-              newName = `${name}_${suffix}`;
-              suffix++;
-            }
-
-            const alreadyPresent = suffix > 1;
-            if (alreadyPresent && extension) {
-              newName = newName + extension;
-            }
-
-            console.log("generatedName", newName, "alreadyPresent", alreadyPresent)
-
-            return [newName, alreadyPresent];
-          }
-
-          if (resource.isFile) {
-            const existingFileNames = []
-            vm.alreadyPresentCedarResources.files.forEach(fileName => existingFileNames.push(fileName.split('.json')[0]))
-            vm.uploadedResources.forEach(res => {
-              if (res.type === 'file') {
-                existingFileNames.push(res.text.split('.json')[0]);
+              const folderMetadataName = '.' + directoryName + '_metadata.json';
+              for (const metadataEntry of otherEntries) {
+                if (metadataEntry.name === folderMetadataName) {
+                  cedarDescription = metadataEntry['schema:description'];
+                  const metadata = await readMetadata(metadataEntry);
+                  const parsedMeta = parseJSON(metadata)
+                  if (parsedMeta["schema:description"]) {
+                    cedarDescription = parsedMeta["schema:description"];
+                  }
+                  break;
+                }
               }
-            });
-            return preProcessResource(resource.name.split('.json')[0], existingFileNames, '.json');
-          } else {
-            const existingFolderNames = []
-            vm.alreadyPresentCedarResources.folders.forEach(folderName => existingFolderNames.push(folderName))
-            vm.uploadedResources.forEach(res => {
-              if (res.type === 'folder') {
-                existingFolderNames.push(res.text);
-              }
-            });
-            return preProcessResource(resource.name, existingFolderNames);
+            }
           }
-        }
 
-        // keep this in case we want to flag duplicated uplads as conflicting files too
-        // function generateNewResourceProps(resource) {
-        //   function generateUniqueName(name, existingNames, extension = null) {
-        //     console.log('existingNames', existingNames, 'name', name)
-        //     let newName = name;
-        //     let suffix = 1;
+          const newDirectory = {
+            id: resolvedFullPath, // Unique ID for the resource
+            parent: parentDirectory, // Parent directory ID
+            text: resolvedDirName, // Display name
+            icon: "fa " + arpService.getResourceIcon(CONST.resourceType.FOLDER), // use the same CEDAR like icon
+            // li_attr: { "title": "This is a folder" },
+            // "icon": "jstree-folder", // Use jsTree's folder icon
+            type: "folder", // Custom type to indicate folders
+            resourceType: "folder", // resourceType of the directory
+            children: [], // No child resource needs to be cached in this case
+            status: resolvedDirStatus, // Status of the directory
+            cedarDescription: cedarDescription // CEDAR description of the directory
+          };
 
-        //     while (existingNames.includes(newName)) {
-        //       newName = `${name}_${suffix}`;
-        //       suffix++;
-        //     }
+          vm.uploadedResources.push(newDirectory);
 
-        //     const alreadyPresent = suffix > 1;
-        //     if (alreadyPresent && extension) {
-        //       newName = newName + extension;
-        //     }
+          // if the folderRenameMap is not null that means the input was either a JSZip or a File list uploaded via the folder uploader and not via drag and drop
+          // in both cases the file and folder paths are processed separately
+          if (folderRenameMap === null) {
+            let reader = directoryEntry.createReader();
 
-        //     console.log("generatedName", newName, "alreadyPresent", alreadyPresent)
+            await new Promise((resolve, reject) => {
+              reader.readEntries(async function (entries) {
+                const entryPromises = entries.map(entry => {
+                  if (entry.isDirectory) {
+                    return processDirectory(entry, resolvedFullPath, resolvedDirStatus, entries, folderRenameMap);
+                  } else {
+                    return processFile(entry, resolvedFullPath, resolvedDirStatus);
+                  }
+                });
+                await Promise.all(entryPromises);
+                resolve();
+              }, reject);
+            });
+          }
 
-        //     return [newName, alreadyPresent];
-        //   }
-
-        //   if (resource.isFile) {
-        //     const existingFileNames = []
-        //     vm.alreadyPresentCedarResources.files.forEach(fileName => existingFileNames.push(fileName.split('.json')[0]))
-        //     vm.uploadedResources.forEach(res => {
-        //       if (res.type === 'file') {
-        //         existingFileNames.push(res.text.split('.json')[0]);
-        //       }
-        //     });
-        //     return generateUniqueName(resource.name.split('.json')[0], existingFileNames, '.json');
-        //   } else {
-        //     const existingFolderNames = []
-        //     vm.alreadyPresentCedarResources.folders.forEach(folderName => existingFolderNames.push(folderName))
-        //     vm.uploadedResources.forEach(res => {
-        //       if (res.type === 'folder') {
-        //         existingFolderNames.push(res.text);
-        //       }
-        //     });
-        //     return generateUniqueName(resource.name, existingFolderNames);
-        //   }
-        // }
-
-        await Promise.all(uploadPromises);
-        refreshJsTrees();
-        console.log("DONEZO 22222", vm.uploadedResources);
-      }
-
-      async function processFile(fileEntry, parentDirectory, status) {
-        return new Promise((resolve, reject) => {
-          const fileName = fileEntry.name;
-          const fileStatus = fileName.split('.').pop().toLowerCase() !== 'json' ? 'invalid' : status;
-
-            fileEntry.file(function (file) {
-              const reader = new FileReader();
-
-              reader.onload = function (event) {
-                const fileContent = event.target.result;
-                console.log("File Content:", fileContent);
-
-                const newFile = {
-                  "id": parentDirectory + '/' + fileName,  // Unique ID for file
-                  "parent": parentDirectory,  // Parent directory ID
-                  "text": fileName,      // Display name
-                  "icon": "jstree-file",  // Use jsTree's file icon
-                  "type": "file",          // Custom type to identify as file
-                  "status": fileStatus,
-                  "content": fileContent
-                };
-                console.log(newFile)
-                resolve(vm.uploadedResources.push(newFile));
-              };
-
-              reader.readAsText(file);
-            })
-
+          resolve();
         });
       }
 
-      async function processDirectory(directoryEntry, fullPath, name, parentDirectory, status) {
-        const newDirectory = {
-          "id": fullPath,
-          "parent": parentDirectory,
-          "text": name,
-          "icon": "jstree-folder",
-          "type": "folder",
-          "children": [],
-          "status": status
-        };
+      async function processFile(fileEntry, parentDirectory, status) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            // Determine the type of fileEntry (FileSystemEntry or JSZip entry)
+            const notFse = isJSZipEntry(fileEntry);
+            const fileAlreadyPresent = fileEntry['_data'] instanceof File;
+            const fileName = notFse ? fileEntry.name.split('/').pop() : fileAlreadyPresent ? fileEntry['_data'].name : fileEntry.name;
 
-        console.log("newDir", newDirectory)
+            if (fileName.startsWith(".") || fileName.startsWith("__MACOSX")) {
+              return resolve(); // Skip hidden files
+            }
 
-        return new Promise((resolve, reject) => {
-          $timeout(async function () {
+            let resolvedFileStatus =
+              status === resourceImportStatus.DUPLICATE
+                ? resourceImportStatus.DUPLICATE
+                : (fileName.split('.').pop().toLowerCase() !== 'json' ? resourceImportStatus.UNSUPPORTED : status);
 
-            vm.uploadedResources.push(newDirectory);
+            let resolvedFileName = fileName;
 
-            let reader = directoryEntry.createReader();
-            reader.readEntries(async function (entries) {
-              const entryPromises = entries.map(entry => {
-                if (entry.isDirectory) {
-                  return processDirectory(entry, entry.fullPath, entry.name, fullPath, status);
-                } else {
-                  return new Promise(async (resolve, reject) => {
-                    await processFile(entry, fullPath, status);
-                    resolve();
-                    // entry.file(async function (file) {
-                    //   const fileStatus = file.name.split('.').pop().toLowerCase() !== 'json' ? 'invalid' : status;
-                    //   await processFile(file.name, fullPath, fileStatus);
-                    //   resolve();
-                    // });
-                  });
-                }
-              });
+            const addFileToResources = async (fileContent = null) => {
+              const resourceType =
+                resolvedFileStatus !== resourceImportStatus.UNSUPPORTED && fileContent !== null
+                  ? arpService.getContentType(fileContent)
+                  : null;
 
-              await Promise.all(entryPromises);
-              resolve();
-            });
+              // If the type is still null, the file is unsupported, but if its already a duplicate is does not matter
+              if (resourceType === null && resolvedFileStatus !== resourceImportStatus.DUPLICATE) {
+                resolvedFileStatus = resourceImportStatus.UNSUPPORTED;
+              }
+
+              if (resolvedFileStatus !== resourceImportStatus.UNSUPPORTED && resolvedFileStatus !== resourceImportStatus.DUPLICATE) {
+                const fileNameWithoutExtension = fileName.split('.json').shift();
+
+                const { resolvedName, resolvedStatus } = await prepareResource(
+                  fileContent,
+                  resourceType,
+                  parentDirectory,
+                  vm.uploadedResources
+                );
+
+                resolvedFileName = resolvedName;
+                resolvedFileStatus = resolvedStatus;
+              }
+
+              const fileId = parentDirectory.endsWith("/")
+                ? `${parentDirectory}${resolvedFileName}`
+                : `${parentDirectory}/${resolvedFileName}`;
+
+              const newFile = {
+                id: fileId,
+                parent: parentDirectory,
+                text: resolvedFileName,
+                icon: "fa " + arpService.getResourceIcon(resourceType),
+                type: "file",
+                status: resolvedFileStatus,
+                content: fileContent,
+                resourceType: resourceType,
+                //li_attr: { title: "This is a file" },
+                //a_attr: { "data-tooltip": "Template" },
+                cedarId: fileContent['@id']
+              };
+
+              vm.uploadedResources.push(newFile);
+            };
+
+            if (resolvedFileStatus === resourceImportStatus.UNSUPPORTED) {
+              // Skip reading content but add file with 'UNSUPPORTED' status
+              await addFileToResources();
+            } else if (notFse) {
+              // Handle JSZip entry
+              try {
+                const fileContent = await fileEntry.async("string");
+                await addFileToResources(parseJSON(fileContent));
+              } catch (error) {
+                console.error(`Error reading JSZip entry: ${error}`);
+                throw new Error(`Error reading JSZip entry: ${error}`);
+              }
+            } else {
+              let file;
+              if (fileAlreadyPresent) {
+                // handle resource that was uploaded via the file uploader
+                // in this case we create a JSZip like object from the uploaded data in the createJSZipLikeStructure function
+                file = fileEntry['_data']
+              } else {
+                // Handle FileSystemEntry
+                file = await new Promise((resolve, reject) => {
+                  fileEntry.file(
+                    (file) => resolve(file),
+                    (error) => reject(`Error getting file: ${error}`)
+                  );
+                });
+              }
+
+              try {
+                const fileContent = await readFileAsText(file);
+                await addFileToResources(parseJSON(fileContent));
+              } catch (error) {
+                console.error(error);
+                throw new Error(error);
+              }
+            }
+            resolve();
+          } catch (error) {
+            console.error("Error processing file:", error);
+            reject(error);
           }
-          )
-        }, 100);
-      };
+        });
+      }
 
-      // before promises
-      // async function checkUploads(uploadedFiles) {
-      //   // Loop through dropped items
-      //   for (let i = 0; i < uploadedFiles.length; i++) {
-      //     let item = uploadedFiles[i].webkitGetAsEntry();
-      //     if (item) {
-      //       if (item.isDirectory) {
-      //         console.log("Folder dropped:", item);
-      //         await processDirectory(item, '#'); // Handle folder
-      //       } else if (item.isFile) {
-      //         let file = uploadedFiles[i].getAsFile();
-      //         console.log("File dropped:", file);
-      //         await processFile(file, "#"); // Handle file
-      //       }
-      //     }
-      //   }
-      //   refreshJsTree();
-      // }
+      function setParentFolderStatus(parentFolderId, newStatus) {
+        const parentFolder = vm.uploadedResources.find(resource => resource.id === parentFolderId);
+        if (parentFolder) {
+          parentFolder.status = newStatus;
+        }
+        if (parentFolder.parent !== jsTreeRootFolder) {
+          setParentFolderStatus(parentFolder.parent, newStatus)
+        }
+      }
 
-      // async function processFile(file, parentDirectory) {
+      // resolve name duplicates
+      // if a resource is being reuploaded with the same name it gets a new suffixed name like: template -> template_1
+      const generateNewName = (name, alreadyPresentNames) => {
+        let newName = name;
+        let i = 1;
+        while (alreadyPresentNames.includes(newName)) {
+          newName = name.endsWith('/') ? `${name.slice(0, -1)}_${i}` : `${name}_${i}`;
+          i++;
+        }
 
-      //   let reader = new FileReader();
-      //   reader.onload = function (e) {
-      //     // Optionally handle file contents here
-      //   };
-      //   reader.readAsText(file); // Adjust based on file type
+        return newName;
+      }
 
-      //   const jsTreeInstance = $('#jstree').jstree(true);
-      //   const parentDirId = parentDirectory;
+      // Replaces repo domains, resolves name duplicates, sets import status and saves the CEDAR id for already present resources
+      async function prepareResource(entry, entryType, entryParent, uploadedResources, folderRenameMap = null, fileExtension = '.json') {
+        // The name of the resource in CEDAR
+        let cedarName = ''
 
-      //   // Introduce a small delay to ensure jsTree updates the newly created directory
-      //   $timeout(function () {
-      //     const parentNode = jsTreeInstance.get_node(parentDirId);
+        const resourceName = (() => {
+          let name;
+          if (entryType === CONST.resourceType.FOLDER) {
+            if (entry instanceof FileSystemDirectoryEntry) {
+              name = entry.name;
+            } else {
+              name = entry.name.slice(0, -1).split('/').pop();
+            }
+          } else {
+            name = entry['schema:name'];
+          }
+          return name.endsWith('/') ? name.slice(0, -1) : name;
+        })();
 
-      //     if (parentNode) {
-      //       const newFile = {
-      //         "id": file.name,        // Unique ID for file
-      //         "parent": parentDirId,  // Parent directory ID
-      //         "text": file.name,      // Display name
-      //         "icon": "jstree-file",  // Use jsTree's file icon
-      //         "type": "file"          // Custom type to identify as file
-      //       };
+        let status = resourceImportStatus.VALID;
+        let newName = resourceName;
+        if (entryType !== CONST.resourceType.FOLDER) {
+          replaceRepoDomain(entry, vm.repoDomain)
 
-      //       vm.uploadedResources.push(newFile);
+          // Check against the already existing CEDAR resources first
+          try {
+            const resReport = await arpService.getResourceReportById(entry['@id'], entryType);
+            status = resourceImportStatus.CONFLICTING
+            setParentFolderStatus(entryParent, status)
+            if (resReport['schema:name'] !== entry['schema:name']) {
+              cedarName = resReport['schema:name']
+            }
+          } catch (e) {
+            console.log(e)
+          }
 
-      //       // jsTreeInstance.create_node(parentNode, newFile, "last");
-      //     } else {
-      //       //TODO: add error
-      //       console.log("Parent directory still not found for file:", file.name);
-      //     }
+          const alreadyPresentResourceNames = [];
 
-      //     // For debugging: Check the current jsTree structure
-      //     const treeStructure = jsTreeInstance.get_json('#', { flat: false });
-      //     console.log("Current jsTree structure FILE:", JSON.stringify(treeStructure, null, 2));
-      //   }, 100); // Adding a slight delay to allow jsTree to update
-      // }
+          // Further check against the uploaded resources, if the resource is already present,
+          // that means the user tried to upload the same resource multiple times and the system will reject it
+          // Collect names of resources that match the @id
+          uploadedResources
+            .filter(res => res.cedarId === entry['@id'])
+            .forEach(res => {
+              // Remove the extension from the uploaded resource
+              alreadyPresentResourceNames.push(res.text.split('.json')[0]);
+            });
 
-      // async function processDirectory(directoryEntry, parentDirectory) {
-      //   const jsTreeInstance = $('#jstree').jstree(true);
-      //   const newDirectory = {
-      //     "id": directoryEntry.fullPath, // Unique ID for the directory
-      //     "parent": parentDirectory,                 // Parent directory ID
-      //     "text": directoryEntry.name,               // Display name
-      //     "icon": "jstree-folder",                   // Use jsTree's folder icon
-      //     "type": "folder",
-      //     "children": []
-      //   };
+          // check if the resource is already uploaded with the same name
+          if (alreadyPresentResourceNames.includes(resourceName)) {
+            newName = generateNewName(resourceName, alreadyPresentResourceNames);
+            status = resourceImportStatus.DUPLICATE;
+          }
 
-      //   const parentDirId = parentDirectory || '#'; // Handle root directories
-      //   $timeout(function () {
-      //     const parentNode = jsTreeInstance.get_node(parentDirId);
+          // For better readability, add the file extension to the resource name
+          newName += fileExtension;
+          if (cedarName !== '' && status === resourceImportStatus.CONFLICTING) {
+            newName += ' (' + cedarName + ')'
+          }
+        } else {
+          console.log('entryParent', entryParent)
+          // Check if any folder among the vm.alreadyPresentCedarResources (the CEDAR resources in the destination folder) has the same name as the current entry
+          if (entryParent === jsTreeRootFolder) {
+            const folderNames = vm.alreadyPresentCedarResources.filter(res => res.resourceType === CONST.resourceType.FOLDER).map(res => res['schema:name']);
+            if (folderNames.includes(newName)) {
+              status = resourceImportStatus.CONFLICTING;
+              const generatedName = generateNewName(newName, folderNames);
+              // if (folderRenameMap !== null) {
+              //   folderRenameMap.set(newName, { name: generatedName, status: status });
+              // }
+              newName = generatedName;
+            }
+          }
 
-      //     if (parentNode) {
-      //       vm.uploadedResources.push(newDirectory);
+          // Check if any folder among the vm.uploadedResources has the same id as the fullPath of the current entry
+          const mappedName = folderRenameMap && folderRenameMap.has(resourceName) ? folderRenameMap.get(resourceName).name : newName;
+          const fullPath = entryParent.endsWith('/') ? entryParent + mappedName : entryParent + '/' + mappedName + '/';
+          const uploadedFolder = vm.uploadedResources.find(resource => resource.id === fullPath && resource.resourceType === CONST.resourceType.FOLDER);
+          if (uploadedFolder) {
+            status = resourceImportStatus.DUPLICATE;
+            const alreadyPresentFolderNames = vm.uploadedResources
+              .filter(res => res.resourceType === CONST.resourceType.FOLDER)
+              .map(res => {
+                if (folderRenameMap && folderRenameMap.has(res.text)) {
+                  return folderRenameMap.get(res.text).name;
+                }
+                return res.text;
+              });
+            const generatedName = generateNewName(mappedName, alreadyPresentFolderNames);
+            newName = generatedName;
+          }
+          if (folderRenameMap !== null) {
+            folderRenameMap.set(resourceName, { name: newName, status: status });
+          }
+        }
+        return { resolvedName: newName, resolvedStatus: status };
+      }
 
-      //       let reader = directoryEntry.createReader();
-      //       reader.readEntries(function (entries) {
-      //         for (let i = 0; i < entries.length; i++) {
-      //           if (entries[i].isDirectory) {
-      //             processDirectory(entries[i], directoryEntry.fullPath); // Recursive call for nested directories
-      //           } else {
-      //             entries[i].file(function (file) {
-      //               // Process files only after confirming the parent directory exists
-      //               processFile(file, directoryEntry.fullPath); // Handle file within folder
-      //             });
-      //           }
-      //         }
-      //       });
+      function parseJSON(input) {
+        let parsedJSON = null;
+        try {
+          if (typeof input === "string") {
+            parsedJSON = JSON.parse(input);
+          } else if (input instanceof ArrayBuffer) {
+            // Decode the ArrayBuffer into a string
+            const decoder = new TextDecoder("utf-8");
+            const jsonString = decoder.decode(input);
+            parsedJSON = JSON.parse(jsonString);
+          }
 
-      //       //todo: this is working, should refact after checking is implemented
-
-      //       // Add the directory and process its contents after it's added
-      //       // $('#jstree').jstree(true).create_node(parentDirId, newDirectory, "last", function () {
-
-      //       //   // After directory is created, read its contents
-      //       //   let reader = directoryEntry.createReader();
-      //       //   reader.readEntries(function (entries) {
-      //       //     for (let i = 0; i < entries.length; i++) {
-      //       //       if (entries[i].isDirectory) {
-      //       //         processDirectory(entries[i], directoryEntry.fullPath); // Recursive call for nested directories
-      //       //       } else {
-      //       //         entries[i].file(function (file) {
-      //       //           // Process files only after confirming the parent directory exists
-      //       //           processFile(file, directoryEntry.fullPath); // Handle file within folder
-      //       //         });
-      //       //       }
-      //       //     }
-      //       //   });
-      //       // });
-      //     } else {
-      //       //TODO: add error
-      //     }
-      //   }, 100);
-      // }
-
+          return parsedJSON;
+        } catch (error) {
+          console.error("Failed to parse JSON:", error);
+          return parsedJSON;
+        }
+      }
 
       function refreshJsTrees() {
         $timeout(function () {
-
-          //TODO: might refact to conflicting resources only
-          //TODO: check after suffixes done
-          const folderIds = new Set();
-          const validFiles = vm.uploadedResources.filter(function (item) {
-            if (item.type === 'file' && item.status === 'valid') {
-              return true;
-            } else if (item.type === 'folder') {
-              const containsValidFile = vm.uploadedResources.some(file => file.parent === item.id && file.status === 'valid');
-              if (containsValidFile && !folderIds.has(item.id)) {
-                console.log("valid folder", item.text)
-                folderIds.add(item.id);
-                return true;
+          function updateInvalidResourceParent(resource, parentId, invalidResources) {
+            const defaultParentId = jsTreeRootFolder + '/';
+            const newParentId = parentId.endsWith('/') ? defaultParentId + parentId : defaultParentId + parentId + '/';
+            const parentFolders = resource.parent.split('/').filter(Boolean).slice(1);
+            let currentPath = jsTreeRootFolder;
+            parentFolders.forEach(folder => {
+              currentPath += `/${folder}`;
+              const parentFolder = vm.uploadedResources.find(res => res.id === currentPath + '/');
+              if (parentFolder) {
+                const parentFolderClone = structuredClone(parentFolder);
+                parentFolderClone.parent = parentFolderClone.parent === jsTreeRootFolder ? parentFolderClone.parent.replace(jsTreeRootFolder, newParentId) : parentFolderClone.parent.replace(defaultParentId, newParentId);
+                parentFolderClone.id = parentFolderClone.id.replace(defaultParentId, newParentId);
+                addFileToMap(vm.invalidResourcesMap, parentFolderClone.id, parentFolderClone);
               }
+            });
+            const invalidRes = structuredClone(resource);
+            invalidRes.parent = invalidRes.parent === jsTreeRootFolder ? invalidRes.parent.replace(jsTreeRootFolder, newParentId) : invalidRes.parent.replace(defaultParentId, newParentId);
+            invalidRes.id = invalidRes.id.replace(defaultParentId, newParentId);
+            return invalidRes;
+          }
+
+          function addFileToMap(map, key, file) {
+            if (!map.has(key)) {
+              map.set(key, file);
+            }
+          }
+
+          function getFilesFromMap(map) {
+            return Array.from(map.values());
+          }
+
+          let addDuplicatedResFolder = true;
+          let addUnsupportedResFolder = true;
+          const duplicatedResFolderId = "duplicatedResFolderId"
+          const unsupportedResFolderId = "unsupportedResFolderId"
+
+          const duplicatedResFolder = {
+            id: jsTreeRootFolder + '/' + duplicatedResFolderId + '/', // Unique ID for the resource
+            parent: jsTreeRootFolder, // Parent directory ID
+            text: "Duplicated Resources", // Display name
+            icon: "fa fa-clone",
+            li_attr: { "title": "These resources are already included in the upload." }, // Tooltip
+            type: "folder", // jsTree type
+            resourceType: "folder", // CEDAR resource type
+            children: [], // Added by their parent property
+            status: null, // Import status, doesn't matter for this folder
+            cedarDescription: null // CEDAR description, doesn't matter for this folder
+          };
+
+          const unsupportedResFolder = {
+            id: jsTreeRootFolder + '/' + unsupportedResFolderId + '/',
+            parent: jsTreeRootFolder,
+            text: "Unsupported Resources",
+            icon: "fa fa-ban",
+            li_attr: { "title": "Resources that cannot be uploaded to CEDAR" },
+            type: "folder",
+            resourceType: "folder",
+            children: [],
+            status: null,
+            cedarDescription: null
+          }
+
+          function updateParentFoldersRecursively(parentFolderId, status) {
+            if (parentFolderId === jsTreeRootFolder + '/') {
+              return;
             }
 
-            return false;
-          });
+            const parentFolder = vm.uploadedResources.find(item => item.id === parentFolderId && item.type === 'folder');
+            if (parentFolder) {
+              if (status === resourceImportStatus.VALID) {
+                parentFolder.status = status;
+                addFileToMap(vm.validResourcesMap, parentFolderId, parentFolder);
+              } else if (status === resourceImportStatus.CONFLICTING) {
+                parentFolder.status = status;
+                addFileToMap(vm.conflictingResourcesMap, parentFolderId, parentFolder);
+              } else if (status === resourceImportStatus.DUPLICATE) {
+                parentFolder.status = status;
+                addFileToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
+              } else if (status === resourceImportStatus.UNSUPPORTED) {
+                parentFolder.status = status;
+                addFileToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
+              }
+              const directParent = parentFolderId.endsWith('/')
+                ? parentFolderId.substring(0, parentFolderId.lastIndexOf('/', parentFolderId.length - 2) + 1)
+                : parentFolderId.substring(0, parentFolderId.lastIndexOf('/') + 1);
+              updateParentFoldersRecursively(directParent, status);
+            }
+          }
 
-          const conflictingFiles = vm.uploadedResources.filter(function (item) {
-            if (item.status === 'conflicting') {
-              return true;
-            } else if (item.type === 'folder') {
-              const containsConflictingFile = vm.uploadedResources.some(file => file.parent === item.id && file.status === 'conflicting');
-              if (containsConflictingFile) {
-                return true;
+          vm.uploadedResources.forEach(item => {
+            if (item.type === 'file') {
+              // Process file based on status
+              if (item.status === resourceImportStatus.VALID) {
+                addFileToMap(vm.validResourcesMap, item.id, item);
+                updateParentFoldersRecursively(item.parent, item.status);
+              } else if (item.status === resourceImportStatus.CONFLICTING) {
+                addFileToMap(vm.conflictingResourcesMap, item.id, item);
+                updateParentFoldersRecursively(item.parent, item.status);
+              } else if (item.status === resourceImportStatus.DUPLICATE) {
+                item = updateInvalidResourceParent(item, duplicatedResFolderId, vm.invalidResourcesMap)
+                addFileToMap(vm.invalidResourcesMap, item.id, item);
+                if (addDuplicatedResFolder) {
+                  addFileToMap(vm.invalidResourcesMap, duplicatedResFolderId, duplicatedResFolder);
+                }
+                addDuplicatedResFolder = false;
+              } else if (item.status === resourceImportStatus.UNSUPPORTED) {
+                item = updateInvalidResourceParent(item, unsupportedResFolderId, vm.invalidResourcesMap)
+                addFileToMap(vm.invalidResourcesMap, item.id, item)
+                if (addUnsupportedResFolder) {
+                  addFileToMap(vm.invalidResourcesMap, unsupportedResFolderId, unsupportedResFolder);
+                }
+                addUnsupportedResFolder = false;
               }
             }
-            return false;
           });
 
-          const invalidFiles = vm.uploadedResources.filter(function (item) {
-            if (item.type === 'file' && item.status === 'invalid') {
-              return true;
-            } else if (item.type === 'folder') {
-              const containsInvalidFile = vm.uploadedResources.some(file => file.parent === item.id && file.status === 'invalid');
-              if (containsInvalidFile) {
-                return true;
-              }
-            }
-            return false;
-          });
+          // Update the import status
+          $scope.importStatus.validFiles = getFilesFromMap(vm.validResourcesMap);
+          $scope.importStatus.conflictingFiles = getFilesFromMap(vm.conflictingResourcesMap);
+          $scope.importStatus.invalidFiles = getFilesFromMap(vm.invalidResourcesMap);
 
-          $scope.importStatus.validFiles = validFiles;
-          $scope.importStatus.conflictingFiles = conflictingFiles;
-          $scope.importStatus.invalidFiles = invalidFiles;
-
-          console.log('CFFILES', $scope.importStatus.conflictingFiles);
-          console.log('VALIDFILES', $scope.importStatus.validFiles);
-          console.log('INVALIDFILES', $scope.importStatus.invalidFiles);
-
+          // Refresh jsTrees
           $('#jstree-valid').jstree(true).refresh();
           $('#jstree-conflicting').jstree(true).refresh();
           $('#jstree-invalid').jstree(true).refresh();
@@ -828,10 +990,9 @@ define([
 
       $scope.isFileAndDirectoryUploadSupported = supportsFileAndDirectoryUpload();
 
-      $scope.$watch('importStatus.active', function (newVal) {
-        console.log("Active tab changed to index:", newVal);
-      });
-
+      // $scope.$watch('importStatus.active', function (newVal) {
+      //   console.log("Active tab changed to index:", newVal);
+      // });
     }
 
     return {
@@ -845,6 +1006,8 @@ define([
       restrict: 'E',
       templateUrl: 'scripts/modal/cedar-arp-import-modal.directive.html'
     };
+
   }
-});
+}
+);
 

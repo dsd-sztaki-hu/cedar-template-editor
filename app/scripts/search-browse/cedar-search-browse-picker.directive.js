@@ -2514,7 +2514,10 @@ define([
           // open the 'ARP import' modal
           function showArpImportModal() {
             vm.arpImportModalVisible = true;
-            $scope.$broadcast('arpImportModalVisible', [vm.resources]);
+            const folderId = QueryParamUtilsService.getFolderId();
+            const homeFolderId = CedarUser.getHomeFolderId();
+            const canUpload = !(vm.canNotWrite || vm.canNotCreateDraft);
+            $scope.$broadcast('arpImportModalVisible', [vm.resources, folderId, homeFolderId, canUpload]);
           }
 
           vm.getFolderId = function () {
