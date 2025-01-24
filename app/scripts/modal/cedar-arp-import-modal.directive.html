@@ -136,11 +136,11 @@
 
           <span ng-if="!importStatus.submitted">
             <div class="tooltip-wrapper" data-tooltip="Select a method to resolve conflicts."
-              ng-class="{'disabled-button-wrapper': importStatus.conflictingFiles.length > 0 && arpimport.conflictResolutionMethod === null}">
+              ng-class="{'disabled-button-wrapper': !arpimport.areAllConflictsResolved}">
 
               <button type="button" ng-click="arpimport.startImport()" 
                 aria-label="Import" class="btn btn-save" translate
-                ng-class="{'disabled-button': importStatus.conflictingFiles.length > 0 && arpimport.conflictResolutionMethod === null}">
+                ng-class="{'disabled-button': !arpimport.areAllConflictsResolved}">
                 Import
               </button>
            </div>

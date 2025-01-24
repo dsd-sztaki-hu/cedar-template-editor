@@ -39,10 +39,13 @@ define([
       vm.validResourcesMap = new Map();
       vm.conflictingResourcesMap = new Map();
       vm.invalidResourcesMap = new Map();
+      vm.uploadableResourcesMap = new Map();
       vm.folderIds = new Map();
       vm.userCanUpload = false;
       vm.userHomeFolderId = null;
       vm.destinationFolderId = null;
+      vm.nodeActions = {};
+      vm.areAllConflictsResolved = false;
 
       vm.importFileStatus = {
         UPLOADING: { "value": "uploading", "message": "Uploading" },
@@ -111,7 +114,7 @@ define([
         if (!shouldImport) return;
 
         const resourceContent = resourceJson.content;
-        
+
         if (vm.conflictResolutionMethod === 'replace' && vm.conflictingResourcesMap.has(resourceJson.id)) {
           arpService.updateResource(resourceContent['@id'], resourceContent);
         } else {
@@ -151,6 +154,7 @@ define([
             // Use templateToReplace parent id as the CEDAR folder id for the folder contents
             const templateToReplaceReport = await arpService.getResourceReportById(templateToReplace.content['@id'], templateToReplace.resourceType);
             vm.folderIds.set(folderResource.id, templateToReplaceReport.pathInfo[templateToReplaceReport.pathInfo.length - 2]['@id']);
+            // TODO: add the description from the .json file
           } else {
             // Create folder if it is not already present in CEDAR
             const alreadyPresentFolders = await arpService.getFolderContents(vm.folderIds.get(folderResource.parent), [CONST.resourceType.FOLDER]);
@@ -214,62 +218,136 @@ define([
 
       // Function to initialize jsTree
       function initJsTrees() {
+
+        // Helper function to update child actions
+        function updateChildActions(node, action, tree) {
+          console.log('updateChildActions');
+          if (node.children && node.children.length > 0) {
+            node.children.forEach(childId => {
+              // Update the data-resolved attribute for this child node
+              const childNode = tree.get_node(childId);
+              if (childNode) {
+                // Update the action in memory
+                vm.uploadableResourcesMap.get(childId).resolveMethod = action;
+
+                // Update the dropdown value if it exists
+                const dropdown = $(`.node-action[data-node-id="${childId}"]`);
+                if (dropdown.length) {
+                  console.log('dropdown', dropdown);
+                  dropdown.val(action);
+                  dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
+                }
+
+                // Recursively update children
+                updateChildActions(childNode, action, tree);
+              }
+            });
+          }
+        }
+
         $timeout(function () {
           $.noConflict();
           vm.jsTreesInitialized = true;
-
-          // Add custom CSS for conflicting nodes
-          const styleId = 'jstree-custom-styles';
-          if (!document.getElementById(styleId)) {
-            const style = document.createElement('style');
-            style.id = styleId;
-            style.textContent = `
-              .jstree-node[data-conflicting="true"] > .jstree-anchor {
-                background-color: #e7d26e !important;
-              }
-            `;
-            document.head.appendChild(style);
-          }
 
           $('#jstree-valid').jstree({
             'core': {
               'check_callback': true,
               'data': function (obj, callback) {
-                const treeData = $scope.importStatus.validFiles.map(resource => ({
-                  ...resource,
-                  li_attr: {
-                    'data-conflicting': resource.status === resourceImportStatus.CONFLICTING ? 'true' : 'false'
-                  }
-                }));
-                callback(treeData);
-              }
-            }
-          })
-          .on('ready.jstree refresh.jstree', function(e, data) {
-            // Re-apply the data attributes after refresh
-            $scope.importStatus.validFiles.forEach(resource => {
-              if (resource.status === resourceImportStatus.CONFLICTING) {
-                const node = $(this).find('li').filter(function() {
-                  return this.id === resource.id;
+                const treeData = $scope.importStatus.validFiles.map(resource => {
+                  // Get the stored resolveMethod from uploadableResourcesMap
+                  const uploadableResource = vm.uploadableResourcesMap.get(resource.id);
+                  const hasResolveMethod = uploadableResource && uploadableResource.resolveMethod;
+
+                  // Check if parent has a resolveMethod
+                  const parentId = resource.parent;
+                  const parentResource = vm.uploadableResourcesMap.get(parentId);
+                  const hasParentResolveMethod = parentResource && parentResource.resolveMethod;
+
+                  return {
+                    ...resource,
+                    li_attr: {
+                      'data-conflicting': resource.status === resourceImportStatus.CONFLICTING ? 'true' : 'false',
+                      'data-resolved': (hasResolveMethod || hasParentResolveMethod) ? 'true' : 'false'
+                    },
+                    text: resource.status === resourceImportStatus.CONFLICTING ?
+                      `${resource.text}<select class="node-action" data-node-id="${resource.id}">
+                        <option value="">Action...</option>
+                        <option value="replace">Replace</option>
+                        <option value="copy">Copy</option>
+                        <option value="skip">Skip</option>
+                       </select>` : resource.text
+                  };
                 });
-                if (node.length) {
-                  node.attr('data-conflicting', 'true');
+                callback(treeData);
+              },
+              'themes': {
+                'icons': true
+              }
+            },
+            'plugins': ['html_data']
+          })
+            .on('ready.jstree refresh.jstree before_open.jstree', function (e, data) {
+              // Update all visible nodes based on their stored resolveMethod
+              $(this).find('.node-action').each(function() {
+                const $dropdown = $(this);
+                const nodeId = $dropdown.data('node-id');
+                const resource = vm.uploadableResourcesMap.get(nodeId);
+                const tree = $('#jstree-valid').jstree(true);
+                const node = tree.get_node(nodeId);
+                
+                // Check parent's resolveMethod
+                const parentId = node.parent;
+                const parentResource = vm.uploadableResourcesMap.get(parentId);
+                const parentResolveMethod = parentResource && parentResource.resolveMethod;
+                
+                // Only update from parent if the node has never had a resolveMethod set
+                if (parentResolveMethod && resource && resource.resolveMethod === undefined) {
+                  $dropdown.val(parentResolveMethod);
+                  $dropdown.closest('.jstree-node').attr('data-resolved', 'true');
+                  // Update the resource's resolveMethod to match parent
+                  resource.resolveMethod = parentResolveMethod;
+                } else if (resource) {
+                  // Respect the node's own resolveMethod, even if it's empty
+                  $dropdown.val(resource.resolveMethod || '');
+                  $dropdown.closest('.jstree-node').attr('data-resolved', resource.resolveMethod ? 'true' : 'false');
                 }
+
+                // Remove existing handler to prevent duplicates
+                $dropdown.off('change').on('change', function (e) {
+                  e.stopPropagation();
+                  const action = $(this).val();
+
+                  // Store the action for this node and update its resolved state
+                  vm.uploadableResourcesMap.get(nodeId).resolveMethod = action;
+                  $dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
+
+                  // Handle child nodes if needed
+                  const tree = $('#jstree-valid').jstree(true);
+                  const node = tree.get_node(nodeId);
+                  if (node.children && node.children.length > 0) {
+                    updateChildActions(node, action, tree);
+                  }
+                  
+                  // Check if all conflicts are now resolved
+                  checkConflictResolution();
+
+                  // Since we're outside Angular's digest cycle, we need to trigger it
+                  $scope.$apply();
+                });
+              });
+            })
+            .on('dragover', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+            })
+            .on('drop', async function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+              const items = event.originalEvent.dataTransfer.items;
+              if (items) {
+                await handleDnd(items);
               }
             });
-          })
-          .on('dragover', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-          })
-          .on('drop', async function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const items = event.originalEvent.dataTransfer.items;
-            if (items) {
-              await handleDnd(items);
-            }
-          });
           $('#jstree-conflicting').jstree({
             'core': {
               'check_callback': true,
@@ -314,6 +392,22 @@ define([
           event.preventDefault();
           event.stopPropagation();
         });
+      }
+      
+      function checkConflictResolution() {
+        let allResolved = true;
+
+        for (const [id, resource] of vm.uploadableResourcesMap) {
+          if (resource.status === resourceImportStatus.CONFLICTING) {
+            if (!resource.resolveMethod) {
+              allResolved = false;
+              break;
+            }
+          }
+        }
+
+        console.log('allResolved', allResolved, vm.uploadableResourcesMap);
+        vm.areAllConflictsResolved = allResolved;
       }
 
       $scope.$on('arpImportModalVisible', function (event, params) {
@@ -891,7 +985,6 @@ define([
 
       function refreshJsTrees() {
         $timeout(function () {
-          const uploadableResourcesMap = new Map();
           function updateInvalidResourceParent(resource, parentId, invalidResources) {
             const defaultParentId = jsTreeRootFolder + '/';
             const newParentId = parentId.endsWith('/') ? defaultParentId + parentId : defaultParentId + parentId + '/';
@@ -914,12 +1007,16 @@ define([
           }
 
           function addResourceToMap(map, id, resource) {
+            if (resource.status === resourceImportStatus.CONFLICTING) {
+              resource.resolveMethod = null;
+            }
             if (!map.has(id)) {
               map.set(id, resource);
             } else if (map.has(id)) {
               const existingResource = map.get(id);
               if (existingResource.status === resourceImportStatus.VALID && resource.status === resourceImportStatus.CONFLICTING) {
                 existingResource.status = resourceImportStatus.CONFLICTING;
+                existingResource.resolveMethod = null;
               }
             }
           }
@@ -968,10 +1065,10 @@ define([
             if (parentFolder) {
               if (status === resourceImportStatus.VALID) {
                 parentFolder.status = status;
-                addResourceToMap(uploadableResourcesMap, parentFolderId, parentFolder);
+                addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
               } else if (status === resourceImportStatus.CONFLICTING) {
                 parentFolder.status = status;
-                addResourceToMap(uploadableResourcesMap, parentFolderId, parentFolder);
+                addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
               } else if (status === resourceImportStatus.DUPLICATE) {
                 parentFolder.status = status;
                 addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
@@ -989,11 +1086,8 @@ define([
           vm.uploadedResources.forEach(item => {
             if (item.type === 'file') {
               // Process file based on status
-              if (item.status === resourceImportStatus.VALID) {
-                addResourceToMap(uploadableResourcesMap, item.id, item);
-                updateParentFoldersRecursively(item.parent, item.status);
-              } else if (item.status === resourceImportStatus.CONFLICTING) {
-                addResourceToMap(uploadableResourcesMap, item.id, item);
+              if (item.status === resourceImportStatus.VALID || item.status === resourceImportStatus.CONFLICTING) {
+                addResourceToMap(vm.uploadableResourcesMap, item.id, item);
                 updateParentFoldersRecursively(item.parent, item.status);
               } else if (item.status === resourceImportStatus.DUPLICATE) {
                 item = updateInvalidResourceParent(item, duplicatedResFolderId, vm.invalidResourcesMap)
@@ -1014,11 +1108,11 @@ define([
           });
 
           // Update the import status
-          $scope.importStatus.validFiles = getFilesFromMap(uploadableResourcesMap);
+          $scope.importStatus.validFiles = getFilesFromMap(vm.uploadableResourcesMap);
           $scope.importStatus.conflictingFiles = getFilesFromMap(vm.conflictingResourcesMap);
           $scope.importStatus.invalidFiles = getFilesFromMap(vm.invalidResourcesMap);
 
-          console.log('uploadableResourcesMap', uploadableResourcesMap)
+          console.log('uploadableResourcesMap', vm.uploadableResourcesMap)
 
           // Refresh jsTrees
           $('#jstree-valid').jstree(true).refresh();

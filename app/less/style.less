@@ -3698,7 +3698,7 @@ section.dashboard-elements {
       display: block;
       margin-top: -7px;
     }
-    .ng-valid:not(.ng-empty) ~ .input-indicator-icons .cedar-svg-check-circle {
+    .ng-valid:not(.empty) ~ .input-indicator-icons .cedar-svg-check-circle {
       display: block;
       margin-top: -7px;
     }
@@ -9221,12 +9221,48 @@ div.resource-icon {
   }
   #jstree-valid, #jstree-invalid, #jstree-conflicting {
     width: 300px;           /* Fixed width */
-    max-width: 100%;        /* Prevents exceeding the parent’s width */
+    max-width: 100%;        /* Prevents exceeding the parent's width */
     overflow-x: auto;       /* Horizontal scroll if content overflows */
     overflow-y: auto;       /* Vertical scroll to manage content height */
     height: 300px;
     max-height: 95%;
     border: 2px solid #ccc;
+
+    // Remove hover and click effects
+    .jstree-node,
+    .jstree-anchor {
+      box-shadow: none !important;
+      background: none !important;
+
+      &:hover,
+      &.jstree-hovered,
+      &.jstree-clicked {
+        box-shadow: none !important;
+        background: none !important;
+      }
+
+      .node-action {
+        margin-left: 5px;
+        height: 22px;
+        background: white;
+        border: 1px solid #ccc;
+      }
+    }
+
+    .jstree-node {
+      &[data-conflicting="true"] {
+        > .jstree-anchor {
+          background-color: #e7d26e !important;
+        }
+        
+        // Add green background when the conflict resolve method is selected
+        &[data-resolved="true"] {
+          > .jstree-anchor {
+            background-color: #a3d39c !important;
+          }
+        }
+      }
+    }
   }
   #jstree-valid {
     border: 2px dashed #ccc;
