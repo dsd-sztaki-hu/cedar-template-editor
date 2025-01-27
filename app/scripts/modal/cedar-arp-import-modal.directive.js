@@ -27,7 +27,6 @@ define([
       $scope.importStatus = {
         'active': 0,
         'validFiles': [],
-        'conflictingFiles': [],
         'invalidFiles': []
       };
 
@@ -46,14 +45,6 @@ define([
       vm.destinationFolderId = null;
       vm.nodeActions = {};
       vm.areAllConflictsResolved = false;
-
-      vm.importFileStatus = {
-        UPLOADING: { "value": "uploading", "message": "Uploading" },
-        UPLOAD_COMPLETE: { "value": "uploaded", "message": "Queued" },
-        IMPORTING: { "value": "importing", "message": "Importing" },
-        IMPORT_COMPLETE: { "value": "complete", "message": "Complete" },
-        ERROR: { "value": "error", "message": "Error" },
-      };
 
       vm.importFileReport = {};
       $scope.isDragOver = false;
@@ -84,14 +75,36 @@ define([
         return UrlService.importCadsrForms(folderId);
       };
 
-      // Getter for conflict resolution method
-      vm.getConflictResolutionMethod = function () {
-        return vm.conflictResolutionMethod;
-      };
+      // Helper function to update child actions
+      function updateChildActions(node, action, tree) {
+        if (node.children && node.children.length > 0) {
+          node.children.forEach(childId => {
+            // Update the data-resolved attribute for this child node
+            const childNode = tree.get_node(childId);
+            if (childNode) {
+              // Update the action in memory
+              vm.uploadableResourcesMap.get(childId).resolveMethod = action;
 
-      // Setter for conflict resolution method
+              // Update the dropdown value if it exists
+              const dropdown = $(`.node-action[data-node-id="${childId}"]`);
+              if (dropdown.length) {
+                dropdown.val(action);
+                dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
+              }
+
+              // Recursively update children
+              updateChildActions(childNode, action, tree);
+            }
+          });
+        }
+      }
+
       vm.setConflictResolutionMethod = function (method) {
-        vm.conflictResolutionMethod = method;
+        const tree = $('#jstree-valid').jstree(true);
+        const rootNode = tree.get_node(jsTreeRootFolder);
+        updateChildActions(rootNode, method, tree);
+
+        vm.areAllConflictsResolved = true;
       };
 
       async function startImport() {
@@ -198,7 +211,6 @@ define([
         $scope.importStatus = {
           'active': 0,
           'validFiles': [],
-          'conflictingFiles': [],
           'invalidFiles': []
         };
         vm.uploadedResources = []
@@ -218,33 +230,6 @@ define([
 
       // Function to initialize jsTree
       function initJsTrees() {
-
-        // Helper function to update child actions
-        function updateChildActions(node, action, tree) {
-          console.log('updateChildActions');
-          if (node.children && node.children.length > 0) {
-            node.children.forEach(childId => {
-              // Update the data-resolved attribute for this child node
-              const childNode = tree.get_node(childId);
-              if (childNode) {
-                // Update the action in memory
-                vm.uploadableResourcesMap.get(childId).resolveMethod = action;
-
-                // Update the dropdown value if it exists
-                const dropdown = $(`.node-action[data-node-id="${childId}"]`);
-                if (dropdown.length) {
-                  console.log('dropdown', dropdown);
-                  dropdown.val(action);
-                  dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
-                }
-
-                // Recursively update children
-                updateChildActions(childNode, action, tree);
-              }
-            });
-          }
-        }
-
         $timeout(function () {
           $.noConflict();
           vm.jsTreesInitialized = true;
@@ -273,7 +258,7 @@ define([
                       `${resource.text}<select class="node-action" data-node-id="${resource.id}">
                         <option value="">Action...</option>
                         <option value="replace">Replace</option>
-                        <option value="copy">Copy</option>
+                        <option value="createCopy">Copy</option>
                         <option value="skip">Skip</option>
                        </select>` : resource.text
                   };
@@ -347,22 +332,6 @@ define([
               if (items) {
                 await handleDnd(items);
               }
-            });
-          $('#jstree-conflicting').jstree({
-            'core': {
-              'check_callback': true,
-              'data': function (obj, callback) {
-                callback($scope.importStatus.conflictingFiles);
-              }
-            },
-          })
-            .on('dragover', function (event) {
-              event.preventDefault();
-              event.stopPropagation();
-            })
-            .on('drop', function (event) {
-              event.preventDefault();
-              event.stopPropagation();
             });
           $('#jstree-invalid').jstree({
             'core': {
@@ -985,147 +954,136 @@ define([
 
       function refreshJsTrees() {
         $timeout(function () {
-          function updateInvalidResourceParent(resource, parentId, invalidResources) {
-            const defaultParentId = jsTreeRootFolder + '/';
-            const newParentId = parentId.endsWith('/') ? defaultParentId + parentId : defaultParentId + parentId + '/';
-            const parentFolders = resource.parent.split('/').filter(Boolean).slice(1);
-            let currentPath = jsTreeRootFolder;
-            parentFolders.forEach(folder => {
-              currentPath += `/${folder}`;
-              const parentFolder = vm.uploadedResources.find(res => res.id === currentPath + '/');
-              if (parentFolder) {
-                const parentFolderClone = structuredClone(parentFolder);
-                parentFolderClone.parent = parentFolderClone.parent === jsTreeRootFolder ? parentFolderClone.parent.replace(jsTreeRootFolder, newParentId) : parentFolderClone.parent.replace(defaultParentId, newParentId);
-                parentFolderClone.id = parentFolderClone.id.replace(defaultParentId, newParentId);
-                addResourceToMap(vm.invalidResourcesMap, parentFolderClone.id, parentFolderClone);
-              }
-            });
-            const invalidRes = structuredClone(resource);
-            invalidRes.parent = invalidRes.parent === jsTreeRootFolder ? invalidRes.parent.replace(jsTreeRootFolder, newParentId) : invalidRes.parent.replace(defaultParentId, newParentId);
-            invalidRes.id = invalidRes.id.replace(defaultParentId, newParentId);
-            return invalidRes;
-          }
+          // Clear existing maps
+          // vm.uploadableResourcesMap.clear();
+          // vm.invalidResourcesMap.clear();
 
-          function addResourceToMap(map, id, resource) {
-            if (resource.status === resourceImportStatus.CONFLICTING) {
-              resource.resolveMethod = null;
-            }
-            if (!map.has(id)) {
-              map.set(id, resource);
-            } else if (map.has(id)) {
-              const existingResource = map.get(id);
-              if (existingResource.status === resourceImportStatus.VALID && resource.status === resourceImportStatus.CONFLICTING) {
-                existingResource.status = resourceImportStatus.CONFLICTING;
-                existingResource.resolveMethod = null;
-              }
-            }
-          }
-
-          function getFilesFromMap(map) {
-            return Array.from(map.values());
-          }
-
-          let addDuplicatedResFolder = true;
-          let addUnsupportedResFolder = true;
-          const duplicatedResFolderId = "duplicatedResFolderId"
-          const unsupportedResFolderId = "unsupportedResFolderId"
-
-          const duplicatedResFolder = {
-            id: jsTreeRootFolder + '/' + duplicatedResFolderId + '/', // Unique ID for the resource
-            parent: jsTreeRootFolder, // Parent directory ID
-            text: "Duplicated Resources", // Display name
-            icon: "fa fa-clone",
-            li_attr: { "title": "These resources are already included in the upload." }, // Tooltip
-            type: "folder", // jsTree type
-            resourceType: "folder", // CEDAR resource type
-            children: [], // Added by their parent property
-            status: null, // Import status, doesn't matter for this folder
-            cedarDescription: null // CEDAR description, doesn't matter for this folder
-          };
-
-          const unsupportedResFolder = {
-            id: jsTreeRootFolder + '/' + unsupportedResFolderId + '/',
-            parent: jsTreeRootFolder,
-            text: "Unsupported Resources",
-            icon: "fa fa-ban",
-            li_attr: { "title": "Resources that cannot be uploaded to CEDAR" },
-            type: "folder",
-            resourceType: "folder",
-            children: [],
-            status: null,
-            cedarDescription: null
-          }
-
-          function updateParentFoldersRecursively(parentFolderId, status) {
-            if (parentFolderId === jsTreeRootFolder + '/') {
-              return;
-            }
-
-            const parentFolder = vm.uploadedResources.find(item => item.id === parentFolderId && item.type === 'folder');
-            if (parentFolder) {
-              if (status === resourceImportStatus.VALID) {
-                parentFolder.status = status;
-                addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
-              } else if (status === resourceImportStatus.CONFLICTING) {
-                parentFolder.status = status;
-                addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
-              } else if (status === resourceImportStatus.DUPLICATE) {
-                parentFolder.status = status;
-                addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
-              } else if (status === resourceImportStatus.UNSUPPORTED) {
-                parentFolder.status = status;
-                addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
-              }
-              const directParent = parentFolderId.endsWith('/')
-                ? parentFolderId.substring(0, parentFolderId.lastIndexOf('/', parentFolderId.length - 2) + 1)
-                : parentFolderId.substring(0, parentFolderId.lastIndexOf('/') + 1);
-              updateParentFoldersRecursively(directParent, status);
-            }
-          }
-
+          // Process each resource
           vm.uploadedResources.forEach(item => {
             if (item.type === 'file') {
-              // Process file based on status
-              if (item.status === resourceImportStatus.VALID || item.status === resourceImportStatus.CONFLICTING) {
+              const isValidOrConflicting = [resourceImportStatus.VALID, resourceImportStatus.CONFLICTING].includes(item.status);
+              
+              if (isValidOrConflicting) {
+                // Add to uploadable resources
                 addResourceToMap(vm.uploadableResourcesMap, item.id, item);
                 updateParentFoldersRecursively(item.parent, item.status);
-              } else if (item.status === resourceImportStatus.DUPLICATE) {
-                item = updateInvalidResourceParent(item, duplicatedResFolderId, vm.invalidResourcesMap)
-                addResourceToMap(vm.invalidResourcesMap, item.id, item);
-                if (addDuplicatedResFolder) {
-                  addResourceToMap(vm.invalidResourcesMap, duplicatedResFolderId, duplicatedResFolder);
+              } else {
+                // Handle invalid resources (duplicates and unsupported)
+                const parentFolderId = item.status === resourceImportStatus.DUPLICATE ? 
+                  'duplicatedResFolderId' : 'unsupportedResFolderId';
+                
+                const updatedItem = updateInvalidResourceParent(item, parentFolderId, vm.invalidResourcesMap);
+                addResourceToMap(vm.invalidResourcesMap, updatedItem.id, updatedItem);
+                
+                // Add special folders if not already added
+                if (!vm.invalidResourcesMap.has(parentFolderId)) {
+                  const folderConfig = {
+                    id: `${jsTreeRootFolder}/${parentFolderId}/`,
+                    parent: jsTreeRootFolder,
+                    text: item.status === resourceImportStatus.DUPLICATE ? "Duplicated Resources" : "Unsupported Resources",
+                    icon: item.status === resourceImportStatus.DUPLICATE ? "fa fa-clone" : "fa fa-ban",
+                    type: "folder",
+                    resourceType: "folder"
+                  };
+                  addResourceToMap(vm.invalidResourcesMap, parentFolderId, folderConfig);
                 }
-                addDuplicatedResFolder = false;
-              } else if (item.status === resourceImportStatus.UNSUPPORTED) {
-                item = updateInvalidResourceParent(item, unsupportedResFolderId, vm.invalidResourcesMap)
-                addResourceToMap(vm.invalidResourcesMap, item.id, item)
-                if (addUnsupportedResFolder) {
-                  addResourceToMap(vm.invalidResourcesMap, unsupportedResFolderId, unsupportedResFolder);
-                }
-                addUnsupportedResFolder = false;
               }
             }
           });
 
           // Update the import status
-          $scope.importStatus.validFiles = getFilesFromMap(vm.uploadableResourcesMap);
-          $scope.importStatus.conflictingFiles = getFilesFromMap(vm.conflictingResourcesMap);
-          $scope.importStatus.invalidFiles = getFilesFromMap(vm.invalidResourcesMap);
-
-          console.log('uploadableResourcesMap', vm.uploadableResourcesMap)
+          $scope.importStatus.validFiles = Array.from(vm.uploadableResourcesMap.values());
+          $scope.importStatus.invalidFiles = Array.from(vm.invalidResourcesMap.values());
 
           // Refresh jsTrees
           $('#jstree-valid').jstree(true).refresh();
-          $('#jstree-conflicting').jstree(true).refresh();
           $('#jstree-invalid').jstree(true).refresh();
         }, 100);
       }
 
       $scope.isFileAndDirectoryUploadSupported = supportsFileAndDirectoryUpload();
 
+      // TODO: remove unused code
+
       // $scope.$watch('importStatus.active', function (newVal) {
       //   console.log("Active tab changed to index:", newVal);
       // });
+
+      // Add these helper functions before refreshJsTrees
+      function addResourceToMap(map, id, resource) {
+        if (!map.has(id)) {
+          if (resource.status === resourceImportStatus.CONFLICTING) {
+            resource.resolveMethod = null;
+          }
+          map.set(id, resource);
+        } 
+        // else if (map.has(id)) {
+          // const existingResource = map.get(id);
+          // if (existingResource.status === resourceImportStatus.VALID && 
+              // resource.status === resourceImportStatus.CONFLICTING) {
+            // existingResource.status = resourceImportStatus.CONFLICTING;
+            // existingResource.resolveMethod = null;
+          // }
+        // }
+      }
+
+      function updateParentFoldersRecursively(parentFolderId, status) {
+        if (parentFolderId === jsTreeRootFolder + '/') {
+          return;
+        }
+
+        const parentFolder = vm.uploadedResources.find(item => 
+          item.id === parentFolderId && item.type === 'folder');
+        
+        if (parentFolder) {
+          if (status === resourceImportStatus.VALID || status === resourceImportStatus.CONFLICTING) {
+            parentFolder.status = status;
+            addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
+          } else {
+            parentFolder.status = status;
+            addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
+          }
+          
+          const directParent = parentFolderId.endsWith('/') ?
+            parentFolderId.substring(0, parentFolderId.lastIndexOf('/', parentFolderId.length - 2) + 1) :
+            parentFolderId.substring(0, parentFolderId.lastIndexOf('/') + 1);
+          
+          updateParentFoldersRecursively(directParent, status);
+        }
+      }
+
+      function updateInvalidResourceParent(resource, parentId, invalidResourcesMap) {
+        const defaultParentId = jsTreeRootFolder + '/';
+        const newParentId = parentId.endsWith('/') ? 
+          defaultParentId + parentId : 
+          defaultParentId + parentId + '/';
+        
+        // Handle parent folders
+        const parentFolders = resource.parent.split('/').filter(Boolean).slice(1);
+        let currentPath = jsTreeRootFolder;
+        
+        parentFolders.forEach(folder => {
+          currentPath += `/${folder}`;
+          const parentFolder = vm.uploadedResources.find(res => res.id === currentPath + '/');
+          if (parentFolder) {
+            const parentFolderClone = structuredClone(parentFolder);
+            parentFolderClone.parent = parentFolderClone.parent === jsTreeRootFolder ? 
+              parentFolderClone.parent.replace(jsTreeRootFolder, newParentId) : 
+              parentFolderClone.parent.replace(defaultParentId, newParentId);
+            parentFolderClone.id = parentFolderClone.id.replace(defaultParentId, newParentId);
+            addResourceToMap(invalidResourcesMap, parentFolderClone.id, parentFolderClone);
+          }
+        });
+
+        // Update resource paths
+        const invalidRes = structuredClone(resource);
+        invalidRes.parent = invalidRes.parent === jsTreeRootFolder ? 
+          invalidRes.parent.replace(jsTreeRootFolder, newParentId) : 
+          invalidRes.parent.replace(defaultParentId, newParentId);
+        invalidRes.id = invalidRes.id.replace(defaultParentId, newParentId);
+        
+        return invalidRes;
+      }
     }
 
     return {

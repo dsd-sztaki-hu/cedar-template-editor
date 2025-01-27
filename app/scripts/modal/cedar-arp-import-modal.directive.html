@@ -15,7 +15,7 @@
               <div class="col-sm-5">
                 <div class="row">
                   <div class="col-sm-12">
-                    <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
+                    <div class="actions" style="text-align:left; border-right: 1px solid #ddd; height: 100%;">
                       Click the button below to select the files that will be imported into CEDAR.
                       <br>Accepted file types:
                       <ul>
@@ -45,66 +45,46 @@
                 <p style="text-align: center;">Drag and drop files below</p>
                 <div id="jstree-valid">
                 </div>
+
+                <div style="display: flex; justify-content: center; margin-top: 20px;">
+                  <div style="display: flex; flex-direction: row; gap: 20px; width: 80%;">
+                    <label class="btn btn-save default-btn-bg" ng-click="arpimport.setConflictResolutionMethod('createCopy')"
+                      ng-class="{'disabled': importStatus.validFiles.length === 0}"
+                      style="flex: 1; text-align: center;">Create copy</label>
+                    <label class="btn btn-save default-btn-bg" ng-click="arpimport.setConflictResolutionMethod('replace')"
+                      ng-class="{'disabled': importStatus.validFiles.length === 0}"
+                      style="flex: 1; text-align: center;">Replace all</label>
+                    <label class="btn btn-save default-btn-bg" ng-click="arpimport.setConflictResolutionMethod('skip')"
+                      ng-class="{'disabled': importStatus.validFiles.length === 0}"
+                      style="flex: 1; text-align: center;">Skip all</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </uib-tab>
-        <uib-tab index="1" heading="{{'ARP.resourceImport.conflictingFiles' | translate}}" disable="importStatus.conflictingFiles.length === 0">
+        <uib-tab index="1" heading="{{'ARP.resourceImport.invalidFiles' | translate}}"
+          disable="importStatus.invalidFiles.length === 0">
           <uib-tabset active="importStatus.active">
             <div class="fileUpload">
               <div class="row">
                 <div class="col-sm-5">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div style="text-align:left; border-right: 1px solid #ddd;">
-                        The following files are already present in the destination directory,
-                        please choose a method to resolve the conflicts:
-                        <div style="margin-top: 20px; display: flex; justify-content: center;">
-                          <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-                            <label class="btn btn-save" ng-click="arpimport.setConflictResolutionMethod('createCopy')"
-                                   ng-class="{'conflict-resolution-method': arpimport.conflictResolutionMethod === 'createCopy', 'default-btn-bg': arpimport.conflictResolutionMethod !== 'createCopy'}"
-                                   style="cursor: pointer; margin-bottom: 10px; width: 80%;">Create copy</label>
-                            <label class="btn btn-save" ng-click="arpimport.setConflictResolutionMethod('replace')"
-                                   ng-class="{'conflict-resolution-method': arpimport.conflictResolutionMethod === 'replace', 'default-btn-bg': arpimport.conflictResolutionMethod !== 'replace'}"
-                                   style="cursor: pointer; margin-bottom: 10px; width: 80%;">Replace all</label>
-                            <label class="btn btn-save" ng-click="arpimport.setConflictResolutionMethod('skip')"
-                                   ng-class="{'conflict-resolution-method': arpimport.conflictResolutionMethod === 'skip', 'default-btn-bg': arpimport.conflictResolutionMethod !== 'skip'}"
-                                   style="cursor: pointer; width: 80%;">Skip all</label>
-                          </div>
-                        </div>
+                      <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
+                        The following files are not going to be uploaded.
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-sm-7">
-                  <div id="jstree-conflicting">
+                  <div id="jstree-invalid">
                   </div>
                 </div>
               </div>
             </div>
           </uib-tabset>
         </uib-tab>
-        <uib-tab index="2" heading="{{'ARP.resourceImport.invalidFiles' | translate}}" disable="importStatus.invalidFiles.length === 0">
-        <uib-tabset active="importStatus.active">
-          <div class="fileUpload">
-            <div class="row">
-              <div class="col-sm-5">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="actions" style="text-align:left; border-right: 1px solid #ddd;">
-                      The following files are not going to be uploaded.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-7">
-                <div id="jstree-invalid">
-                </div>
-              </div>
-            </div>
-          </div>
-        </uib-tabset>
-      </uib-tab>
 
       </uib-tabset>
     </div>
@@ -125,8 +105,7 @@
 
         <div class="clear-save" style="width:100%">
 
-          <button type="button" ng-click="arpimport.resetModal()"
-            class="btn done btn-clear" translate>
+          <button type="button" ng-click="arpimport.resetModal()" class="btn done btn-clear" translate>
             Reset
           </button>
 
@@ -138,12 +117,11 @@
             <div class="tooltip-wrapper" data-tooltip="Select a method to resolve conflicts."
               ng-class="{'disabled-button-wrapper': !arpimport.areAllConflictsResolved}">
 
-              <button type="button" ng-click="arpimport.startImport()" 
-                aria-label="Import" class="btn btn-save" translate
-                ng-class="{'disabled-button': !arpimport.areAllConflictsResolved}">
+              <button type="button" ng-click="arpimport.startImport()" aria-label="Import" class="btn btn-save"
+                translate ng-class="{'disabled-button': !arpimport.areAllConflictsResolved}">
                 Import
               </button>
-           </div>
+            </div>
           </span>
 
         </div>
