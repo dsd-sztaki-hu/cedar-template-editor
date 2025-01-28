@@ -423,7 +423,8 @@ define([
         }
       }
 
-      function getZipParentDirectory(filePath, zipRenameMap) {
+      //todo: check
+      function getZipParentDirectory(filePath) {
         const sanitizedPath = filePath.endsWith('/') ? filePath.slice(0, -1) : filePath;
         const pathParts = sanitizedPath.split('/').filter(Boolean);
         let status = resourceImportStatus.VALID;
@@ -434,13 +435,6 @@ define([
 
         // remove the last part of the path which is the file/folder name
         pathParts.pop();
-        let parentName = pathParts[0];
-
-        if (zipRenameMap.has(parentName)) {
-          const renameInfo = zipRenameMap.get(parentName);
-          pathParts[0] = renameInfo.name;
-          status = renameInfo.status;
-        }
 
         // add the jsTree root folder to the path
         pathParts.unshift(jsTreeRootFolder)
@@ -478,27 +472,26 @@ define([
 
       async function handleUpload(uploadedResources) {
         const uploadPromises = [];
-        const folderRenameMap = new Map();
         const jsZipLike = createJSZipLikeStructure(uploadedResources);
+        
         for (const relativePath in jsZipLike) {
           const resource = jsZipLike[relativePath];
-          const { parentPath, status } = getZipParentDirectory(relativePath, folderRenameMap);
+          const { parentPath, status } = getZipParentDirectory(relativePath);
           const isTopLevel = parentPath === '#';
 
           if (resource.dir) {
-            uploadPromises.push(processDirectory(resource, parentPath, status, jsZipLike, folderRenameMap));
+            uploadPromises.push(processDirectory(resource, parentPath, status, jsZipLike));
           } else {
             // we do not want to process nested zip files
             if (resource['_data'].type === 'application/zip' && isTopLevel) {
               const unzipped = await JSZip.loadAsync(resource['_data']);
-              const zipRenameMap = new Map();
 
               for (const relativePath in unzipped.files) {
                 const zipEntry = unzipped.files[relativePath];
-                const { parentPath, status } = getZipParentDirectory(relativePath, zipRenameMap);
+                const { parentPath, status } = getZipParentDirectory(relativePath);
 
                 if (zipEntry.dir) {
-                  uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files, zipRenameMap));
+                  uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files));
                 } else {
                   uploadPromises.push(processFile(zipEntry, parentPath, status));
                 }
@@ -524,23 +517,23 @@ define([
           if (resource.type === 'application/zip') {
             const file = await new Promise(resolve => resource.webkitGetAsEntry().file(resolve));
             const unzipped = await JSZip.loadAsync(file);
-            const zipRenameMap = new Map();
 
             for (const relativePath in unzipped.files) {
               const zipEntry = unzipped.files[relativePath];
-              const { parentPath, status } = getZipParentDirectory(relativePath, zipRenameMap);
+              const { parentPath, status } = getZipParentDirectory(relativePath);
 
               if (zipEntry.dir) {
-                uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files, zipRenameMap));
+                uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files));
               } else {
                 uploadPromises.push(processFile(zipEntry, parentPath, status));
               }
             }
           } else {
             const entry = resource.webkitGetAsEntry();
+            console.log('entry', entry);
             if (entry) {
               if (entry.isDirectory) {
-                uploadPromises.push(processDirectory(entry, jsTreeRootFolder, resourceImportStatus.VALID, null, null));
+                uploadPromises.push(processDirectory(entry, jsTreeRootFolder, resourceImportStatus.VALID, null));
               } else {
                 uploadPromises.push(processFile(entry, jsTreeRootFolder, resourceImportStatus.VALID));
               }
@@ -583,31 +576,26 @@ define([
         }
       }
 
-      async function processDirectory(directoryEntry, parentDirectory, status, otherEntries, folderRenameMap = null) {
-        function replaceAfterLastSlash(str, newString) {
-          const lastSlashIndex = str.lastIndexOf('/');
-
-          if (lastSlashIndex === -1) {
-            return newString;
-          }
-
-          return str.substring(0, lastSlashIndex + 1) + newString + '/';
-        }
-
+      async function processDirectory(directoryEntry, parentDirectory, status, otherEntries) {
         return new Promise(async (resolve, reject) => {
           const isZipEntry = isJSZipEntry(directoryEntry);
           const isFse = directoryEntry instanceof FileSystemDirectoryEntry;
           const directoryName = isFse ? directoryEntry.name : directoryEntry.name.slice(0, -1).split('/').pop();
           let resolvedFullPath = parentDirectory.endsWith('/') ? parentDirectory + directoryName : parentDirectory + '/' + directoryName;
-          // let resolvedFullPath = parentDirectory.endsWith('/') ? parentDirectory : parentDirectory + '/';
           let resolvedDirName = directoryName;
           let resolvedDirStatus = status;
-          let cedarDescription = ''
+          let cedarDescription = '';
 
-          const { resolvedName, resolvedStatus } = await prepareResource(directoryEntry, CONST.resourceType.FOLDER, parentDirectory, vm.uploadedResources, folderRenameMap);
+          const { resolvedName, resolvedStatus } = await prepareResource(
+            directoryEntry, 
+            CONST.resourceType.FOLDER, 
+            parentDirectory, 
+            vm.uploadedResources
+          );
+          
           resolvedDirName = resolvedName;
           if (resolvedStatus !== resourceImportStatus.VALID) {
-            resolvedFullPath = replaceAfterLastSlash(resolvedFullPath, resolvedDirName);
+            // resolvedFullPath = replaceAfterLastSlash(resolvedFullPath, resolvedDirName);
             resolvedDirStatus = resolvedStatus;
           }
 
@@ -618,7 +606,7 @@ define([
           // Find the hidden metadata file for the folder and set the description from it
           if (isZipEntry) {
             const dirNameWithFolder = directoryEntry.name.slice(0, -1);
-            const folderMetadataName = replaceAfterLastSlash(dirNameWithFolder, '.' + resolvedDirName + '_metadata.json');
+            const folderMetadataName = replaceAfterLastSlash(dirNameWithFolder, '.' + directoryName + '_metadata.json');
             for (const zipEntryName in otherEntries) {
               if (zipEntryName === folderMetadataName) {
                 try {
@@ -636,7 +624,7 @@ define([
           } else if (otherEntries !== null) {
             if (!isFse) {
               const dirNameWithFolder = directoryEntry.name.slice(0, -1);
-              const folderMetadataName = replaceAfterLastSlash(dirNameWithFolder, '.' + resolvedDirName + '_metadata.json')
+              const folderMetadataName = replaceAfterLastSlash(dirNameWithFolder, '.' + directoryName + '_metadata.json')
               for (const entryName in otherEntries) {
                 if (entryName === folderMetadataName) {
                   const metadata = await readFileAsText(otherEntries[entryName]['_data']);
@@ -666,7 +654,8 @@ define([
           const newDirectory = {
             id: resolvedFullPath, // Unique ID for the resource
             parent: parentDirectory, // Parent directory ID
-            text: resolvedDirName, // Display name
+            text: directoryName, // Display name
+            copyName: resolvedDirName, // Name of the directory in CEDAR, if the create copy option is selected
             icon: "fa " + arpService.getResourceIcon(CONST.resourceType.FOLDER), // use the same CEDAR like icon
             // li_attr: { "title": "This is a folder" },
             // "icon": "jstree-folder", // Use jsTree's folder icon
@@ -681,29 +670,30 @@ define([
 
           // if the folderRenameMap is not null that means the input was either a JSZip or a File list uploaded via the folder uploader and not via drag and drop
           // in both cases the file and folder paths are processed separately
-          if (folderRenameMap === null) {
-            let reader = directoryEntry.createReader();
+          let reader = directoryEntry.createReader();
 
-            await new Promise((resolve, reject) => {
-              reader.readEntries(async function (entries) {
-                const entryPromises = entries.map(entry => {
-                  if (entry.isDirectory) {
-                    return processDirectory(entry, resolvedFullPath, resolvedDirStatus, entries, folderRenameMap);
-                  } else {
-                    return processFile(entry, resolvedFullPath, resolvedDirStatus);
-                  }
-                });
-                await Promise.all(entryPromises);
-                resolve();
-              }, reject);
-            });
-          }
+          await new Promise((resolve, reject) => {
+            reader.readEntries(async function (entries) {
+              const entryPromises = entries.map(entry => {
+                if (entry.isDirectory) {
+                  return processDirectory(entry, resolvedFullPath, resolvedDirStatus, entries);
+                } else {
+                  return processFile(entry, resolvedFullPath, resolvedDirStatus);
+                }
+              });
+              await Promise.all(entryPromises);
+              resolve();
+            }, reject);
+          });
 
           resolve();
         });
       }
 
       async function processFile(fileEntry, parentDirectory, status) {
+        console.log('fileEntry', fileEntry);
+        console.log('parentDirectory', parentDirectory);
+        console.log('status', status);
         return new Promise(async (resolve, reject) => {
           try {
             // Determine the type of fileEntry (FileSystemEntry or JSZip entry)
@@ -734,7 +724,6 @@ define([
               }
 
               if (resolvedFileStatus !== resourceImportStatus.UNSUPPORTED && resolvedFileStatus !== resourceImportStatus.DUPLICATE) {
-                const fileNameWithoutExtension = fileName.split('.json').shift();
 
                 const { resolvedName, resolvedStatus } = await prepareResource(
                   fileContent,
@@ -766,6 +755,8 @@ define([
               };
 
               vm.uploadedResources.push(newFile);
+              console.log('newFile', newFile);
+              console.log('vm.uploadedResources', vm.uploadedResources);
             };
 
             if (resolvedFileStatus === resourceImportStatus.UNSUPPORTED) {
@@ -836,7 +827,7 @@ define([
       }
 
       // Replaces repo domains, resolves name duplicates, sets import status and saves the CEDAR id for already present resources
-      async function prepareResource(entry, entryType, entryParent, uploadedResources, folderRenameMap = null, fileExtension = '.json') {
+      async function prepareResource(entry, entryType, entryParent, uploadedResources, fileExtension = '.json') {
         // The name of the resource in CEDAR
         let cedarName = ''
 
@@ -895,39 +886,26 @@ define([
             newName += ' (' + cedarName + ')'
           }
         } else {
-          console.log('entryParent', entryParent)
           // Check if any folder among the vm.alreadyPresentCedarResources (the CEDAR resources in the destination folder) has the same name as the current entry
           if (entryParent === jsTreeRootFolder) {
             const folderNames = vm.alreadyPresentCedarResources.filter(res => res.resourceType === CONST.resourceType.FOLDER).map(res => res['schema:name']);
             if (folderNames.includes(newName)) {
               status = resourceImportStatus.CONFLICTING;
               const generatedName = generateNewName(newName, folderNames);
-              // if (folderRenameMap !== null) {
-              //   folderRenameMap.set(newName, { name: generatedName, status: status });
-              // }
               newName = generatedName;
             }
           }
 
           // Check if any folder among the vm.uploadedResources has the same id as the fullPath of the current entry
-          const mappedName = folderRenameMap && folderRenameMap.has(resourceName) ? folderRenameMap.get(resourceName).name : newName;
-          const fullPath = entryParent.endsWith('/') ? entryParent + mappedName : entryParent + '/' + mappedName + '/';
+          const fullPath = entryParent.endsWith('/') ? entryParent + newName : entryParent + '/' + newName + '/';
           const uploadedFolder = vm.uploadedResources.find(resource => resource.id === fullPath && resource.resourceType === CONST.resourceType.FOLDER);
           if (uploadedFolder) {
             status = resourceImportStatus.DUPLICATE;
             const alreadyPresentFolderNames = vm.uploadedResources
               .filter(res => res.resourceType === CONST.resourceType.FOLDER)
-              .map(res => {
-                if (folderRenameMap && folderRenameMap.has(res.text)) {
-                  return folderRenameMap.get(res.text).name;
-                }
-                return res.text;
-              });
-            const generatedName = generateNewName(mappedName, alreadyPresentFolderNames);
+              .map(res => res.text);
+            const generatedName = generateNewName(newName, alreadyPresentFolderNames);
             newName = generatedName;
-          }
-          if (folderRenameMap !== null) {
-            folderRenameMap.set(resourceName, { name: newName, status: status });
           }
         }
         return { resolvedName: newName, resolvedStatus: status };
@@ -1083,6 +1061,15 @@ define([
         invalidRes.id = invalidRes.id.replace(defaultParentId, newParentId);
         
         return invalidRes;
+      }
+
+      // Helper function to replace last part of path
+      function replaceAfterLastSlash(str, newString) {
+        const lastSlashIndex = str.lastIndexOf('/');
+        if (lastSlashIndex === -1) {
+          return newString;
+        }
+        return str.substring(0, lastSlashIndex + 1) + newString + '/';
       }
     }
 
