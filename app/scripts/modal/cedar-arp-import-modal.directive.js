@@ -77,7 +77,20 @@ define([
 
       // Helper function to update child actions
       function updateChildActions(node, action, tree) {
-        if (node.children && node.children.length > 0) {
+        // Find and update the node's display name
+        const resource = vm.uploadableResourcesMap.get(node.id);
+        if (resource) {
+          const $nodeElement = $(tree.get_node(node.id, true));
+          const $nameSpan = $nodeElement.find('> a > .node-name');
+
+          if (action === 'createCopy' && resource.resourceType === CONST.resourceType.FOLDER && resource.parent === jsTreeRootFolder) {
+            $nameSpan.text(resource.combinedName);
+          } else {
+            $nameSpan.text(resource.text);
+          }
+        }
+
+        if (node.children?.length) {
           node.children.forEach(childId => {
             // Update the data-resolved attribute for this child node
             const childNode = tree.get_node(childId);
@@ -141,10 +154,11 @@ define([
       async function handleFolderImport(folderResource) {
         // For createCopy method
         if (vm.conflictResolutionMethod === 'createCopy') {
-          if (vm.validResourcesMap.has(folderResource.id) || vm.conflictingResourcesMap.has(folderResource.id)) {
+          if (vm.uploadableResourcesMap.has(folderResource.id)) {
+            const folderName = folderResource.status === resourceImportStatus.CONFLICTING ? folderResource.copyName : folderResource.text;
             const cedarFolderId = await arpService.createFolderAsync(
               vm.folderIds.get(folderResource.parent),
-              folderResource.text,
+              folderName,
               folderResource.cedarDescription || $translate.instant('ARP.resourceImport.folderDescription')
             );
             vm.folderIds.set(folderResource.id, cedarFolderId);
@@ -255,12 +269,14 @@ define([
                       'data-resolved': (hasResolveMethod || hasParentResolveMethod) ? 'true' : 'false'
                     },
                     text: resource.status === resourceImportStatus.CONFLICTING ?
-                      `${resource.text}<select class="node-action" data-node-id="${resource.id}">
-                        <option value="">Action...</option>
-                        <option value="replace">Replace</option>
-                        <option value="createCopy">Copy</option>
-                        <option value="skip">Skip</option>
-                       </select>` : resource.text
+                      `<span class="node-name">${resource.resolveMethod === 'createCopy' && resource.resourceType === CONST.resourceType.FOLDER ? resource.combinedName : resource.text}</span>
+                    <select class="node-action" data-node-id="${resource.id}">
+                      <option value="">Action...</option>
+                      <option value="replace">Replace</option>
+                      <option value="createCopy">Copy</option>
+                      <option value="skip">Skip</option>
+                    </select>`
+                      : resource.text,
                   };
                 });
                 callback(treeData);
@@ -273,18 +289,18 @@ define([
           })
             .on('ready.jstree refresh.jstree before_open.jstree', function (e, data) {
               // Update all visible nodes based on their stored resolveMethod
-              $(this).find('.node-action').each(function() {
+              $(this).find('.node-action').each(function () {
                 const $dropdown = $(this);
                 const nodeId = $dropdown.data('node-id');
                 const resource = vm.uploadableResourcesMap.get(nodeId);
                 const tree = $('#jstree-valid').jstree(true);
                 const node = tree.get_node(nodeId);
-                
+
                 // Check parent's resolveMethod
                 const parentId = node.parent;
                 const parentResource = vm.uploadableResourcesMap.get(parentId);
                 const parentResolveMethod = parentResource && parentResource.resolveMethod;
-                
+
                 // Only update from parent if the node has never had a resolveMethod set
                 if (parentResolveMethod && resource && resource.resolveMethod === undefined) {
                   $dropdown.val(parentResolveMethod);
@@ -301,18 +317,28 @@ define([
                 $dropdown.off('change').on('change', function (e) {
                   e.stopPropagation();
                   const action = $(this).val();
+                  const resource = vm.uploadableResourcesMap.get(nodeId);
+                  resource.resolveMethod = action;
+
+                  const $nameSpan = $(this).closest('.jstree-node').find('> a > .node-name');
+                  if (action === 'createCopy') {
+                    $nameSpan.text(resource.combinedName);
+                  } else {
+                    $nameSpan.text(resource.text);
+                  }
 
                   // Store the action for this node and update its resolved state
                   vm.uploadableResourcesMap.get(nodeId).resolveMethod = action;
                   $dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
 
-                  // Handle child nodes if needed
                   const tree = $('#jstree-valid').jstree(true);
                   const node = tree.get_node(nodeId);
-                  if (node.children && node.children.length > 0) {
+
+                  // Handle child nodes if needed
+                  if (node.children?.length) {
                     updateChildActions(node, action, tree);
                   }
-                  
+
                   // Check if all conflicts are now resolved
                   checkConflictResolution();
 
@@ -362,7 +388,7 @@ define([
           event.stopPropagation();
         });
       }
-      
+
       function checkConflictResolution() {
         let allResolved = true;
 
@@ -423,7 +449,7 @@ define([
         }
       }
 
-      //todo: check
+      
       function getZipParentDirectory(filePath) {
         const sanitizedPath = filePath.endsWith('/') ? filePath.slice(0, -1) : filePath;
         const pathParts = sanitizedPath.split('/').filter(Boolean);
@@ -473,14 +499,14 @@ define([
       async function handleUpload(uploadedResources) {
         const uploadPromises = [];
         const jsZipLike = createJSZipLikeStructure(uploadedResources);
-        
+
         for (const relativePath in jsZipLike) {
           const resource = jsZipLike[relativePath];
           const { parentPath, status } = getZipParentDirectory(relativePath);
           const isTopLevel = parentPath === '#';
 
           if (resource.dir) {
-            uploadPromises.push(processDirectory(resource, parentPath, status, jsZipLike));
+            uploadPromises.push(processDirectory(resource, parentPath, status, jsZipLike, false, isTopLevel));
           } else {
             // we do not want to process nested zip files
             if (resource['_data'].type === 'application/zip' && isTopLevel) {
@@ -491,7 +517,7 @@ define([
                 const { parentPath, status } = getZipParentDirectory(relativePath);
 
                 if (zipEntry.dir) {
-                  uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files));
+                  uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files, false, isTopLevel));
                 } else {
                   uploadPromises.push(processFile(zipEntry, parentPath, status));
                 }
@@ -523,7 +549,7 @@ define([
               const { parentPath, status } = getZipParentDirectory(relativePath);
 
               if (zipEntry.dir) {
-                uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files));
+                uploadPromises.push(processDirectory(zipEntry, parentPath, status, unzipped.files, true, true));
               } else {
                 uploadPromises.push(processFile(zipEntry, parentPath, status));
               }
@@ -533,7 +559,7 @@ define([
             console.log('entry', entry);
             if (entry) {
               if (entry.isDirectory) {
-                uploadPromises.push(processDirectory(entry, jsTreeRootFolder, resourceImportStatus.VALID, null));
+                uploadPromises.push(processDirectory(entry, jsTreeRootFolder, resourceImportStatus.VALID, null, true, true));
               } else {
                 uploadPromises.push(processFile(entry, jsTreeRootFolder, resourceImportStatus.VALID));
               }
@@ -576,7 +602,7 @@ define([
         }
       }
 
-      async function processDirectory(directoryEntry, parentDirectory, status, otherEntries) {
+      async function processDirectory(directoryEntry, parentDirectory, status, otherEntries, isDnd, isParentFolder) {
         return new Promise(async (resolve, reject) => {
           const isZipEntry = isJSZipEntry(directoryEntry);
           const isFse = directoryEntry instanceof FileSystemDirectoryEntry;
@@ -586,13 +612,17 @@ define([
           let resolvedDirStatus = status;
           let cedarDescription = '';
 
+          console.log('++++++ isParentFolder processDirectory', isParentFolder);
+
           const { resolvedName, resolvedStatus } = await prepareResource(
-            directoryEntry, 
-            CONST.resourceType.FOLDER, 
-            parentDirectory, 
-            vm.uploadedResources
+            directoryEntry,
+            CONST.resourceType.FOLDER,
+            parentDirectory,
+            vm.uploadedResources,
+            isParentFolder
           );
-          
+
+
           resolvedDirName = resolvedName;
           if (resolvedStatus !== resourceImportStatus.VALID) {
             // resolvedFullPath = replaceAfterLastSlash(resolvedFullPath, resolvedDirName);
@@ -655,9 +685,8 @@ define([
             id: resolvedFullPath, // Unique ID for the resource
             parent: parentDirectory, // Parent directory ID
             text: directoryName, // Display name
-            copyName: resolvedDirName, // Name of the directory in CEDAR, if the create copy option is selected
             icon: "fa " + arpService.getResourceIcon(CONST.resourceType.FOLDER), // use the same CEDAR like icon
-            // li_attr: { "title": "This is a folder" },
+            // a_attr: { "title": "This is a folder" },
             // "icon": "jstree-folder", // Use jsTree's folder icon
             type: "folder", // Custom type to indicate folders
             resourceType: "folder", // resourceType of the directory
@@ -666,25 +695,42 @@ define([
             cedarDescription: cedarDescription // CEDAR description of the directory
           };
 
+          // if a folder is actually conflicting, which means there is already a folder with the same name in CEDAR, we need to add the copyName property
+          // which will be the name of the folder if the create copy option is selected
+          if (resolvedDirStatus === resourceImportStatus.CONFLICTING) {
+            newDirectory.copyName = resolvedDirName; // Name of the directory in CEDAR, if the create copy option is selected
+            newDirectory.combinedName = directoryName + ' (' + resolvedDirName + ')';
+            newDirectory.text = directoryName;
+            newDirectory.a_attr = { "title": "In case of creating a copy, this folder will be uploaded with the name in the parentheses." }
+            newDirectory.icon = "fa fa-folder-o";
+          } else {
+            newDirectory.a_attr = { "title": "Only the content of this folder is conflicting." }
+          }
+
+          console.log('newDirectory', newDirectory);
+
           vm.uploadedResources.push(newDirectory);
 
-          // if the folderRenameMap is not null that means the input was either a JSZip or a File list uploaded via the folder uploader and not via drag and drop
+          // if a JSZip or a File list was uploaded via the folder uploader and not via drag and drop
           // in both cases the file and folder paths are processed separately
-          let reader = directoryEntry.createReader();
+          if (isDnd) {
+            let reader = directoryEntry.createReader();
 
-          await new Promise((resolve, reject) => {
-            reader.readEntries(async function (entries) {
-              const entryPromises = entries.map(entry => {
-                if (entry.isDirectory) {
-                  return processDirectory(entry, resolvedFullPath, resolvedDirStatus, entries);
-                } else {
-                  return processFile(entry, resolvedFullPath, resolvedDirStatus);
-                }
-              });
-              await Promise.all(entryPromises);
-              resolve();
-            }, reject);
-          });
+            await new Promise((resolve, reject) => {
+              reader.readEntries(async function (entries) {
+                const entryPromises = entries.map(entry => {
+                  if (entry.isDirectory) {
+                    return processDirectory(entry, resolvedFullPath, resolvedDirStatus, entries, isDnd, false);
+                  } else {
+                    return processFile(entry, resolvedFullPath, resolvedDirStatus);
+                  }
+                });
+                await Promise.all(entryPromises);
+                resolve();
+              }, reject);
+            });
+          }
+
 
           resolve();
         });
@@ -729,7 +775,8 @@ define([
                   fileContent,
                   resourceType,
                   parentDirectory,
-                  vm.uploadedResources
+                  vm.uploadedResources,
+                  false
                 );
 
                 resolvedFileName = resolvedName;
@@ -827,7 +874,8 @@ define([
       }
 
       // Replaces repo domains, resolves name duplicates, sets import status and saves the CEDAR id for already present resources
-      async function prepareResource(entry, entryType, entryParent, uploadedResources, fileExtension = '.json') {
+      async function prepareResource(entry, entryType, entryParent, uploadedResources, isParentFolder, fileExtension = '.json') {
+        console.log('++++++ isParentFolder prepareResource', isParentFolder);
         // The name of the resource in CEDAR
         let cedarName = ''
 
@@ -885,7 +933,7 @@ define([
           if (cedarName !== '' && status === resourceImportStatus.CONFLICTING) {
             newName += ' (' + cedarName + ')'
           }
-        } else {
+        } else if (isParentFolder) {
           // Check if any folder among the vm.alreadyPresentCedarResources (the CEDAR resources in the destination folder) has the same name as the current entry
           if (entryParent === jsTreeRootFolder) {
             const folderNames = vm.alreadyPresentCedarResources.filter(res => res.resourceType === CONST.resourceType.FOLDER).map(res => res['schema:name']);
@@ -932,27 +980,24 @@ define([
 
       function refreshJsTrees() {
         $timeout(function () {
-          // Clear existing maps
-          // vm.uploadableResourcesMap.clear();
-          // vm.invalidResourcesMap.clear();
 
           // Process each resource
           vm.uploadedResources.forEach(item => {
             if (item.type === 'file') {
               const isValidOrConflicting = [resourceImportStatus.VALID, resourceImportStatus.CONFLICTING].includes(item.status);
-              
+
               if (isValidOrConflicting) {
                 // Add to uploadable resources
                 addResourceToMap(vm.uploadableResourcesMap, item.id, item);
                 updateParentFoldersRecursively(item.parent, item.status);
               } else {
                 // Handle invalid resources (duplicates and unsupported)
-                const parentFolderId = item.status === resourceImportStatus.DUPLICATE ? 
+                const parentFolderId = item.status === resourceImportStatus.DUPLICATE ?
                   'duplicatedResFolderId' : 'unsupportedResFolderId';
-                
+
                 const updatedItem = updateInvalidResourceParent(item, parentFolderId, vm.invalidResourcesMap);
                 addResourceToMap(vm.invalidResourcesMap, updatedItem.id, updatedItem);
-                
+
                 // Add special folders if not already added
                 if (!vm.invalidResourcesMap.has(parentFolderId)) {
                   const folderConfig = {
@@ -960,6 +1005,7 @@ define([
                     parent: jsTreeRootFolder,
                     text: item.status === resourceImportStatus.DUPLICATE ? "Duplicated Resources" : "Unsupported Resources",
                     icon: item.status === resourceImportStatus.DUPLICATE ? "fa fa-clone" : "fa fa-ban",
+                    a_attr: item.status === resourceImportStatus.DUPLICATE ? { "title": "The content of this folder is already a part of the upload." } : { "title": "The content of this folder is unsupported." },
                     type: "folder",
                     resourceType: "folder"
                   };
@@ -994,15 +1040,7 @@ define([
             resource.resolveMethod = null;
           }
           map.set(id, resource);
-        } 
-        // else if (map.has(id)) {
-          // const existingResource = map.get(id);
-          // if (existingResource.status === resourceImportStatus.VALID && 
-              // resource.status === resourceImportStatus.CONFLICTING) {
-            // existingResource.status = resourceImportStatus.CONFLICTING;
-            // existingResource.resolveMethod = null;
-          // }
-        // }
+        }
       }
 
       function updateParentFoldersRecursively(parentFolderId, status) {
@@ -1010,43 +1048,43 @@ define([
           return;
         }
 
-        const parentFolder = vm.uploadedResources.find(item => 
+        const parentFolder = vm.uploadedResources.find(item =>
           item.id === parentFolderId && item.type === 'folder');
-        
+
         if (parentFolder) {
           if (status === resourceImportStatus.VALID || status === resourceImportStatus.CONFLICTING) {
-            parentFolder.status = status;
+            parentFolder.status = parentFolder.status === resourceImportStatus.CONFLICTING && parentFolder.combinedName ? resourceImportStatus.CONFLICTING : status;
             addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
           } else {
             parentFolder.status = status;
             addResourceToMap(vm.invalidResourcesMap, parentFolderId, parentFolder);
           }
-          
+
           const directParent = parentFolderId.endsWith('/') ?
             parentFolderId.substring(0, parentFolderId.lastIndexOf('/', parentFolderId.length - 2) + 1) :
             parentFolderId.substring(0, parentFolderId.lastIndexOf('/') + 1);
-          
+
           updateParentFoldersRecursively(directParent, status);
         }
       }
 
       function updateInvalidResourceParent(resource, parentId, invalidResourcesMap) {
         const defaultParentId = jsTreeRootFolder + '/';
-        const newParentId = parentId.endsWith('/') ? 
-          defaultParentId + parentId : 
+        const newParentId = parentId.endsWith('/') ?
+          defaultParentId + parentId :
           defaultParentId + parentId + '/';
-        
+
         // Handle parent folders
         const parentFolders = resource.parent.split('/').filter(Boolean).slice(1);
         let currentPath = jsTreeRootFolder;
-        
+
         parentFolders.forEach(folder => {
           currentPath += `/${folder}`;
           const parentFolder = vm.uploadedResources.find(res => res.id === currentPath + '/');
           if (parentFolder) {
             const parentFolderClone = structuredClone(parentFolder);
-            parentFolderClone.parent = parentFolderClone.parent === jsTreeRootFolder ? 
-              parentFolderClone.parent.replace(jsTreeRootFolder, newParentId) : 
+            parentFolderClone.parent = parentFolderClone.parent === jsTreeRootFolder ?
+              parentFolderClone.parent.replace(jsTreeRootFolder, newParentId) :
               parentFolderClone.parent.replace(defaultParentId, newParentId);
             parentFolderClone.id = parentFolderClone.id.replace(defaultParentId, newParentId);
             addResourceToMap(invalidResourcesMap, parentFolderClone.id, parentFolderClone);
@@ -1055,11 +1093,11 @@ define([
 
         // Update resource paths
         const invalidRes = structuredClone(resource);
-        invalidRes.parent = invalidRes.parent === jsTreeRootFolder ? 
-          invalidRes.parent.replace(jsTreeRootFolder, newParentId) : 
+        invalidRes.parent = invalidRes.parent === jsTreeRootFolder ?
+          invalidRes.parent.replace(jsTreeRootFolder, newParentId) :
           invalidRes.parent.replace(defaultParentId, newParentId);
         invalidRes.id = invalidRes.id.replace(defaultParentId, newParentId);
-        
+
         return invalidRes;
       }
 
