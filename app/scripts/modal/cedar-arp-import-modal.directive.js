@@ -16,11 +16,12 @@ define([
       'arpService',
       'CONST',
       '$window',
-      '$translate'
+      '$translate',
+      'FrontendUrlService'
     ];
 
     function cedarArpImportModalController($scope, $timeout,
-      UrlService, arpService, CONST, $window, $translate) {
+      UrlService, arpService, CONST, $window, $translate, FrontendUrlService) {
 
       let vm = this;
 
@@ -275,7 +276,10 @@ define([
                       <option value="replace">Replace</option>
                       <option value="createCopy">Copy</option>
                       <option value="skip">Skip</option>
-                    </select>`
+                    </select>
+                    ${resource.resourceType !== CONST.resourceType.FOLDER ?
+                        `<i class="fa fa-arrow-up open-original" style="margin-left: 5px; cursor: pointer;"></i>`
+                        : ''}`
                       : resource.text,
                   };
                 });
@@ -346,6 +350,15 @@ define([
                   $scope.$apply();
                 });
               });
+
+              $(this).find('.open-original').off('click').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Get the node ID by finding the closest jstree-node and its select element
+                const $node = $(this).closest('.jstree-node');
+                const nodeId = $node.find('> a > select.node-action').data('node-id');
+                return vm.openOriginal(nodeId) || false;
+              });
             })
             .on('dragover', function (event) {
               event.preventDefault();
@@ -388,6 +401,32 @@ define([
           event.stopPropagation();
         });
       }
+
+      vm.openOriginal = function (nodeId) {
+        console.log('Node ID:', nodeId);
+        const resource = vm.uploadableResourcesMap.get(nodeId);
+
+        let targetUrl;
+        switch (resource.resourceType) {
+          case CONST.resourceType.TEMPLATE:
+            targetUrl = FrontendUrlService.getTemplateEdit(resource.cedarId);
+            break;
+          case CONST.resourceType.ELEMENT:
+            targetUrl = FrontendUrlService.getElementEdit(resource.cedarId);
+            break;
+          case CONST.resourceType.FIELD:
+            targetUrl = FrontendUrlService.getFieldEdit(resource.cedarId);
+            break;
+          case CONST.resourceType.INSTANCE:
+            targetUrl = FrontendUrlService.getInstanceEdit(resource.cedarId);
+            break;
+          default:
+            console.warn('Unknown resource type:', resource.resourceType);
+            return;
+        }
+
+        window.open(targetUrl, '_blank');
+      };
 
       function checkConflictResolution() {
         let allResolved = true;
@@ -449,7 +488,7 @@ define([
         }
       }
 
-      
+
       function getZipParentDirectory(filePath) {
         const sanitizedPath = filePath.endsWith('/') ? filePath.slice(0, -1) : filePath;
         const pathParts = sanitizedPath.split('/').filter(Boolean);
@@ -556,7 +595,6 @@ define([
             }
           } else {
             const entry = resource.webkitGetAsEntry();
-            console.log('entry', entry);
             if (entry) {
               if (entry.isDirectory) {
                 uploadPromises.push(processDirectory(entry, jsTreeRootFolder, resourceImportStatus.VALID, null, true, true));
@@ -615,6 +653,7 @@ define([
           console.log('++++++ isParentFolder processDirectory', isParentFolder);
 
           const { resolvedName, resolvedStatus } = await prepareResource(
+            resolvedDirName,
             directoryEntry,
             CONST.resourceType.FOLDER,
             parentDirectory,
@@ -769,9 +808,10 @@ define([
                 resolvedFileStatus = resourceImportStatus.UNSUPPORTED;
               }
 
-              if (resolvedFileStatus !== resourceImportStatus.UNSUPPORTED && resolvedFileStatus !== resourceImportStatus.DUPLICATE) {
+              if (resolvedFileStatus !== resourceImportStatus.UNSUPPORTED) {
 
                 const { resolvedName, resolvedStatus } = await prepareResource(
+                  resolvedFileName.split('.json')[0],
                   fileContent,
                   resourceType,
                   parentDirectory,
@@ -784,13 +824,14 @@ define([
               }
 
               const fileId = parentDirectory.endsWith("/")
-                ? `${parentDirectory}${resolvedFileName}`
-                : `${parentDirectory}/${resolvedFileName}`;
+                ? `${parentDirectory}${fileName}`
+                : `${parentDirectory}/${fileName}`;
 
               const newFile = {
                 id: fileId,
                 parent: parentDirectory,
-                text: resolvedFileName,
+                text: fileName,
+                originalName: fileName,
                 icon: "fa " + arpService.getResourceIcon(resourceType),
                 type: "file",
                 status: resolvedFileStatus,
@@ -800,6 +841,10 @@ define([
                 //a_attr: { "data-tooltip": "Template" },
                 cedarId: fileContent['@id']
               };
+
+              if (resolvedFileStatus !== resourceImportStatus.VALID && resolvedFileName !== '') {
+                newFile.text = fileName + ' (' + resolvedFileName + ')';
+              }
 
               vm.uploadedResources.push(newFile);
               console.log('newFile', newFile);
@@ -874,65 +919,60 @@ define([
       }
 
       // Replaces repo domains, resolves name duplicates, sets import status and saves the CEDAR id for already present resources
-      async function prepareResource(entry, entryType, entryParent, uploadedResources, isParentFolder, fileExtension = '.json') {
-        console.log('++++++ isParentFolder prepareResource', isParentFolder);
+      async function prepareResource(resourceName, resourceContent, resourceType, entryParent, uploadedResources, isParentFolder, fileExtension = '.json') {
         // The name of the resource in CEDAR
-        let cedarName = ''
+        let existingName = ''
 
-        const resourceName = (() => {
-          let name;
-          if (entryType === CONST.resourceType.FOLDER) {
-            if (entry instanceof FileSystemDirectoryEntry) {
-              name = entry.name;
-            } else {
-              name = entry.name.slice(0, -1).split('/').pop();
-            }
-          } else {
-            name = entry['schema:name'];
-          }
-          return name.endsWith('/') ? name.slice(0, -1) : name;
-        })();
+        // const resourceName = (() => {
+        //   let name;
+        //   if (resourceType === CONST.resourceType.FOLDER) {
+        //     if (resourceContent instanceof FileSystemDirectoryEntry) {
+        //       name = resourceContent.name;
+        //     } else {
+        //       name = resourceContent.name.slice(0, -1).split('/').pop();
+        //     }
+        //   } else {
+        //     name = resourceContent['schema:name'];
+        //   }
+        //   return name.endsWith('/') ? name.slice(0, -1) : name;
+        // })();
 
         let status = resourceImportStatus.VALID;
         let newName = resourceName;
-        if (entryType !== CONST.resourceType.FOLDER) {
-          replaceRepoDomain(entry, vm.repoDomain)
+        if (resourceType !== CONST.resourceType.FOLDER) {
+          replaceRepoDomain(resourceContent, vm.repoDomain)
 
-          // Check against the already existing CEDAR resources first
-          try {
-            const resReport = await arpService.getResourceReportById(entry['@id'], entryType);
-            status = resourceImportStatus.CONFLICTING
-            setParentFolderStatus(entryParent, status)
-            if (resReport['schema:name'] !== entry['schema:name']) {
-              cedarName = resReport['schema:name']
-            }
-          } catch (e) {
-            console.log(e)
-          }
+          const alreadyPresentResourceNames = new Set();
 
-          const alreadyPresentResourceNames = [];
-
-          // Further check against the uploaded resources, if the resource is already present,
+          // Check against the uploaded resources, if the resource is already present,
           // that means the user tried to upload the same resource multiple times and the system will reject it
           // Collect names of resources that match the @id
           uploadedResources
-            .filter(res => res.cedarId === entry['@id'])
+            .filter(res => res.cedarId === resourceContent['@id'])
             .forEach(res => {
-              // Remove the extension from the uploaded resource
-              alreadyPresentResourceNames.push(res.text.split('.json')[0]);
+              // save the originalName without the file extension and any suffixes, like the name of the duplicates etc.
+              alreadyPresentResourceNames.add(res.originalName);
+              status = resourceImportStatus.DUPLICATE;
             });
 
-          // check if the resource is already uploaded with the same name
-          if (alreadyPresentResourceNames.includes(resourceName)) {
-            newName = generateNewName(resourceName, alreadyPresentResourceNames);
-            status = resourceImportStatus.DUPLICATE;
+          existingName = [...alreadyPresentResourceNames].join(', ');
+
+          // If the resource is not already present in the uploaded resources, check against the already existing CEDAR resources
+          if (status === resourceImportStatus.VALID) {
+            try {
+              const resReport = await arpService.getResourceReportById(resourceContent['@id'], resourceType);
+              status = resourceImportStatus.CONFLICTING
+              setParentFolderStatus(entryParent, status)
+              if (resReport['schema:name'] !== resourceContent['schema:name']) {
+                existingName = resReport['schema:name']
+              }
+            } catch (e) {
+              console.log(e)
+            }
           }
 
-          // For better readability, add the file extension to the resource name
-          newName += fileExtension;
-          if (cedarName !== '' && status === resourceImportStatus.CONFLICTING) {
-            newName += ' (' + cedarName + ')'
-          }
+          // newName stores the name of the duplicates separated by commas
+          newName = existingName
         } else if (isParentFolder) {
           // Check if any folder among the vm.alreadyPresentCedarResources (the CEDAR resources in the destination folder) has the same name as the current entry
           if (entryParent === jsTreeRootFolder) {
@@ -946,7 +986,7 @@ define([
 
           // Check if any folder among the vm.uploadedResources has the same id as the fullPath of the current entry
           const fullPath = entryParent.endsWith('/') ? entryParent + newName : entryParent + '/' + newName + '/';
-          const uploadedFolder = vm.uploadedResources.find(resource => resource.id === fullPath && resource.resourceType === CONST.resourceType.FOLDER);
+          const uploadedFolder = vm.uploadedResources.find(res => res.id === fullPath && res.resourceType === CONST.resourceType.FOLDER);
           if (uploadedFolder) {
             status = resourceImportStatus.DUPLICATE;
             const alreadyPresentFolderNames = vm.uploadedResources
