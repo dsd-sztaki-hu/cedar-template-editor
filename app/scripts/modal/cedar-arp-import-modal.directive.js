@@ -740,13 +740,9 @@ define([
             newDirectory.copyName = resolvedDirName; // Name of the directory in CEDAR, if the create copy option is selected
             newDirectory.combinedName = directoryName + ' (' + resolvedDirName + ')';
             newDirectory.text = directoryName;
-            newDirectory.a_attr = { "title": "In case of creating a copy, this folder will be uploaded with the name in the parentheses." }
-            newDirectory.icon = "fa fa-folder-o";
           } else {
             newDirectory.a_attr = { "title": "Only the content of this folder is conflicting." }
           }
-
-          console.log('newDirectory', newDirectory);
 
           vm.uploadedResources.push(newDirectory);
 
@@ -1093,7 +1089,12 @@ define([
 
         if (parentFolder) {
           if (status === resourceImportStatus.VALID || status === resourceImportStatus.CONFLICTING) {
-            parentFolder.status = parentFolder.status === resourceImportStatus.CONFLICTING && parentFolder.combinedName ? resourceImportStatus.CONFLICTING : status;
+            const isParentConflict = parentFolder.status === resourceImportStatus.CONFLICTING && parentFolder.combinedName;
+            parentFolder.status = isParentConflict ? resourceImportStatus.CONFLICTING : status;
+            if (isParentConflict && parentFolder.parent === jsTreeRootFolder) {
+              parentFolder.a_attr = { "title": "In case of creating a copy, this folder will be uploaded with the name in the parentheses." }
+              parentFolder.icon = "fa fa-folder-o";
+            }
             addResourceToMap(vm.uploadableResourcesMap, parentFolderId, parentFolder);
           } else {
             parentFolder.status = status;
