@@ -93,17 +93,30 @@ define([
 
         if (node.children?.length) {
           node.children.forEach(childId => {
-            // Update the data-resolved attribute for this child node
             const childNode = tree.get_node(childId);
             if (childNode) {
-              // Update the action in memory
-              vm.uploadableResourcesMap.get(childId).resolveMethod = action;
-
-              // Update the dropdown value if it exists
-              const dropdown = $(`.node-action[data-node-id="${childId}"]`);
-              if (dropdown.length) {
-                dropdown.val(action);
-                dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
+              // Update the action in memory for all children
+              const childResource = vm.uploadableResourcesMap.get(childId);
+              if (childResource) {
+                childResource.resolveMethod = action;
+                
+                // Update visible nodes if they exist
+                const $dropdown = $(`.node-action[data-node-id="${childId}"]`);
+                if ($dropdown.length) {
+                  $dropdown.val(action);
+                  
+                  if (action === 'skip') {
+                    $dropdown.prop('disabled', true);
+                    $dropdown.addClass('disabled');
+                    $dropdown.attr('title', 'This resource will be skipped because its parent folder is set to skip');
+                  } else {
+                    $dropdown.prop('disabled', false);
+                    $dropdown.removeClass('disabled');
+                    $dropdown.removeAttr('title');
+                  }
+                  
+                  $dropdown.closest('.jstree-node').attr('data-resolved', action ? 'true' : 'false');
+                }
               }
 
               // Recursively update children
@@ -291,7 +304,7 @@ define([
             },
             'plugins': ['html_data']
           })
-            .on('ready.jstree refresh.jstree before_open.jstree', function (e, data) {
+            .on('ready.jstree refresh.jstree before_open.jstree after_open.jstree', function (e, data) {
               // Update all visible nodes based on their stored resolveMethod
               $(this).find('.node-action').each(function () {
                 const $dropdown = $(this);
@@ -304,6 +317,13 @@ define([
                 const parentId = node.parent;
                 const parentResource = vm.uploadableResourcesMap.get(parentId);
                 const parentResolveMethod = parentResource && parentResource.resolveMethod;
+
+                // If parent has skip method, disable this dropdown
+                if (parentResolveMethod === 'skip') {
+                  $dropdown.prop('disabled', true);
+                  $dropdown.addClass('disabled');
+                  $dropdown.attr('title', 'This resource will be skipped because its parent folder is set to skip');
+                }
 
                 // Only update from parent if the node has never had a resolveMethod set
                 if (parentResolveMethod && resource && resource.resolveMethod === undefined) {
