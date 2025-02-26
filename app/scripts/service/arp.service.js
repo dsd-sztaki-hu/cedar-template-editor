@@ -33,7 +33,8 @@ define([
             createFolderAsync: createFolderAsync,
             getContentType: getContentType,
             getResourceIconClass: getResourceIconClass,
-            getResourceIcon: getResourceIcon
+            getResourceIcon: getResourceIcon,
+            importResource: importResource
         };
 
 
@@ -166,49 +167,61 @@ define([
         }
         
         function updateResource(id, resourceJson) {
-            const doUpdate = function (response) {
-                ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
-            };
-            
-            let updatePromise;
-            const resourceType = getContentType(resourceJson);
-            if (resourceType === CONST.resourceType.TEMPLATE) {
-                updatePromise = TemplateService.updateTemplate(id, resourceJson);
-            } else if (resourceType === CONST.resourceType.ELEMENT) {
-                updatePromise = TemplateElementService.updateTemplateElement(id, resourceJson);
-            } else if (resourceType === CONST.resourceType.FIELD) {
-                updatePromise = TemplateFieldService.updateTemplateField(id, resourceJson);
-            }
-            AuthorizedBackendService.doCall(
-                updatePromise,
-                function (response) {doUpdate(response)},
-                function (err) {
-                    UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+            return new Promise((resolve, reject) => {
+                const doUpdate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
+                
+                let updatePromise;
+                const resourceType = getContentType(resourceJson);
+                if (resourceType === CONST.resourceType.TEMPLATE) {
+                    updatePromise = TemplateService.updateTemplate(id, resourceJson);
+                } else if (resourceType === CONST.resourceType.ELEMENT) {
+                    updatePromise = TemplateElementService.updateTemplateElement(id, resourceJson);
+                } else if (resourceType === CONST.resourceType.FIELD) {
+                    updatePromise = TemplateFieldService.updateTemplateField(id, resourceJson);
                 }
-            );
+                AuthorizedBackendService.doCall(
+                    updatePromise,
+                    function (response) {
+                        resolve(doUpdate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                        reject(err);
+                    }
+                );
+            });
         }
 
         function createResource(folderId, resourceJson) {
-            const doCreate = function (response) {
-                ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
-            };
+            return new Promise((resolve, reject) => {
+                const doCreate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
 
-            let createPromise;
-            const resourceType = getContentType(resourceJson);
-            if (resourceType === CONST.resourceType.TEMPLATE) {
-                createPromise = TemplateService.saveTemplate(folderId, resourceJson);
-            } else if (resourceType === CONST.resourceType.ELEMENT) {
-                createPromise = TemplateElementService.saveTemplateElement(folderId, resourceJson);
-            } else if (resourceType === CONST.resourceType.FIELD) {
-                createPromise = TemplateFieldService.saveTemplateField(folderId, resourceJson);
-            }
-            AuthorizedBackendService.doCall(
-                createPromise,
-                function (response) {doCreate(response)},
-                function (err) {
-                    UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                let createPromise;
+                const resourceType = getContentType(resourceJson);
+                if (resourceType === CONST.resourceType.TEMPLATE) {
+                    createPromise = TemplateService.saveTemplate(folderId, resourceJson);
+                } else if (resourceType === CONST.resourceType.ELEMENT) {
+                    createPromise = TemplateElementService.saveTemplateElement(folderId, resourceJson);
+                } else if (resourceType === CONST.resourceType.FIELD) {
+                    createPromise = TemplateFieldService.saveTemplateField(folderId, resourceJson);
                 }
-            );
+                AuthorizedBackendService.doCall(
+                    createPromise,
+                    function (response) {
+                        resolve(doCreate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                        reject(err);
+                    }
+                );
+            });
         }
 
         async function containsPublishedResource(folderId) {
@@ -296,6 +309,39 @@ define([
         function validateResource(resource) {
             return HttpBuilderService.post(UrlService.arpValidateResourceJson(), angular.toJson(resource));
             
+        }
+
+        function importResource(resource, parentFolderId) {
+            return new Promise((resolve, reject) => {
+                const doUpdate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
+                
+                let updatePromise;
+                const resourceType = getContentType(resource);
+
+                if (resourceType === CONST.resourceType.TEMPLATE) {
+                    updatePromise = TemplateService.updateTemplate(resource['@id'], resource);
+                } else if (resourceType === CONST.resourceType.ELEMENT) {
+                    updatePromise = TemplateElementService.updateTemplateElement(resource['@id'], resource);
+                } else if (resourceType === CONST.resourceType.FIELD) {
+                    updatePromise = TemplateFieldService.updateTemplateField(resource['@id'], resource);
+                }
+
+                updatePromise.url += '?folder_id=' + UrlService.encodeURIComponent(parentFolderId);
+
+                AuthorizedBackendService.doCall(
+                    updatePromise,
+                    function (response) {
+                        resolve(doUpdate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.import.error', err);
+                        reject(err);
+                    }
+                );
+            });
         }
 
         // remove the keys that are not needed for the preview

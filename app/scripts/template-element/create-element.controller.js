@@ -112,15 +112,7 @@ define([
             function (response) {
               $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
             },
-            function (err) {
-              const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
-              UIMessageService.acknowledgedExecution(
-                  function () {
-                  },
-                  'GENERIC.Warning',
-                  message,
-                  'GENERIC.Ok');
-        });
+            function (err) {});
       }
     }
 

@@ -2513,11 +2513,16 @@ define([
 
           // open the 'ARP import' modal
           function showArpImportModal() {
+            const isAdmin = CedarUser.getRoles().includes("userAdministrator");
+            const canUpload = isAdmin ? true : vm.canWrite();
+            if (!canUpload) {
+              UIMessageService.showArpImportOpenError('ARP.resourceImport.openPermissionError', 'ARP.resourceImport.openPermissionErrorMessage');
+              return;
+            }
             vm.arpImportModalVisible = true;
             const folderId = QueryParamUtilsService.getFolderId();
             const homeFolderId = CedarUser.getHomeFolderId();
-            const canUpload = !(vm.canNotWrite || vm.canNotCreateDraft);
-            $scope.$broadcast('arpImportModalVisible', [vm.resources, folderId, homeFolderId, canUpload]);
+            $scope.$broadcast('arpImportModalVisible', [vm.resources, folderId, homeFolderId, canUpload, isAdmin, CedarUser.getUserId()]);
           }
 
           vm.getFolderId = function () {
