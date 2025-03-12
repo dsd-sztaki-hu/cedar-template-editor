@@ -1,8 +1,9 @@
 'use strict';
 
 define([
-    'angular'
-], function(angular) {
+    'angular',
+    'json!config/arp-service.conf.json'
+], function(angular, arpServiceConf) {
     angular.module('cedar.templateEditor.service.arpService', [])
         .service('arpService', arpService);
 
@@ -13,6 +14,9 @@ define([
     function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
                          AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
                          HttpBuilderService, UrlService, TemplateFieldService, $q) {
+
+        const arpConfig = arpServiceConf;
+
         return {
             prepareResourceForMerge: prepareResourceForMerge,
             finalizeResourceForMerge: finalizeResourceForMerge,
@@ -35,9 +39,24 @@ define([
             getResourceIconClass: getResourceIconClass,
             getResourceIcon: getResourceIcon,
             importResource: importResource,
-            isInTheDataverseFolder: isInTheDataverseFolder
+            isInTheDataverseFolder: isInTheDataverseFolder,
+            isArpCopyButtonEnabled: isArpCopyButtonEnabled,
+            isArpMergeButtonEnabled: isArpMergeButtonEnabled
         };
 
+        function getFeatureFlag(flagName, defaultValue = false) {
+            return arpConfig && arpConfig.featureFlags && arpConfig.featureFlags[flagName] !== undefined 
+                ? arpConfig.featureFlags[flagName] 
+                : defaultValue;
+        }
+
+        function isArpCopyButtonEnabled() {
+            return getFeatureFlag('enableArpCopyButton');
+        }
+
+        function isArpMergeButtonEnabled() {
+            return getFeatureFlag('enableArpResourceMergeButton');
+        }
 
         function find(object, key, value) {
             if (!object || typeof object !== 'object') return;

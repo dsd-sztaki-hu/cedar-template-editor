@@ -703,7 +703,8 @@ define([
 
     $scope.canArpMerge = function() {
       if ($scope.element) {
-        return TemplateElementService.canArpMergeTemplateElement() && 
+        return arpService.isArpMergeButtonEnabled() &&
+            TemplateElementService.canArpMergeTemplateElement() && 
             $scope.element.hasOwnProperty('pav:derivedFrom') &&
             $scope.element.hasOwnProperty('_arpOriginalFolderId_') &&
             !$scope.derivedFromPublished;

@@ -59,7 +59,8 @@ define([
         
         $scope.canArpMerge= function() {
           if ($scope.form) {
-            return TemplateService.canArpExportTemplate() && 
+            return arpService.isArpMergeButtonEnabled() &&
+                TemplateService.canArpExportTemplate() && 
                 $scope.form.hasOwnProperty('pav:derivedFrom')
                 && $scope.form.hasOwnProperty('_arpOriginalFolderId_')
           } else {

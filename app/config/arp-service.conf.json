@@ -1,0 +1,6 @@
+{
+  "featureFlags": {
+    "enableArpCopyButton": true,
+    "enableArpResourceMergeButton": true
+  }
+}

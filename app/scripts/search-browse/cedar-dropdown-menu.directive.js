@@ -59,7 +59,8 @@ define([
         canNotArpCopy               : "=",
         arpGoToOriginal             : "=",
         hasDerivedFrom              : "=",
-        arpZipDownload                 : "=",
+        arpZipDownload              : "=",
+        isArpCopyButtonEnabled      : "=",
       },
       controller : function ($scope, $element) {
       },
