@@ -45,6 +45,7 @@ define([
         $scope.arpMergeLoading = false;
         $scope.derivedFromPublished = true;
         $scope.openOriginalVersionLoading = false;
+        $scope.isInTheDataverseFolder = false;
 
         // template details
         $scope.details;
@@ -114,6 +115,7 @@ define([
                 UIUtilService.setTotalMetadata(response.numberOfInstances);
                 UIUtilService.setVisibleMetadata(0);
                 UIUtilService.setInstances(null);
+                $scope.isInTheDataverseFolder = arpService.isInTheDataverseFolder(response);
                 $scope.checkLocking();
 
               },

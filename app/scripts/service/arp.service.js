@@ -34,7 +34,8 @@ define([
             getContentType: getContentType,
             getResourceIconClass: getResourceIconClass,
             getResourceIcon: getResourceIcon,
-            importResource: importResource
+            importResource: importResource,
+            isInTheDataverseFolder: isInTheDataverseFolder
         };
 
 
@@ -522,6 +523,21 @@ define([
                 default:
                     return "fa-question-circle";
             }            
+        }
+
+        function isInTheDataverseFolder(resourceReport) {
+            const pathInfo = resourceReport.pathInfo;
+            const publicFolder = pathInfo.find(pathInfo => pathInfo['schema:name'] === 'Public');
+            if (publicFolder) {
+                const dataverseFolder = pathInfo.find(pathInfo => pathInfo['schema:name'] === 'Dataverse');
+                if (dataverseFolder) {
+                    return pathInfo.indexOf(dataverseFolder) > pathInfo.indexOf(publicFolder);
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
     }
 });
