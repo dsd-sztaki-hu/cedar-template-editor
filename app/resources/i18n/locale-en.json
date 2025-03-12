@@ -711,7 +711,7 @@
   "EDITOR": {
     "TOOLBAR": {
       "searchForMore": "Search for fields and elements",
-      "mergeTemplates" : "Merge with the published version",
+      "mergeTemplates" : "Merge with the original version",
       "openOriginal": "Open original version"
     },
     "selectTimezone": "Select Timezone",

@@ -60,6 +60,7 @@ define([
           if ($scope.form) {
             return TemplateService.canArpExportTemplate() && 
                 $scope.form.hasOwnProperty('pav:derivedFrom')
+                && $scope.form.hasOwnProperty('_arpOriginalFolderId_')
           } else {
             return false;
           }

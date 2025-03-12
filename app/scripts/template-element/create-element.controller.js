@@ -705,6 +705,7 @@ define([
       if ($scope.element) {
         return TemplateElementService.canArpMergeTemplateElement() && 
             $scope.element.hasOwnProperty('pav:derivedFrom') &&
+            $scope.element.hasOwnProperty('_arpOriginalFolderId_') &&
             !$scope.derivedFromPublished;
       } else {
         return false;
