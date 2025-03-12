@@ -1,0 +1,302 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+
+    <div class="modal-header" id="arpImportModalHeader">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">ARP import</h4>
+    </div>
+
+    <div class="modal-body" style="display: flex;">
+      <uib-tabset active="importStatus.active">
+        <uib-tab index="0" heading="{{'ARP.resourceImport.uploadFiles' | translate}}">
+          <div class="fileUpload">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="actions" style="text-align:left; border-right: 1px solid #ddd; height: 100%;">
+                      Click the button below to select the files that will be imported into CEDAR.
+                      <br>Accepted file types:
+                      <ul>
+                        <li>.json</li>
+                        <li>.zip</li>
+                        <li>folders</li>
+                      </ul>
+                      <div style="display: flex; justify-content: center; margin-top: 20px;">
+                        <div style="display: flex; flex-direction: row; gap: 20px; width: 80%;">
+                          <label ng-if="isFileAndDirectoryUploadSupported" class="btn btn-save" for="resourcesInput"
+                            ng-class="{'disabled': arpimport.isImportDone}" style="flex: 1; text-align: center;">Select
+                            resources
+                            <input id="resourcesInput" type="file" webkitdirectory multiple style="display: none;" />
+                          </label>
+                          <label ng-if="!isFileAndDirectoryUploadSupported" class="btn btn-save" for="filesInput"
+                            ng-class="{'disabled': arpimport.isImportDone}" style="flex: 1; text-align: center;">Select
+                            files
+                            <input id="filesInput" type="file" multiple style="display: none;" />
+                          </label>
+                          <label ng-if="!isFileAndDirectoryUploadSupported" class="btn btn-save" for="folderInput"
+                            ng-class="{'disabled': arpimport.isImportDone}" style="flex: 1; text-align: center;">Select
+                            folder
+                            <input id="folderInput" type="file" webkitdirectory multiple style="display: none;" />
+                          </label>
+                        </div>
+                      </div>
+
+                      <div style="margin-top: 20px;">
+                        <!-- Valid Resources Panel -->
+                        <div class="panel panel-default" ng-show="arpimport.getValidResourcesCount() > 0">
+                          <div class="panel-heading" style="cursor: pointer;"
+                            ng-click="arpimport.showValidFiles = !arpimport.showValidFiles">
+                            <h4 class="panel-title">
+                              <i class="fa"
+                                ng-class="{'fa-chevron-down': !arpimport.showValidFiles, 'fa-chevron-up': arpimport.showValidFiles}"></i>
+                              Resources will be <strong>uploaded</strong> to the destination folder
+                              ({{arpimport.getValidResourcesCount()}})
+                            </h4>
+                          </div>
+                          <div class="panel-collapse" ng-show="arpimport.showValidFiles">
+                            <div class="panel-body" style="max-height: 200px; overflow-y: auto;">
+                              <ul class="list-unstyled" ng-if="arpimport.getValidResources().length > 0">
+                                <li ng-repeat="resource in arpimport.getValidResources()" style="padding: 2px 0px;">
+                                  <i class="fa" ng-class="resource.icon"></i>
+                                  {{resource.text}}
+                                </li>
+                              </ul>
+                              <p ng-if="arpimport.getValidResources().length === 0" class="text-muted">
+                                No valid resources uploaded yet
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Copied Resources Panel -->
+                        <div class="panel panel-default" style="margin-top: 10px;" ng-show="arpimport.getCopiedResourcesCount() > 0">
+                          <div class="panel-heading" style="cursor: pointer;"
+                            ng-click="arpimport.showCopiedFiles = !arpimport.showCopiedFiles">
+                            <h4 class="panel-title">
+                              <i class="fa"
+                                ng-class="{'fa-chevron-down': !arpimport.showCopiedFiles, 'fa-chevron-up': arpimport.showCopiedFiles}"></i>
+                              Resources will be <strong>copied</strong> to the destination folder
+                              ({{arpimport.getCopiedResourcesCount()}})
+                            </h4>
+                          </div>
+                          <div class="panel-collapse" ng-show="arpimport.showCopiedFiles">
+                            <div class="panel-body" style="max-height: 200px; overflow-y: auto;">
+                              <ul class="list-unstyled" ng-if="arpimport.getCopiedResources().length > 0">
+                                <li ng-repeat="resource in arpimport.getCopiedResources()" style="padding: 2px 0px;">
+                                  <i class="fa" ng-class="resource.icon"></i>
+                                  {{ resource.copyName || resource.text}}
+                                </li>
+                              </ul>
+                              <p ng-if="arpimport.getCopiedResources().length === 0" class="text-muted">
+                                No resources to be copied
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Replaced Resources Panel -->
+                        <div class="panel panel-default" style="margin-top: 10px;" ng-show="arpimport.getReplacedResourcesCount() > 0">
+                          <div class="panel-heading" style="cursor: pointer;"
+                            ng-click="arpimport.showReplacedFiles = !arpimport.showReplacedFiles">
+                            <h4 class="panel-title">
+                              <i class="fa"
+                                ng-class="{'fa-chevron-down': !arpimport.showReplacedFiles, 'fa-chevron-up': arpimport.showReplacedFiles}"></i>
+                              Resources will be <strong>replaced</strong> ({{arpimport.getReplacedResourcesCount()}})
+                            </h4>
+                          </div>
+                          <div class="panel-collapse" ng-show="arpimport.showReplacedFiles">
+                            <div class="panel-body" style="max-height: 200px; overflow-y: auto;">
+                              <ul class="list-unstyled" ng-if="arpimport.getReplacedResources().length > 0">
+                                <li ng-repeat="resource in arpimport.getReplacedResources()" style="padding: 2px 0px;">
+                                  <i class="fa" ng-class="resource.icon"></i>
+                                  {{resource.text}}
+                                </li>
+                              </ul>
+                              <p ng-if="arpimport.getReplacedResources().length === 0" class="text-muted">
+                                No resources to be replaced
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Permission Issue Resources Panel -->
+                        <!-- <div class="panel panel-default" style="margin-top: 10px;">
+                          <div class="panel-heading" style="cursor: pointer;"
+                            ng-click="arpimport.showPermissionIssueFiles = !arpimport.showPermissionIssueFiles">
+                            <h4 class="panel-title">
+                              <i class="fa"
+                                ng-class="{'fa-chevron-down': !arpimport.showPermissionIssueFiles, 'fa-chevron-up': arpimport.showPermissionIssueFiles}"></i>
+                              Resources with permission issues ({{arpimport.getPermissionIssueResourcesCount()}})
+                            </h4>
+                          </div>
+                          <div class="panel-collapse" ng-show="arpimport.showPermissionIssueFiles">
+                            <div class="panel-body" style="max-height: 200px; overflow-y: auto;">
+                              <ul class="list-unstyled" ng-if="arpimport.getPermissionIssueResources().length > 0">
+                                <li ng-repeat="resource in arpimport.getPermissionIssueResources()"
+                                  style="padding: 2px 0px;">
+                                  <i class="fa" ng-class="resource.icon"></i>
+                                  {{resource.text}}
+                                </li>
+                              </ul>
+                              <p ng-if="arpimport.getPermissionIssueResources().length === 0" class="text-muted">
+                                No resources with permission issues
+                              </p>
+                            </div>
+                          </div>
+                        </div> -->
+
+                        <!-- Skipped Resources Panel -->
+                        <div class="panel panel-default" style="margin-top: 10px;" ng-show="arpimport.getSkippedResourcesCount() > 0">
+                          <div class="panel-heading" style="cursor: pointer;"
+                            ng-click="arpimport.showSkippedFiles = !arpimport.showSkippedFiles">
+                            <h4 class="panel-title">
+                              <i class="fa"
+                                ng-class="{'fa-chevron-down': !arpimport.showSkippedFiles, 'fa-chevron-up': arpimport.showSkippedFiles}"></i>
+                              Resources will be <strong>skipped</strong> ({{arpimport.getSkippedResourcesCount()}})
+                            </h4>
+                          </div>
+                          <div class="panel-collapse" ng-show="arpimport.showSkippedFiles">
+                            <div class="panel-body" style="max-height: 200px; overflow-y: auto;">
+                              <ul class="list-unstyled" ng-if="arpimport.getSkippedResources().length > 0">
+                                <li ng-repeat="resource in arpimport.getSkippedResources()" style="padding: 2px 0px;">
+                                  <i class="fa" ng-class="resource.icon"></i>
+                                  {{resource.text}}
+                                </li>
+                              </ul>
+                              <p ng-if="arpimport.getSkippedResources().length === 0" class="text-muted">
+                                No resources to be skipped
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <p style="text-align: center;" ng-if="!arpimport.isImportDone">Drag and drop files below</p>
+                <p style="text-align: center;" ng-if="arpimport.isImportDone"><strong>Reset the modal to start a new
+                    import</strong></p>
+                <!-- <div ng-show="arpimport.isTreeLoading" class="tree-loading-container">
+                  <div class="loader2"></div>
+                </div> -->
+
+                <div style="position: relative; width: 600px; max-width: 100%;">
+                  <div ng-show="arpimport.isTreeLoading" class="tree-loading-container">
+                    <div class="loader2"></div>
+                  </div>
+
+                  <div id="jstree-valid" ng-hide="arpimport.isTreeLoading">
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: center; margin-top: 20px;">
+                  <div style="display: flex; flex-direction: row; gap: 20px; width: 80%;">
+                    <label class="btn btn-save default-btn-bg"
+                      ng-click="arpimport.setConflictResolutionMethod('createCopy')"
+                      ng-class="{'disabled': arpimport.isImportDone || arpimport.uploadableResourcesMap.size === 0}"
+                      style="text-align: center; width: 80%;">Create
+                      copy</label>
+                    <div class="tooltip-wrapper" data-tooltip="You do not have permission to replace all resources"
+                      ng-class="{'disabled-button-wrapper': arpimport.notAllCanBeReplaced}"
+                      style="width: 90%;">
+                      <label class="btn btn-save default-btn-bg"
+                        ng-click="arpimport.setConflictResolutionMethod('replace')"
+                        ng-class="{'disabled': arpimport.isImportDone || arpimport.uploadableResourcesMap.size === 0 || arpimport.notAllCanBeReplaced}"
+                        style="text-align: center; width: 100%;">Replace
+                        all</label>
+                    </div>
+                    <label class="btn btn-save default-btn-bg" ng-click="arpimport.setConflictResolutionMethod('skip')"
+                      ng-class="{'disabled': arpimport.isImportDone || arpimport.uploadableResourcesMap.size === 0}"
+                      style="text-align: center; width: 80%;">Skip
+                      all</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-tab>
+        <uib-tab index="1" heading="{{'ARP.resourceImport.invalidFiles' | translate}}"
+          disable="importStatus.invalidFiles.length === 0">
+          <div class="row">
+            <div class="col-left">
+              The following files are not going to be uploaded.
+            </div>
+            <div class="col-right">
+              <div id="jstree-invalid">
+              </div>
+            </div>
+          </div>
+        </uib-tab>
+
+        <uib-tab index="2" heading="{{'ARP.resourceImport.uploadedResources' | translate}}"
+          disable="!arpimport.isImportDone">
+          <div class="row">
+            <div class="col-left">
+              <div class="progress" style="margin: 20px 0; height: 40px; width: 100%;">
+                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                  ng-style="{ width: (importedFiles / totalFiles * 100) + '%' }" aria-valuenow="{{importedFiles}}"
+                  aria-valuemin="0" aria-valuemax="{{totalFiles}}"
+                  style="font-size: 18px; line-height: 40px; text-align: center; position: relative;">
+                  <span style="position: absolute; width: 100%; left: 0;">
+                    {{importedFiles}} of {{totalFiles}} resources
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-right">
+              <div id="jstree-uploaded">
+              </div>
+            </div>
+          </div>
+        </uib-tab>
+
+      </uib-tabset>
+    </div>
+
+    <!-- Validation messages -->
+    <div ng-if="showValidation==true" style="color:red; margin: 20px">
+      <span>Please correct the following errors and try again:</span>
+      <ul>
+        <li ng-repeat="message in validationMessages">
+          {{message}}
+        </li>
+      </ul>
+    </div>
+
+    <!-- footer closes the dialog -->
+    <div class="modal-footer actions">
+      <div style="display: flex;justify-content:space-between;align-items: center;">
+
+        <div class="clear-save" style="width:100%">
+
+          <button type="button" ng-click="arpimport.resetModal()" class="btn done btn-clear" translate
+            ng-disabled="importStatus.validFiles.length === 0">
+            Reset
+          </button>
+
+          <button type="button" ng-click="arpimport.closeModal()" data-dismiss="modal" aria-label="Close"
+            class="btn done btn-clear" translate>
+            Close
+          </button>
+
+          <span ng-if="!importStatus.submitted">
+            <div class="tooltip-wrapper" data-tooltip="Select a method to resolve conflicts."
+              ng-class="{'disabled-button-wrapper': !arpimport.areAllConflictsResolved}">
+
+              <button type="button" ng-click="arpimport.startImport()" aria-label="Import" class="btn btn-save"
+                translate ng-class="{'disabled': !arpimport.areAllConflictsResolved || arpimport.isImportDone}">
+                Import
+              </button>
+            </div>
+          </span>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -63,6 +63,8 @@ define([
 
     $scope.saveButtonDisabled = false;
 
+    $scope.openOriginalVersionLoading = false;
+
     $scope.setClean = function() {
       $rootScope.$broadcast('form:clean');
       UIUtilService.setDirty(false);
@@ -110,15 +112,7 @@ define([
             function (response) {
               $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
             },
-            function (err) {
-              const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
-              UIMessageService.acknowledgedExecution(
-                  function () {
-                  },
-                  'GENERIC.Warning',
-                  message,
-                  'GENERIC.Ok');
-        });
+            function (err) {});
       }
     }
 
@@ -729,13 +723,36 @@ define([
 
     $scope.canArpMerge = function() {
       if ($scope.element) {
-        return TemplateElementService.canArpMergeTemplateElement() && 
+        return arpService.isArpMergeButtonEnabled() &&
+            TemplateElementService.canArpMergeTemplateElement() && 
             $scope.element.hasOwnProperty('pav:derivedFrom') &&
+            $scope.element.hasOwnProperty('_arpOriginalFolderId_') &&
             !$scope.derivedFromPublished;
       } else {
         return false;
       }
     };
+
+    $scope.hasDerivedFrom = function() {
+      if ($scope.element) {
+        return $scope.element.hasOwnProperty('pav:derivedFrom');
+      }
+      return false;
+    }
+
+    $scope.openOriginalVersion = function() {
+      $scope.openOriginalVersionLoading = true;
+      $timeout(async function() {
+        try {
+          const url = await arpService.openOriginalVersionEditor($scope.element);
+          $location.url(url);
+        } catch (error) {
+        } finally {
+          $scope.openOriginalVersionLoading = false;
+          $scope.$apply();
+        }
+      }, 0);
+    }
 
     $scope.arpMergeButtonDisabled = function() {
       return UIUtilService.isDirty();

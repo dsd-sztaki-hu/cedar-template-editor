@@ -711,7 +711,8 @@
   "EDITOR": {
     "TOOLBAR": {
       "searchForMore": "Search for fields and elements",
-      "mergeTemplates" : "Merge with the published version"
+      "mergeTemplates" : "Merge with the original version",
+      "openOriginal": "Open original version"
     },
     "selectTimezone": "Select Timezone",
     "enterDecimalSeconds": "Enter Decimal Seconds",
@@ -930,11 +931,14 @@
       "SchemaDescriptionHun": "Hungarian Description",
       "Merged": "Merged",
       "Merge": "Merge",
-      "CopyOfTitle": "ARP Copy of {{title}}"
+      "CopyOfTitle": "ARP Copy of {{title}}",
+      "loadingOriginalVersion": "Loading Original Version..."
     },
     "MENU": {
       "arpCopy": "ARP Copy to...",
-      "arpDelete": "ARP Delete"
+      "arpDelete": "ARP Delete",
+      "arpGoToOriginal": "ARP Go to original",
+      "arpZipDownload": "ARP Download ZIP"
     },
     "copy": {
       "copied": "ARP Copied",
@@ -951,6 +955,34 @@
       "load": {
         "error": "There was an error while loading the ARP Dataset Element!<br /><br />VIEW TECHNICAL DETAILS!"
       }
+    },
+    "zipDownload": {
+      "preview": {
+        "error": "There was an error while loading the content for the zip download preview!<br /><br />VIEW TECHNICAL DETAILS!"
+      },
+      "status": {
+        "message": "The zipping process has started. Please wait until the download is completed.",
+        "title": "Download started"
+      }
+    },
+    "resourceImport": {
+      "error": {
+        "unzip": "There was an error while unzipping the file. Please check the file and try again.",
+        "unsupportedFileFormat": "Unsupported file format!",
+        "unsupportedFileFormatText": "Only JSON and ZIP files are supported.",
+        "folderCreation": "There was an error while creating the folder."
+      },
+      "folderDescription": "This folder was created by the ARP Importer",
+      "uploadFiles": "Upload files",
+      "conflictingFiles": "Conflicting files",
+      "invalidFiles": "Invalid files",
+      "uploadedResources": "Upload results",
+      "missingUploadPermission": "You need upload permissions to create copies",
+      "missingWritePermission": "You need write access to replace this resource",
+      "openPermissionError": "You do not have permission to write to the folder.",
+      "openPermissionErrorMessage": "You can only import resources into folders you have write access to.",
+      "importPermissionError": "You do not have permission to read or replace the resource.",
+      "importPermissionErrorMessage": "You can create a copy of the resource or skip the resource."
     }
   }
 }

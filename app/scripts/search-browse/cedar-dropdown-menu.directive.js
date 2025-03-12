@@ -55,7 +55,12 @@ define([
         isAdmin                     : "=",
         arpCopy                     : "=",
         arpDelete                   : "=",
-        canNotArpDelete             : "="
+        canNotArpDelete             : "=",
+        canNotArpCopy               : "=",
+        arpGoToOriginal             : "=",
+        hasDerivedFrom              : "=",
+        arpZipDownload              : "=",
+        isArpCopyButtonEnabled      : "=",
       },
       controller : function ($scope, $element) {
       },

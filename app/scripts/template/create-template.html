@@ -201,7 +201,7 @@
                       ng-click="cancelTemplate()" translate>GENERIC.Cancel
               </button>
               <button id="button-export-template" ng-disabled="arpExportButtonDisabled()" type="button"
-                      class="btn btn-clear template" ng-click="arpExportTemplate()" ng-if="canArpExportTemplate()"
+                      class="btn btn-clear template" ng-click="arpExportTemplate()" ng-if="canArpExportTemplate() && isInTheDataverseFolder"
                       translate>
                 ARP.ExportTemplate
               </button>
@@ -271,7 +271,7 @@
     </section>
 
     <section>
-      <div class="loading-screen" ng-if="arpMergeLoading"
+      <div class="loading-screen" ng-if="arpMergeLoading || openOriginalVersionLoading"
         style="position: fixed; 
         top: 0;
         left: 0;

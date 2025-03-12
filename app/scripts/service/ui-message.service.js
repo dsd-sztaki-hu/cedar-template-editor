@@ -6,9 +6,9 @@ define([
   angular.module('cedar.templateEditor.service.uIMessageService', [])
       .service('UIMessageService', UIMessageService);
 
-  UIMessageService.$inject = ['toasty', '$translate', '$timeout'];
+  UIMessageService.$inject = ['toasty', '$translate', '$timeout', '$uibModal'];
 
-  function UIMessageService(toasty, $translate, $timeout) {
+  function UIMessageService(toasty, $translate, $timeout, $uibModal) {
 
     var service = {
       serviceId: "UIMessageService"
@@ -289,6 +289,111 @@ define([
         }
       });
     }
+
+    service.showArpImportError = function (titleKey, messageKey, fileList) {
+      toasty.error({
+        title  : $translate.instant(titleKey),
+        msg    : $translate.instant(messageKey),
+        onClick: function () {
+          let files = fileList.join('\n');
+          const errorMessage = '<b>Some of the files you selected have been removed from the upload list because they are duplicates of files that are already being uploaded.<br><br>Please review your selection and try again if needed.<br><br>The list of the removed files can be checked below:<b>'
+          const content = errorMessage + '<pre>' + files + '</pre>'
+
+          swal({
+            title:   $translate.instant(titleKey),
+            customClass: "arpImportError",
+            text:   content,
+            type:   "error",
+            html:   true
+          })
+        }
+      });
+    }
+
+    service.showArpImportOpenError = function (titleKey, messageKey) {
+      swal({
+        title: $translate.instant(titleKey),
+        text: $translate.instant(messageKey),
+        type: "error",
+        // customClass: 'cedarSWAL'
+      });
+    }
+
+    service.showArpImportPermissionError = function (titleKey, messageKey, modalController) {
+      const modalInstance = $uibModal.open({
+        template: `
+          <div class="modal-header">
+            <h3 class="modal-title">{{title}}</h3>
+          </div>
+          <div class="modal-body">
+            <p>{{message}}</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">Create Copy</button>
+            <button class="btn btn-default" ng-click="skip()">Skip</button>
+            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+          </div>
+        `,
+        controller: function ($scope, $uibModalInstance) {
+          $scope.title = titleKey;
+          $scope.message = messageKey;
+
+          $scope.ok = function () {
+            $uibModalInstance.close('copy');
+          };
+
+          $scope.skip = function () {
+            $uibModalInstance.close('skip');
+          };
+
+          $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+          };
+        },
+        windowClass: 'arp-permission-modal',
+        backdropClass: 'arp-permission-backdrop',
+        backdrop: 'static',
+        keyboard: true
+      });
+
+      // Add custom styles for the modal
+      const style = document.createElement('style');
+      style.innerHTML = `
+        .arp-permission-modal {
+          z-index: 1060 !important;
+        }
+        .arp-permission-backdrop {
+          z-index: 1059 !important;
+        }
+      `;
+      document.head.appendChild(style);
+
+      modalInstance.result.then(
+        function (action) {
+          if (action === 'copy') {
+            modalController.handlePermissionCopy();
+          } else if (action === 'skip') {
+            modalController.handlePermissionSkip();
+          }
+        },
+        function () {
+          // Modal dismissed - do nothing
+        }
+      );
+    }
+
+    service.flashArpWarning = function (messageKey, messageParameters, title, options) {
+      let toastyConfig = {
+        title: $translate.instant(title),
+        msg: $translate.instant(messageKey, messageParameters)
+      };
+    
+      if (options && typeof options.onClick === 'function') {
+        toastyConfig.onClick = options.onClick;
+      }
+    
+      toasty['warning'](toastyConfig);
+    };
 
     return service;
   }

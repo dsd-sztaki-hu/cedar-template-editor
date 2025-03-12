@@ -27,6 +27,8 @@
                      ng-href="/templates/create?folderId={{dc.currentFolderId | encodeURIComponent}}">Template</a></li>
               <li class="divider"></li>
               <li><a id="button-import" ng-click="dc.showImportModal()">Import</a></li>
+              <li class="divider"></li>
+              <li><a id="button-arp-import" ng-click="dc.showArpImportModal()">ARP Import</a></li>
             </ul>
           </div>
         </div>
@@ -279,7 +281,12 @@
                                                copy="dc.showCopyModal"
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
+                                               arp-zip-download="dc.showArpZipDownloadModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
+                                               can-not-arp-copy="dc.canNotArpCopy"
+                                               has-derived-from="dc.hasDerivedFrom"
+                                               is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                               arp-go-to-original="dc.arpGoToOriginal"
                                                rename="dc.showRenameModal"
                                                submit="dc.showFlowModal"
                                                publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
@@ -375,7 +382,12 @@
                                                copy="dc.showCopyModal"
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
+                                               arp-zip-download="dc.showArpZipDownloadModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
+                                               can-not-arp-copy="dc.canNotArpCopy"
+                                               has-derived-from="dc.hasDerivedFrom"
+                                               is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                               arp-go-to-original="dc.arpGoToOriginal"
                                                rename="dc.showRenameModal"
                                                submit="dc.showFlowModal"
                                                publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
@@ -540,7 +552,12 @@
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
+                                           arp-zip-download="dc.showArpZipDownloadModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
+                                           can-not-arp-copy="dc.canNotArpCopy"
+                                           has-derived-from="dc.hasDerivedFrom"
+                                           is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                           arp-go-to-original="dc.arpGoToOriginal"
                                            rename="dc.showRenameModal"
                                            submit="dc.showFlowModal"
                                            publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
@@ -698,7 +715,12 @@
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
+                                           arp-zip-download="dc.showArpZipDownloadModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
+                                           can-not-arp-copy="dc.canNotArpCopy"
+                                           has-derived-from="dc.hasDerivedFrom"
+                                           is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                           arp-go-to-original="dc.arpGoToOriginal"
                                            rename="dc.showRenameModal"
                                            submit="dc.showFlowModal"
                                            publish-modal="dc.showPublishModal" publish-callback="dc.publishResource"
@@ -1069,6 +1091,14 @@
   </cedar-arp-copy-modal>
 </section>
 
+<!-- ARP zip download modal -->
+<section>
+  <cedar-arp-zip-download-modal cedar-modal-show modal-visible="dc.arpZipDownloadModalVisible" class="modal fade" id="arp-zip-download-modal"
+                                 tabindex="-1" role="dialog" aria-labelledby="arpZipDownloadModalHeader"
+                                 data-keyboard="true" data-backdrop="static" arp-zip-download-resource="resource">
+  </cedar-arp-zip-download-modal>
+</section>
+
 <!-- move modal -->
 <section>
   <cedar-move-modal cedar-modal-show modal-visible="dc.moveModalVisible" class="modal fade" id="move-modal"
@@ -1112,4 +1142,16 @@
                       id="import-modal" tabindex="-1" role="dialog" aria-labelledby="importModalHeader"
                       data-keyboard="true" data-backdrop="static">
   </cedar-import-modal>
+</section>
+
+<!-- ARP import modal -->
+<section>
+  <cedar-arp-import-modal cedar-modal-show
+                      modal-visible="dc.arpImportModalVisible"
+                      import-folder-id="dc.currentFolderId"
+                      refresh-workspace="dc.refreshWorkspace"
+                      class="modal fade"
+                      id="arp-import-modal" tabindex="-1" role="dialog" aria-labelledby="arpImportModalHeader"
+                      data-keyboard="true" data-backdrop="static">
+  </cedar-arp-import-modal>
 </section>

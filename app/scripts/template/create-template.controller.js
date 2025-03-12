@@ -43,6 +43,9 @@ define([
         $scope.saveButtonDisabled = false;
         $scope.viewType = 'popup';
         $scope.arpMergeLoading = false;
+        $scope.derivedFromPublished = true;
+        $scope.openOriginalVersionLoading = false;
+        $scope.isInTheDataverseFolder = false;
 
         // template details
         $scope.details;
@@ -56,10 +59,34 @@ define([
         
         $scope.canArpMerge= function() {
           if ($scope.form) {
-            return TemplateService.canArpExportTemplate() && $scope.form.hasOwnProperty('pav:derivedFrom');
+            return arpService.isArpMergeButtonEnabled() &&
+                TemplateService.canArpExportTemplate() && 
+                $scope.form.hasOwnProperty('pav:derivedFrom')
+                && $scope.form.hasOwnProperty('_arpOriginalFolderId_')
           } else {
             return false;
           }
+        }
+
+        $scope.hasDerivedFrom = function() {
+          if ($scope.form) {  
+            return $scope.form.hasOwnProperty('pav:derivedFrom');
+          }
+          return false;
+        }
+
+        $scope.openOriginalVersion = function() {
+          $scope.openOriginalVersionLoading = true;
+          $timeout(async function() {
+            try {
+              const url = await arpService.openOriginalVersionEditor($scope.form);
+              $location.url(url);
+            } catch (error) {
+            } finally {
+              $scope.openOriginalVersionLoading = false;
+              $scope.$apply();
+            }
+          }, 0);
         }
 
         $scope.arpMergeButtonDisabled = function() {
@@ -89,6 +116,7 @@ define([
                 UIUtilService.setTotalMetadata(response.numberOfInstances);
                 UIUtilService.setVisibleMetadata(0);
                 UIUtilService.setInstances(null);
+                $scope.isInTheDataverseFolder = arpService.isInTheDataverseFolder(response);
                 $scope.checkLocking();
 
               },
@@ -98,6 +126,16 @@ define([
           );
         };
 
+        const setIsDerivedFromPublished = function () {
+          if ($scope.form && $scope.form['pav:derivedFrom']) {
+            AuthorizedBackendService.doCall(
+                TemplateService.getTemplate($scope.form['pav:derivedFrom']),
+                function (response) {
+                  $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
+                },
+                function (err) {});
+          }
+        }
 
         var getTemplate = function () {
           // Load existing form if $routeParams.id parameter is supplied
@@ -132,6 +170,7 @@ define([
                           $rootScope.$broadcast('form:clean');
                           //$rootScope.$broadcast(CONST.eventId.form.VALIDATION, {state: true});
                           ValidationService.checkValidation();
+                          setIsDerivedFromPublished();
                           getReport($scope.form["@id"]);
                           // } else {
                           //   // TODO validate before loading template-controller

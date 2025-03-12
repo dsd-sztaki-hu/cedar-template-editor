@@ -1,18 +1,22 @@
 'use strict';
 
 define([
-    'angular'
-], function(angular) {
+    'angular',
+    'json!config/arp-service.conf.json'
+], function(angular, arpServiceConf) {
     angular.module('cedar.templateEditor.service.arpService', [])
         .service('arpService', arpService);
 
     arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", 
         "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService",
-        "HttpBuilderService", "UrlService", "TemplateFieldService"];
+        "HttpBuilderService", "UrlService", "TemplateFieldService", "$q"];
 
     function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
                          AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
-                         HttpBuilderService, UrlService, TemplateFieldService) {
+                         HttpBuilderService, UrlService, TemplateFieldService, $q) {
+
+        const arpConfig = arpServiceConf;
+
         return {
             prepareResourceForMerge: prepareResourceForMerge,
             finalizeResourceForMerge: finalizeResourceForMerge,
@@ -24,9 +28,35 @@ define([
             getFolderContents: getFolderContents,
             containsPublishedResource: containsPublishedResource,
             validateResource: validateResource,
-            omitDeep: omitDeep
+            omitDeep: omitDeep,
+            getResourceContentById: getResourceContentById,
+            getResourceReportById: getResourceReportById,
+            openOriginalVersionEditor: openOriginalVersionEditor,
+            downloadZip: downloadZip,
+            createResource: createResource,
+            createFolderAsync: createFolderAsync,
+            getContentType: getContentType,
+            getResourceIconClass: getResourceIconClass,
+            getResourceIcon: getResourceIcon,
+            importResource: importResource,
+            isInTheDataverseFolder: isInTheDataverseFolder,
+            isArpCopyButtonEnabled: isArpCopyButtonEnabled,
+            isArpMergeButtonEnabled: isArpMergeButtonEnabled
         };
 
+        function getFeatureFlag(flagName, defaultValue = false) {
+            return arpConfig && arpConfig.featureFlags && arpConfig.featureFlags[flagName] !== undefined 
+                ? arpConfig.featureFlags[flagName] 
+                : defaultValue;
+        }
+
+        function isArpCopyButtonEnabled() {
+            return getFeatureFlag('enableArpCopyButton');
+        }
+
+        function isArpMergeButtonEnabled() {
+            return getFeatureFlag('enableArpResourceMergeButton');
+        }
 
         function find(object, key, value) {
             if (!object || typeof object !== 'object') return;
@@ -39,18 +69,29 @@ define([
 
         // prepare the resource for merge
         // keep the original "pav:createdOn" values and the original "@id" values
-        function prepareResourceForMerge(originalResourceJson, resourceJson) {
+        function prepareResourceForMerge(originalResourceJson, resourceJson, elementOnly) {
 
             if (Array.isArray(resourceJson)) {
-                return resourceJson.map(element => prepareResourceForMerge(originalResourceJson, element));
+                return resourceJson.map(element => prepareResourceForMerge(originalResourceJson, element, elementOnly));
             }
 
             else if (resourceJson !== null && typeof resourceJson === 'object') {
                 // If the object has an "id" and "pav:derivedFrom" property, replace "id" with "pav:derivedFrom"
-                // if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
-                //     resourceJson['@id'] = resourceJson['pav:derivedFrom'];
-                //     delete resourceJson['pav:derivedFrom'];
-                // }
+                if (resourceJson.hasOwnProperty('pav:derivedFrom') && typeof resourceJson['pav:derivedFrom'] === 'string') {
+                    console.log('elementOnlyTest', elementOnly);
+                    resourceJson['@id'] = resourceJson['pav:derivedFrom'];
+                    if (!elementOnly) {
+                        delete resourceJson['pav:derivedFrom'];
+                    } else {
+                        console.log('elementOnly', originalResourceJson);
+                        console.log('elementOnly2', resourceJson);
+                        if (originalResourceJson.hasOwnProperty('pav:derivedFrom')) {
+                            resourceJson['pav:derivedFrom'] = originalResourceJson['pav:derivedFrom'];
+                        } else {
+                            delete resourceJson['pav:derivedFrom'];
+                        }
+                    }
+                }
                 
                 // If the object has a "pav:createdOn" property, replace "pav:createdOn" with the original "pav:createdOn"
                 // if (resourceJson.hasOwnProperty('pav:createdOn') && typeof resourceJson['pav:createdOn'] === 'string') {
@@ -81,7 +122,7 @@ define([
                 const values = Object.values(resourceJson);
                 values.forEach(value => {
                     if (typeof value === 'object') {
-                        return prepareResourceForMerge(originalResourceJson, value);
+                        return prepareResourceForMerge(originalResourceJson, value, elementOnly);
                     }
                 });
             }
@@ -100,9 +141,24 @@ define([
         }
 
         function getContentType(content) {
+            // Ensure content is an object and '@type' exists
+            if (!content || typeof content !== "object" || !content['@type'] || typeof content['@type'] !== "string") {
+                console.warn("Invalid content:", content);
+                return null; // Return null for invalid or unexpected content
+            }
+
             const typeStr = content['@type'];
             const lastIndex = typeStr.lastIndexOf('/');
+
+            // Check if '/' exists in the string
+            if (lastIndex === -1) {
+                console.warn("Invalid '@type' format:", typeStr);
+                return null; // Return null if the type string doesn't have a '/'
+            }
+
             const contentType = typeStr.substring(lastIndex + 1);
+
+            // Map the extracted type to the resource type
             switch (contentType) {
                 case 'TemplateElement':
                     return CONST.resourceType.ELEMENT;
@@ -110,11 +166,16 @@ define([
                     return CONST.resourceType.TEMPLATE;
                 case 'TemplateField':
                     return CONST.resourceType.FIELD;
+                case 'TemplateInstance':
+                    return CONST.resourceType.INSTANCE;
+                default:
+                    console.warn("Unknown content type:", contentType);
+                    return null; // Return null for unknown content types
             }
         }
         
         function doMergeResource(resourceJson, originalResourceJson) {
-            const mergedResourceJson = prepareResourceForMerge(originalResourceJson, resourceJson);
+            const mergedResourceJson = prepareResourceForMerge(originalResourceJson, resourceJson, false);
             return finalizeResourceForMerge(mergedResourceJson);
         }
 
@@ -126,26 +187,61 @@ define([
         }
         
         function updateResource(id, resourceJson) {
-            const doUpdate = function (response) {
-                ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
-            };
-            
-            let updatePromise;
-            const resourceType = getContentType(resourceJson);
-            if (resourceType === CONST.resourceType.TEMPLATE) {
-                updatePromise = TemplateService.updateTemplate(id, resourceJson);
-            } else if (resourceType === CONST.resourceType.ELEMENT) {
-                updatePromise = TemplateElementService.updateTemplateElement(id, resourceJson);
-            } else if (resourceType === CONST.resourceType.FIELD) {
-                updatePromise = TemplateFieldService.updateTemplateField(id, resourceJson);
-            }
-            AuthorizedBackendService.doCall(
-                updatePromise,
-                function (response) {doUpdate(response)},
-                function (err) {
-                    UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+            return new Promise((resolve, reject) => {
+                const doUpdate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
+                
+                let updatePromise;
+                const resourceType = getContentType(resourceJson);
+                if (resourceType === CONST.resourceType.TEMPLATE) {
+                    updatePromise = TemplateService.updateTemplate(id, resourceJson);
+                } else if (resourceType === CONST.resourceType.ELEMENT) {
+                    updatePromise = TemplateElementService.updateTemplateElement(id, resourceJson);
+                } else if (resourceType === CONST.resourceType.FIELD) {
+                    updatePromise = TemplateFieldService.updateTemplateField(id, resourceJson);
                 }
-            );
+                AuthorizedBackendService.doCall(
+                    updatePromise,
+                    function (response) {
+                        resolve(doUpdate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                        reject(err);
+                    }
+                );
+            });
+        }
+
+        function createResource(folderId, resourceJson) {
+            return new Promise((resolve, reject) => {
+                const doCreate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
+
+                let createPromise;
+                const resourceType = getContentType(resourceJson);
+                if (resourceType === CONST.resourceType.TEMPLATE) {
+                    createPromise = TemplateService.saveTemplate(folderId, resourceJson);
+                } else if (resourceType === CONST.resourceType.ELEMENT) {
+                    createPromise = TemplateElementService.saveTemplateElement(folderId, resourceJson);
+                } else if (resourceType === CONST.resourceType.FIELD) {
+                    createPromise = TemplateFieldService.saveTemplateField(folderId, resourceJson);
+                }
+                AuthorizedBackendService.doCall(
+                    createPromise,
+                    function (response) {
+                        resolve(doCreate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.merge.originalFolderIdError', err);
+                        reject(err);
+                    }
+                );
+            });
         }
 
         async function containsPublishedResource(folderId) {
@@ -171,7 +267,7 @@ define([
             return new Promise((resolve, reject) => {
                 resourceService.getResources({
                         folderId         : folderId,
-                        resourceTypes    : resourceTypes,
+                        resourceTypes    : resourceTypes ?? arpResourceTypes(),
                     },
                     function (response) {
                         resolve(Array.isArray(response.resources) ? response.resources : [response.resources]);
@@ -235,6 +331,39 @@ define([
             
         }
 
+        function importResource(resource, parentFolderId) {
+            return new Promise((resolve, reject) => {
+                const doUpdate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
+                
+                let updatePromise;
+                const resourceType = getContentType(resource);
+
+                if (resourceType === CONST.resourceType.TEMPLATE) {
+                    updatePromise = TemplateService.updateTemplate(resource['@id'], resource);
+                } else if (resourceType === CONST.resourceType.ELEMENT) {
+                    updatePromise = TemplateElementService.updateTemplateElement(resource['@id'], resource);
+                } else if (resourceType === CONST.resourceType.FIELD) {
+                    updatePromise = TemplateFieldService.updateTemplateField(resource['@id'], resource);
+                }
+
+                updatePromise.url += '?folder_id=' + UrlService.encodeURIComponent(parentFolderId);
+
+                AuthorizedBackendService.doCall(
+                    updatePromise,
+                    function (response) {
+                        resolve(doUpdate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.import.error', err);
+                        reject(err);
+                    }
+                );
+            });
+        }
+
         // remove the keys that are not needed for the preview
         function omitDeep(obj) {
             const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn',
@@ -258,6 +387,176 @@ define([
             }
             return obj;
         }
+
+        function getResourceContentById(updatedResourceId, updatedResourceType) {
+            return new Promise((resolve, reject) => {
+              const originalResourceId = updatedResourceId
+              let promise;
+
+              if (updatedResourceType === CONST.resourceType.TEMPLATE) {
+                promise = TemplateService.getTemplate(originalResourceId);
+              } else if (updatedResourceType === CONST.resourceType.ELEMENT) {
+                promise = TemplateElementService.getTemplateElement(originalResourceId);
+              } else if (updatedResourceType === CONST.resourceType.FIELD) {
+                promise = TemplateFieldService.getTemplateField(originalResourceId);
+              }
+
+              AuthorizedBackendService.doCall(
+                  promise,
+                  function (response) {
+                    resolve(response.data);
+                  },
+                  function (err) {
+                    const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
+                    reject(err);
+                    UIMessageService.acknowledgedExecution(
+                        function () {},
+                        'GENERIC.Warning',
+                        message,
+                        'GENERIC.Ok');
+                  });
+            });
+          }
+
+          function getResourceReportById(resourceId, resourceType) {
+            return new Promise((resolve, reject) => {
+              let url;
+              switch (resourceType) {
+                case CONST.resourceType.FOLDER:
+                  url = UrlService.folders() + '/' + encodeURIComponent(resourceId);
+                  break;
+                case CONST.resourceType.ELEMENT:
+                  url = UrlService.getTemplateElement(resourceId) + '/report';
+                  break;
+                case CONST.resourceType.FIELD:
+                  url = UrlService.getTemplateField(resourceId) + '/report';
+                  break;
+                case CONST.resourceType.TEMPLATE:
+                  url = UrlService.getTemplate(resourceId) + '/report';
+                  break;
+                case CONST.resourceType.INSTANCE:
+                  url = UrlService.getTemplateInstance(resourceId) + '/report';
+                  break;
+              }
+              AuthorizedBackendService.doCall(
+                  HttpBuilderService.get(url),
+                  function (response) {
+                    resolve(response.data);
+                  },
+                  function (error) {
+                    reject(error);
+                  }
+              );
+            });
+          }
+
+          async function openOriginalVersionEditor(resource) {
+            const resourceId = resource['pav:derivedFrom'];
+            const resourceType = getContentType(resource);
+            const report = await getResourceReportById(resourceId, resourceType);
+            const parentFolderId = report.pathInfo[report.pathInfo.length - 2]['@id'];
+            switch (resourceType) {
+              case CONST.resourceType.INSTANCE:
+                return '/instances/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+              case CONST.resourceType.ELEMENT:
+                return '/elements/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+              case CONST.resourceType.FIELD:
+                return '/fields/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+              case CONST.resourceType.TEMPLATE:
+                return '/templates/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+            }
+          }
         
+        async function downloadZip(resources, zipFileName) {
+            const deferred = $q.defer();
+            const zip = new JSZip();
+            for(let [resourceId, resourceDetails] of resources) {
+                const resourceType = resourceDetails['resourceType'];
+                if (resourceType === CONST.resourceType.FOLDER) {
+                    await getResourceReportById(resourceId, resourceType).then(content => {
+                        const fileName = resourceDetails['zipFolderPath'] === '' ?
+                            '.' + content['schema:name'] + '_metadata.json' :
+                            resourceDetails['zipFolderPath'] + '/.' + content['schema:name'] + '_metadata.json';
+                        const prettyContent = JSON.stringify(content, null, 2);
+                        zip.file(fileName, prettyContent, { binary: false });
+                    })
+                } else {
+                    await getResourceContentById(resourceId, resourceType).then(content => {
+                        const fileName = resourceDetails['zipFolderPath'] === '' ?
+                            content['schema:name'] + '.json' :
+                            resourceDetails['zipFolderPath'] + '/' + content['schema:name'] + '.json';
+                        const prettyContent = JSON.stringify(content, null, 2);
+                        zip.file(fileName, prettyContent, { binary: false });
+                    });
+                }
+            }
+            
+            const zipFileNameWithExtension = zipFileName.replace(' ', '_') + '_export.zip';
+
+            zip.generateAsync({ type: 'blob' })
+                .then((content) => {
+                    saveAs(content, zipFileNameWithExtension);
+                    deferred.resolve(content);
+                });
+        }
+
+        function createFolderAsync(parentFolderId, newFolderName, description) {
+            return new Promise((resolve, reject) => {
+                resourceService.createFolder(
+                    parentFolderId,
+                    newFolderName,
+                    description,
+                    function (response) {
+                        const newFolderId = response['@id'];
+                        resolve(newFolderId);
+                    },
+                    function (error) {
+                        UIMessageService.showBackendError('ARP.resourceImport.error', error);
+                        reject(error);
+                    }
+                );
+            });
+        }
+
+        function getResourceIconClass(resource) {
+            let result = "";
+            if (resource) {
+                result += resource.resourceType + " ";
+                result += getResourceIcon(resource.resourceType);
+            }
+            return result;
+        }
+        
+        function getResourceIcon(resourceType) {
+            switch (resourceType) {
+                case CONST.resourceType.FOLDER:
+                    return "fa-folder";
+                case CONST.resourceType.TEMPLATE:
+                    return "fa-file-text";
+                case CONST.resourceType.INSTANCE:
+                    return "fa-tag";
+                case CONST.resourceType.ELEMENT:
+                    return "fa-cubes";
+                case CONST.resourceType.FIELD:
+                    return "fa-cube";
+                default:
+                    return "fa-question-circle";
+            }            
+        }
+
+        function isInTheDataverseFolder(resourceReport) {
+            const pathInfo = resourceReport.pathInfo;
+            const publicFolder = pathInfo.find(pathInfo => pathInfo['schema:name'] === 'Public');
+            if (publicFolder) {
+                const dataverseFolder = pathInfo.find(pathInfo => pathInfo['schema:name'] === 'Dataverse');
+                if (dataverseFolder) {
+                    return pathInfo.indexOf(dataverseFolder) > pathInfo.indexOf(publicFolder);
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
     }
 });

@@ -141,7 +141,7 @@ define([
                         // and then post the templates to the iframe
                         // create a copy of the updated resource
                         const updatedResourceCopy = JSON.parse(JSON.stringify(updatedResource));
-                        vm.mergeResult = arpService.prepareResourceForMerge(vm.mergeResource.before, updatedResourceCopy);
+                        vm.mergeResult = arpService.prepareResourceForMerge(vm.mergeResource.before, updatedResourceCopy, true);
                         const originalExcludedKeys = arpService.omitDeep(_.cloneDeep(originalResource));
                         const updatedExcludedKeys = arpService.omitDeep(_.cloneDeep(updatedResource));
                         postTemplates({

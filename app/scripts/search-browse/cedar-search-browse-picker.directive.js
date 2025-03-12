@@ -52,6 +52,8 @@ define([
           vm.totalCount = null;
           vm.deleteResource = deleteResource;
           vm.arpDelete = arpDelete;
+          vm.hasDerivedFrom = false;
+          vm.isArpCopyButtonEnabled = false;
           vm.doSearch = doSearch;
           vm.editResource = editResource;
           vm.facets = {};
@@ -61,6 +63,7 @@ define([
           // modals
           vm.showCopyModal = showCopyModal;
           vm.showArpCopyModal = showArpCopyModal;
+          vm.showArpZipDownloadModal = showArpZipDownloadModal;
           vm.showMoveModal = showMoveModal;
           vm.showPublishModal = showPublishModal;
           vm.showShareModal = showShareModal;
@@ -68,6 +71,7 @@ define([
           vm.showNewFolderModal = showNewFolderModal;
           vm.showFlowModal = showFlowModal;
           vm.showImportModal = showImportModal;
+          vm.showArpImportModal = showArpImportModal;
 
           vm.copyModalVisible = false;
           vm.arpCopyModalVisible = false;
@@ -78,6 +82,7 @@ define([
           vm.newFolderModalVisible = false;
           vm.flowModalVisible = false;
           vm.importModalVisible = false;
+          vm.arpImportModalVisible = false;
 
           vm.getFacets = getFacets;
           vm.getForms = getForms;
@@ -120,6 +125,7 @@ define([
           vm.canNotCreateDraft = false;
           vm.canNotDelete = false;
           vm.canNotArpDelete = false;
+          vm.canNotArpCopy = false;
           vm.canNotRename = false;
           vm.currentFolder = null;
           vm.isAdmin = resourceService.isAdmin();
@@ -598,6 +604,9 @@ define([
             vm.canNotOpenDatacite = !vm.canOpenDatacite();
             vm.isAdmin = resourceService.isAdmin();
             vm.updateCanNotArpDelete();
+            vm.updateCanNotArpCopy();
+            vm.updateHasDerivedFrom();
+            vm.updateArpCopyButtonEnabled();
             vm.getNumberOfInstances();
             vm.getResourcePublicationStatus();
           };
@@ -688,6 +697,44 @@ define([
               $scope.$apply();
             });
           };
+
+          vm.canArpCopy = async function () {
+            if (vm.getSelectedNode()['resourceType'] === CONST.resourceType.FOLDER) {
+              return !await arpService.containsPublishedResource(vm.getSelectedNode()['@id']);
+            } else {
+              return false;
+            }
+          }
+
+          vm.updateCanNotArpCopy = function () {
+            vm.canArpCopy().then((canCopy) => {
+              vm.canNotArpCopy = !canCopy;
+              $scope.$apply();
+            });
+          };
+
+          vm.updateHasDerivedFrom = async function () {
+            if (vm.getSelectedNode()['resourceType'] !== CONST.resourceType.FOLDER) {
+              const resourceContent = await arpService.getResourceContentById(vm.getSelectedNode()['@id'], vm.getSelectedNode()['resourceType']);
+              vm.hasDerivedFrom = resourceContent.hasOwnProperty('pav:derivedFrom');
+            } else {
+              vm.hasDerivedFrom = false;
+            }
+          }
+          
+          vm.updateArpCopyButtonEnabled = function () {
+            vm.isArpCopyButtonEnabled = arpService.isArpCopyButtonEnabled();
+          }
+
+          vm.arpGoToOriginal = async function () {
+            if(vm.getSelectedNode().hasOwnProperty('pav:derivedFrom')) {
+              const resourceReport = await arpService.getResourceReportById(vm.getSelectedNode()['pav:derivedFrom']['id'], vm.getSelectedNode()['resourceType']);
+              const pathInfo = resourceReport['pathInfo'];
+              const parentFolderId = pathInfo[pathInfo.length - 2]['@id'];
+              $location.url(FrontendUrlService.getFolderContents(parentFolderId));
+              $rootScope.$apply();
+            }
+          }
 
           vm.canChangeOwner = function () {
             return resourceService.canChangeOwner(vm.getSelectedNode());
@@ -2394,6 +2441,18 @@ define([
                     CedarUser.getSort(), CedarUser.getRoles().includes("userAdministrator")]);
             }
           }
+          
+          // open the 'ARP zip download' modal
+          function showArpZipDownloadModal(resource) {
+            let r = resource || getSelected();
+            if (r) {
+              const homeFolderId = CedarUser.getHomeFolderId();
+              const folderId = vm.currentFolderId || homeFolderId;
+              vm.arpZipDownloadModalVisible = true;
+              $scope.$broadcast('arpZipDownloadModalVisible',
+                  [r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, CedarUser.getSort()]);
+            }
+          }
 
           // open the 'move' modal
           function showMoveModal() {
@@ -2456,6 +2515,20 @@ define([
           function showImportModal() {
             vm.importModalVisible = true;
             $scope.$broadcast('importModalVisible', [vm.importModalVisible, vm.getFolderId()]);
+          }
+
+          // open the 'ARP import' modal
+          function showArpImportModal() {
+            const isAdmin = CedarUser.getRoles().includes("userAdministrator");
+            const canUpload = isAdmin ? true : vm.canWrite();
+            if (!canUpload) {
+              UIMessageService.showArpImportOpenError('ARP.resourceImport.openPermissionError', 'ARP.resourceImport.openPermissionErrorMessage');
+              return;
+            }
+            vm.arpImportModalVisible = true;
+            const folderId = QueryParamUtilsService.getFolderId();
+            const homeFolderId = CedarUser.getHomeFolderId();
+            $scope.$broadcast('arpImportModalVisible', [vm.resources, folderId, homeFolderId, canUpload, isAdmin, CedarUser.getUserId()]);
           }
 
           vm.getFolderId = function () {
