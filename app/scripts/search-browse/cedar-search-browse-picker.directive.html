@@ -27,8 +27,8 @@
                      ng-href="/templates/create?folderId={{dc.currentFolderId | encodeURIComponent}}">Template</a></li>
               <li class="divider"></li>
               <li><a id="button-import" ng-click="dc.showImportModal()">Import</a></li>
-              <li class="divider"></li>
-              <li><a id="button-arp-import" ng-click="dc.showArpImportModal()">ARP Import</a></li>
+              <li ng-if="dc.isArpImportButtonEnabled" class="divider"></li>
+              <li ng-if="dc.isArpImportButtonEnabled"><a id="button-arp-import" ng-click="dc.showArpImportModal()">ARP Import</a></li>
             </ul>
           </div>
         </div>
@@ -286,6 +286,7 @@
                                                can-not-arp-copy="dc.canNotArpCopy"
                                                has-derived-from="dc.hasDerivedFrom"
                                                is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                               is-arp-download-zip-button-enabled="dc.isArpDownloadZipButtonEnabled"
                                                arp-go-to-original="dc.arpGoToOriginal"
                                                rename="dc.showRenameModal"
                                                submit="dc.showFlowModal"
@@ -387,6 +388,7 @@
                                                can-not-arp-copy="dc.canNotArpCopy"
                                                has-derived-from="dc.hasDerivedFrom"
                                                is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                               is-arp-download-zip-button-enabled="dc.isArpDownloadZipButtonEnabled"
                                                arp-go-to-original="dc.arpGoToOriginal"
                                                rename="dc.showRenameModal"
                                                submit="dc.showFlowModal"
@@ -557,6 +559,7 @@
                                            can-not-arp-copy="dc.canNotArpCopy"
                                            has-derived-from="dc.hasDerivedFrom"
                                            is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                           is-arp-download-zip-button-enabled="dc.isArpDownloadZipButtonEnabled"
                                            arp-go-to-original="dc.arpGoToOriginal"
                                            rename="dc.showRenameModal"
                                            submit="dc.showFlowModal"
@@ -720,6 +723,7 @@
                                            can-not-arp-copy="dc.canNotArpCopy"
                                            has-derived-from="dc.hasDerivedFrom"
                                            is-arp-copy-button-enabled="dc.isArpCopyButtonEnabled"
+                                           is-arp-download-zip-button-enabled="dc.isArpDownloadZipButtonEnabled"
                                            arp-go-to-original="dc.arpGoToOriginal"
                                            rename="dc.showRenameModal"
                                            submit="dc.showFlowModal"

@@ -41,7 +41,9 @@ define([
             importResource: importResource,
             isInTheDataverseFolder: isInTheDataverseFolder,
             isArpCopyButtonEnabled: isArpCopyButtonEnabled,
-            isArpMergeButtonEnabled: isArpMergeButtonEnabled
+            isArpMergeButtonEnabled: isArpMergeButtonEnabled,
+            isArpDownloadZipButtonEnabled: isArpDownloadZipButtonEnabled,
+            isArpImportButtonEnabled: isArpImportButtonEnabled,
         };
 
         function getFeatureFlag(flagName, defaultValue = false) {
@@ -56,6 +58,14 @@ define([
 
         function isArpMergeButtonEnabled() {
             return getFeatureFlag('enableArpResourceMergeButton');
+        }
+        
+        function isArpDownloadZipButtonEnabled() {
+            return getFeatureFlag('enableArpDownloadZipButton');
+        }
+        
+        function isArpImportButtonEnabled() {
+            return getFeatureFlag('enableArpImportButton');
         }
 
         function find(object, key, value) {

@@ -53,7 +53,9 @@ define([
           vm.deleteResource = deleteResource;
           vm.arpDelete = arpDelete;
           vm.hasDerivedFrom = false;
-          vm.isArpCopyButtonEnabled = false;
+          vm.isArpCopyButtonEnabled = arpService.isArpCopyButtonEnabled();
+          vm.isArpDownloadZipButtonEnabled = arpService.isArpDownloadZipButtonEnabled();
+          vm.isArpImportButtonEnabled = arpService.isArpImportButtonEnabled();
           vm.doSearch = doSearch;
           vm.editResource = editResource;
           vm.facets = {};
@@ -606,7 +608,6 @@ define([
             vm.updateCanNotArpDelete();
             vm.updateCanNotArpCopy();
             vm.updateHasDerivedFrom();
-            vm.updateArpCopyButtonEnabled();
             vm.getNumberOfInstances();
             vm.getResourcePublicationStatus();
           };
@@ -720,10 +721,6 @@ define([
             } else {
               vm.hasDerivedFrom = false;
             }
-          }
-          
-          vm.updateArpCopyButtonEnabled = function () {
-            vm.isArpCopyButtonEnabled = arpService.isArpCopyButtonEnabled();
           }
 
           vm.arpGoToOriginal = async function () {

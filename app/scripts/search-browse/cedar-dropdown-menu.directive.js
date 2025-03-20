@@ -61,6 +61,7 @@ define([
         hasDerivedFrom              : "=",
         arpZipDownload              : "=",
         isArpCopyButtonEnabled      : "=",
+        isArpDownloadZipButtonEnabled : "=",
       },
       controller : function ($scope, $element) {
       },
