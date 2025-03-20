@@ -9,11 +9,11 @@ define([
 
     arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", 
         "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService",
-        "HttpBuilderService", "UrlService", "TemplateFieldService", "$q"];
+        "HttpBuilderService", "UrlService", "TemplateFieldService", "$q", "$translate"];
 
     function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
                          AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
-                         HttpBuilderService, UrlService, TemplateFieldService, $q) {
+                         HttpBuilderService, UrlService, TemplateFieldService, $q, $translate) {
 
         const arpConfig = arpServiceConf;
 
@@ -417,7 +417,7 @@ define([
                     resolve(response.data);
                   },
                   function (err) {
-                    const message = (err.data.errorKey === 'noReadAccessToArtifact') ? 'Whoa!' : $translate.instant('SERVER.TEMPLATE.load.error');
+                    const message = (err.data.errorKey === 'noReadAccessToArtifact') ? '' : $translate.instant('SERVER.TEMPLATE.load.error');
                     reject(err);
                     UIMessageService.acknowledgedExecution(
                         function () {},
@@ -454,9 +454,14 @@ define([
                     resolve(response.data);
                   },
                   function (error) {
-                    reject(error);
-                  }
-              );
+                      const message = (error.data.errorKey === 'noReadAccessToArtifact') ? $translate.instant('ARP.GENERIC.openOriginalError') : $translate.instant('ARP.GENERIC.missingPermissionToOpenOriginal');
+                      reject(error);
+                      UIMessageService.acknowledgedExecution(
+                          function () {},
+                          'GENERIC.Warning',
+                          message,
+                          'GENERIC.Ok');
+                  });
             });
           }
 

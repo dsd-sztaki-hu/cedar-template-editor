@@ -932,7 +932,9 @@
       "Merged": "Merged",
       "Merge": "Merge",
       "CopyOfTitle": "ARP Copy of {{title}}",
-      "loadingOriginalVersion": "Loading Original Version..."
+      "loadingOriginalVersion": "Loading Original Version...",
+      "openOriginalError": "Failed to open the original version.",
+      "missingPermissionToOpenOriginal": "You do not have permission to open the original version"
     },
     "MENU": {
       "arpCopy": "ARP Copy to...",

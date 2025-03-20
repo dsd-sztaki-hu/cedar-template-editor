@@ -717,7 +717,7 @@ define([
           vm.updateHasDerivedFrom = async function () {
             if (vm.getSelectedNode()['resourceType'] !== CONST.resourceType.FOLDER) {
               const resourceContent = await arpService.getResourceContentById(vm.getSelectedNode()['@id'], vm.getSelectedNode()['resourceType']);
-              vm.hasDerivedFrom = resourceContent.hasOwnProperty('pav:derivedFrom');
+              vm.hasDerivedFrom = resourceContent.hasOwnProperty('pav:derivedFrom') && resourceContent.hasOwnProperty('_arpOriginalFolderId_');
             } else {
               vm.hasDerivedFrom = false;
             }
