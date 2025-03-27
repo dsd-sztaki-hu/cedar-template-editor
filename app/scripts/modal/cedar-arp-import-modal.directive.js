@@ -1486,7 +1486,7 @@ define([
        * metadata and file content as values, matching JSZip's format.
        */
       function createJSZipLikeStructure(files) {
-        const zipStructure = {};
+        const zipStructure = [];
         const fileArray = Array.from(files);
 
         fileArray.forEach((file) => {
@@ -1497,15 +1497,14 @@ define([
             const isFile = index === pathParts.length - 1;
             const fullPath = currentPath + part + (isFile ? '' : '/');
 
-            if (!zipStructure[fullPath]) {
-              zipStructure[fullPath] = {
-                name: fullPath,
-                dir: !isFile,
-                date: new Date(file.lastModified),
-                comment: '',
-                _data: isFile ? file : null,
-              };
-            }
+            // Add to zip structure (no need to check for duplicates)
+            zipStructure.push({
+              name: fullPath,
+              dir: !isFile,
+              date: new Date(file.lastModified),
+              comment: '',
+              _data: isFile ? file : null,
+            });
 
             return fullPath;
           }, '');
@@ -1548,9 +1547,8 @@ define([
       async function handleUpload(uploadedResources) {
         const jsZipLike = createJSZipLikeStructure(uploadedResources);
 
-        for (const relativePath in jsZipLike) {
-          const resource = jsZipLike[relativePath];
-          const { parentPath, status } = getZipParentDirectory(relativePath);
+        for (const resource of jsZipLike) {
+          const { parentPath, status } = getZipParentDirectory(resource.name);
           const isTopLevel = parentPath === '#';
 
           if (resource.dir) {
