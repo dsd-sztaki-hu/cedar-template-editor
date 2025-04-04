@@ -159,10 +159,10 @@
       <!-- dateFormat constraint -->
       <div ng-if="!isConstrained() && isTextField()" class="form-group floating-label-wrapper">
         <input type="text" auto-focus
-               class="form-control field-regex-definition"
+               class="form-control field-dateFormat-definition"
                placeholder="{{'ARP.CREATOR.enterDateFormat' | translate}}"
                aria-label="{{'ARP.CREATOR.enterDateFormat' | translate}}"
-               ng-model="$root.schemaOf(field)._valueConstraints.dateFormat"
+               ng-model="$root.schemaOf(field)['_arp']['aroma']['dateFormat']"
                ng-disabled="isPublished()"
                with-floating-label>
       </div>
