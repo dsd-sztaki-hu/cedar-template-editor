@@ -29,6 +29,8 @@
               <li><a id="button-import" ng-click="dc.showImportModal()">Import</a></li>
               <li ng-if="dc.isArpImportButtonEnabled" class="divider"></li>
               <li ng-if="dc.isArpImportButtonEnabled"><a id="button-arp-import" ng-click="dc.showArpImportModal()">ARP Import</a></li>
+              <li ng-if="dc.isDtrImportButtonEnabled" class="divider"></li>
+              <li ng-if="dc.isDtrImportButtonEnabled"><a id="button-dtr-import" ng-click="dc.showDtrImportModal()">DTR Import</a></li>
             </ul>
           </div>
         </div>
@@ -1094,6 +1096,13 @@
                     data-keyboard="true" data-backdrop="static" arp-copy-resource="resource">
   </cedar-arp-copy-modal>
 </section>
+
+<!-- DTR import modal -->
+<section>
+  <cedar-dtr-import-modal cedar-modal-show modal-visible="dc.dtrImportModalVisible" class="modal fade" id="dtr-import-modal"
+                    tabindex="-1" role="dialog" aria-labelledby="dtrImportModalHeader"
+                    data-keyboard="true" data-backdrop="static" dtr-import-resource="resource">
+  </cedar-dtr-import-modal>
 
 <!-- ARP zip download modal -->
 <section>

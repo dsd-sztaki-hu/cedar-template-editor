@@ -21,6 +21,7 @@ define([
     let messagingService = null;
     let impexService = null;
     let arpService = null;
+    let dtrService = null;
     let arpDvCollection = null;
     let arpFileElementId = null;
     let arpDatasetElementId = null;
@@ -48,6 +49,7 @@ define([
       arpDvCollection = config.arpDvCollection;
       arpFileElementId = config.arpFileElementId;
       arpDatasetElementId = config.arpDatasetElementId;
+      dtrService = config.dtrService;
     };
 
     //TODO: now the dataverse collection is stored in the conf, add option to modify it
@@ -58,6 +60,10 @@ define([
 
     service.arpValidateResourceJson = function () {
       return arpService + "/checkCedarTemplate";
+    };
+
+    service.dtrService = function () {
+      return dtrService + "/convert";
     };
 
     service.base = function () {

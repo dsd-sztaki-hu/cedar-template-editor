@@ -940,7 +940,8 @@
       "arpCopy": "ARP Copy to...",
       "arpDelete": "ARP Delete",
       "arpGoToOriginal": "ARP Go to original",
-      "arpZipDownload": "ARP Download ZIP"
+      "arpZipDownload": "ARP Download ZIP",
+      "dtrImport": "DTR Import"
     },
     "copy": {
       "copied": "ARP Copied",
@@ -972,7 +973,8 @@
         "unzip": "There was an error while unzipping the file. Please check the file and try again.",
         "unsupportedFileFormat": "Unsupported file format!",
         "unsupportedFileFormatText": "Only JSON and ZIP files are supported.",
-        "folderCreation": "There was an error while creating the folder."
+        "folderCreation": "There was an error while creating the folder.",
+        "import": "There was an error while importing the resource!<br /><br />VIEW TECHNICAL DETAILS!"
       },
       "folderDescription": "This folder was created by the ARP Importer",
       "uploadFiles": "Upload files",
@@ -985,6 +987,9 @@
       "openPermissionErrorMessage": "You can only import resources into folders you have write access to.",
       "importPermissionError": "You do not have permission to read or replace the resource.",
       "importPermissionErrorMessage": "You can create a copy of the resource or skip the resource."
+    },
+    "dtrImport": {
+      "error": "There was an error while importing the DTR resource!<br /><br />VIEW TECHNICAL DETAILS!"
     }
   }
 }

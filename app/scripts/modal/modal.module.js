@@ -16,7 +16,8 @@ define([
   'cedar/template-editor/modal/cedar-terms-modal.directive',
   'cedar/template-editor/modal/cedar-test-modal.directive',
   'cedar/template-editor/modal/cedar-import-modal.directive',
-  'cedar/template-editor/modal/cedar-arp-import-modal.directive'
+  'cedar/template-editor/modal/cedar-arp-import-modal.directive',
+  'cedar/template-editor/modal/cedar-dtr-import-modal.directive'
 ], function(angular) {
   angular.module('cedar.templateEditor.modal', [
     'cedar.templateEditor.modal.cedarCopyModal',
@@ -32,7 +33,7 @@ define([
     'cedar.templateEditor.modal.cedarTermsModal',
     'cedar.templateEditor.modal.cedarTestModal',
     'cedar.templateEditor.modal.cedarImportModal',
-    'cedar.templateEditor.modal.cedarArpImportModal'
-
+    'cedar.templateEditor.modal.cedarArpImportModal',
+    'cedar.templateEditor.modal.cedarDtrImportModal'
   ]);
 });

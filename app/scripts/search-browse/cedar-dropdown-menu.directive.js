@@ -62,6 +62,7 @@ define([
         arpZipDownload              : "=",
         isArpCopyButtonEnabled      : "=",
         isArpDownloadZipButtonEnabled : "=",
+        isDtrImportButtonEnabled    : "=",
       },
       controller : function ($scope, $element) {
       },

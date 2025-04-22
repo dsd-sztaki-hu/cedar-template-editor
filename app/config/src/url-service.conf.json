@@ -11,9 +11,12 @@
   "arpFileElementId": "CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID",
   "arpDatasetElementId": "CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID",
   "openViewBase": "openViewBaseUrl",
-  "impexRestAPI": "impexServerUrl",
   "artifactsFrontend": "artifactsFrontendUrl",
   "dataciteDOIBase": "dataciteDOIBaseUrl",
   "arpAPI": "CEDAR_FRONTEND_ARP_API_URL",
-  "arpDvCollection": "CEDAR_FRONTEND_ARP_DV_COLLECTION"
+  "arpDvCollection": "CEDAR_FRONTEND_ARP_DV_COLLECTION",
+  "impexRestAPI": "impexServerUrl",
+  "arpAPIKey": "7f7b85c7-1c69-4170-b17c-da802403a5df",
+  "dvCollection": "root",
+  "dtrService": "http://localhost:5001"
 }

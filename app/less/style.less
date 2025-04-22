@@ -7352,7 +7352,8 @@ table.apiKey {
 #flow-modal,
 #terms-modal,
 #import-modal,
-#arp-import-modal {
+#arp-import-modal,
+#dtr-import-modal {
 
   i.fa-globe {
     color: @published;
@@ -9759,6 +9760,29 @@ div.resource-icon {
     top: 0;
     font-size: 18px;
     color: orange;
+  }
+}
+
+#dtr-import-modal {
+  @media (max-width: @screen-sm-min) {
+    .modal-content {
+      width: calc(~"100% - 10px");
+      max-width: calc(~"100% - 10px");
+    }
+  }
+
+  .modal-dialog {
+    width: 700px;
+
+    .modal-content {
+      max-width: 700px;
+      margin: 0 auto;
+
+      .modal-body {
+        max-height: 700px;
+        overflow: hidden;
+      }
+    }
   }
 }
 

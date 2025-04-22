@@ -3,17 +3,17 @@
 define([
     'angular',
     'json!config/arp-service.conf.json'
-], function(angular, arpServiceConf) {
+], function (angular, arpServiceConf) {
     angular.module('cedar.templateEditor.service.arpService', [])
         .service('arpService', arpService);
 
-    arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService", 
+    arpService.$inject = ["schemaService", "DataManipulationService", "TemplateService", "TemplateElementService",
         "AuthorizedBackendService", "UIMessageService", "ValidationService", "CONST", "resourceService",
         "HttpBuilderService", "UrlService", "TemplateFieldService", "$q", "$translate"];
 
-    function arpService( schemaService, DataManipulationService, TemplateService, TemplateElementService, 
-                         AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
-                         HttpBuilderService, UrlService, TemplateFieldService, $q, $translate) {
+    function arpService(schemaService, DataManipulationService, TemplateService, TemplateElementService,
+        AuthorizedBackendService, UIMessageService, ValidationService, CONST, resourceService,
+        HttpBuilderService, UrlService, TemplateFieldService, $q, $translate) {
 
         const arpConfig = arpServiceConf;
 
@@ -44,11 +44,13 @@ define([
             isArpMergeButtonEnabled: isArpMergeButtonEnabled,
             isArpDownloadZipButtonEnabled: isArpDownloadZipButtonEnabled,
             isArpImportButtonEnabled: isArpImportButtonEnabled,
+            isDtrImportButtonEnabled: isDtrImportButtonEnabled,
+            importDtrResource: importDtrResource,
         };
 
         function getFeatureFlag(flagName, defaultValue = false) {
-            return arpConfig && arpConfig.featureFlags && arpConfig.featureFlags[flagName] !== undefined 
-                ? arpConfig.featureFlags[flagName] 
+            return arpConfig && arpConfig.featureFlags && arpConfig.featureFlags[flagName] !== undefined
+                ? arpConfig.featureFlags[flagName]
                 : defaultValue;
         }
 
@@ -59,13 +61,17 @@ define([
         function isArpMergeButtonEnabled() {
             return getFeatureFlag('enableArpResourceMergeButton');
         }
-        
+
         function isArpDownloadZipButtonEnabled() {
             return getFeatureFlag('enableArpDownloadZipButton');
         }
-        
+
         function isArpImportButtonEnabled() {
             return getFeatureFlag('enableArpImportButton');
+        }
+
+        function isDtrImportButtonEnabled() {
+            return getFeatureFlag('enableDtrImportButton');
         }
 
         function find(object, key, value) {
@@ -75,7 +81,7 @@ define([
             Object.values(object).some(o => result = find(o, key, value));
             return result;
         }
-        
+
 
         // prepare the resource for merge
         // keep the original "pav:createdOn" values and the original "@id" values
@@ -102,7 +108,7 @@ define([
                         }
                     }
                 }
-                
+
                 // If the object has a "pav:createdOn" property, replace "pav:createdOn" with the original "pav:createdOn"
                 // if (resourceJson.hasOwnProperty('pav:createdOn') && typeof resourceJson['pav:createdOn'] === 'string') {
                 //     const originalObject = find(originalResourceJson, '@id', resourceJson['@id']);
@@ -118,13 +124,13 @@ define([
                         resourceJson['pav:createdBy'] = originalObject['pav:createdBy'];
                     }
                 }
-            
+
                 // Always keep the original "schema:identifier"
                 const originalObject = find(originalResourceJson, '@id', resourceJson['@id']);
                 if (originalObject) {
                     resourceJson['schema:identifier'] = originalObject['schema:identifier'];
                 }
-                
+
                 // remove temporary properties
                 delete resourceJson['_arpTmpIsNewResPropForBgColor_'];
                 delete resourceJson['_arpOriginalFolderId_'];
@@ -139,7 +145,7 @@ define([
 
             return resourceJson;
         }
-        
+
         function finalizeResourceForMerge(resourceJson) {
             // If maxItems is N, then remove maxItems
             schemaService.removeUnnecessaryMaxItems(resourceJson);
@@ -183,7 +189,7 @@ define([
                     return null; // Return null for unknown content types
             }
         }
-        
+
         function doMergeResource(resourceJson, originalResourceJson) {
             const mergedResourceJson = prepareResourceForMerge(originalResourceJson, resourceJson, false);
             return finalizeResourceForMerge(mergedResourceJson);
@@ -195,14 +201,14 @@ define([
             resource['pav:version'] = publishedVersion;
             updateResource(resource['@id'], resource);
         }
-        
+
         function updateResource(id, resourceJson) {
             return new Promise((resolve, reject) => {
                 const doUpdate = function (response) {
                     ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
                     return response.data;
                 };
-                
+
                 let updatePromise;
                 const resourceType = getContentType(resourceJson);
                 if (resourceType === CONST.resourceType.TEMPLATE) {
@@ -256,7 +262,7 @@ define([
 
         async function containsPublishedResource(folderId) {
             const folderContents = await getFolderContents(folderId, arpResourceTypes());
-            
+
             for (const res of folderContents) {
                 if (res.resourceType === CONST.resourceType.FOLDER) {
                     const result = await containsPublishedResource(res['@id']);
@@ -276,9 +282,9 @@ define([
         function getFolderContents(folderId, resourceTypes) {
             return new Promise((resolve, reject) => {
                 resourceService.getResources({
-                        folderId         : folderId,
-                        resourceTypes    : resourceTypes ?? arpResourceTypes(),
-                    },
+                    folderId: folderId,
+                    resourceTypes: resourceTypes ?? arpResourceTypes(),
+                },
                     function (response) {
                         resolve(Array.isArray(response.resources) ? response.resources : [response.resources]);
                     },
@@ -293,15 +299,15 @@ define([
             return new Promise(async (resolve, reject) => {
                 try {
                     const arrayResponse = await getFolderContents(folderId, arpResourceTypes());
-                    
+
                     for (const res of arrayResponse) {
                         if (res.resourceType === CONST.resourceType.FOLDER) {
                             await deleteFolder(res['@id'], true);
                         } else {
                             await new Promise((resolve, reject) => {
-                                resourceService.deleteResource(res, function(response) {
+                                resourceService.deleteResource(res, function (response) {
                                     resolve(response);
-                                }, function(error) {
+                                }, function (error) {
                                     UIMessageService.showBackendError('ARP.merge.deleteFolder.error', error);
                                     reject(error);
                                 });
@@ -310,14 +316,14 @@ define([
                     }
 
                     await new Promise((resolve, reject) => {
-                        resourceService.deleteFolder(folderId, function(response) {
+                        resourceService.deleteFolder(folderId, function (response) {
                             if (!silentDelete) {
                                 UIMessageService.flashSuccess('ARP.delete.success',
                                     {},
                                     'ARP.delete.arpDeleted');
                             }
                             resolve(response);
-                        }, function(error) {
+                        }, function (error) {
                             if (!silentDelete) {
                                 UIMessageService.showBackendError('SERVER.' + r.resourceType.toUpperCase() + '.delete.error', error);
                             }
@@ -335,10 +341,10 @@ define([
         function arpResourceTypes() {
             return [CONST.resourceType.FOLDER, CONST.resourceType.TEMPLATE, CONST.resourceType.ELEMENT, CONST.resourceType.FIELD];
         }
-        
+
         function validateResource(resource) {
             return HttpBuilderService.post(UrlService.arpValidateResourceJson(), angular.toJson(resource));
-            
+
         }
 
         function importResource(resource, parentFolderId) {
@@ -347,7 +353,7 @@ define([
                     ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
                     return response.data;
                 };
-                
+
                 let updatePromise;
                 const resourceType = getContentType(resource);
 
@@ -367,13 +373,36 @@ define([
                         resolve(doUpdate(response));
                     },
                     function (err) {
-                        UIMessageService.showBackendError('ARP.import.error', err);
+                        UIMessageService.showBackendError('ARP.resourceImport.error.import', err);
                         reject(err);
                     }
                 );
             });
         }
 
+        function importDtrResource(resourceId, parentFolderId) {
+            return new Promise((resolve, reject) => {
+                const doUpdate = function (response) {
+                    ValidationService.logValidation(response.headers("CEDAR-Validation-Status"));
+                    return response.data;
+                };
+
+                AuthorizedBackendService.doCall(
+                    HttpBuilderService.post(UrlService.dtrService(), {
+                        "source_id": resourceId,
+                        "direction": "dtrToCedar",
+                        "parent_folder_id": parentFolderId
+                    }),
+                    function (response) {
+                        resolve(doUpdate(response));
+                    },
+                    function (err) {
+                        UIMessageService.showBackendError('ARP.dtrImport.error', err);
+                        reject(err);
+                    }
+                );
+            });
+        }
         // remove the keys that are not needed for the preview
         function omitDeep(obj) {
             const keysToExclude = ['pav:derivedFrom', 'pav:createdOn', 'pav:lastUpdatedOn',
@@ -387,7 +416,7 @@ define([
                     }
                 });
             } else if (_.isObject(obj)) {
-                _.forIn(obj, function(value, key) {
+                _.forIn(obj, function (value, key) {
                     if (_.isObject(value)) {
                         omitDeep(value, keysToExclude);
                     } else if (keysToExclude.includes(key)) {
@@ -400,92 +429,92 @@ define([
 
         function getResourceContentById(updatedResourceId, updatedResourceType) {
             return new Promise((resolve, reject) => {
-              const originalResourceId = updatedResourceId
-              let promise;
+                const originalResourceId = updatedResourceId
+                let promise;
 
-              if (updatedResourceType === CONST.resourceType.TEMPLATE) {
-                promise = TemplateService.getTemplate(originalResourceId);
-              } else if (updatedResourceType === CONST.resourceType.ELEMENT) {
-                promise = TemplateElementService.getTemplateElement(originalResourceId);
-              } else if (updatedResourceType === CONST.resourceType.FIELD) {
-                promise = TemplateFieldService.getTemplateField(originalResourceId);
-              }
+                if (updatedResourceType === CONST.resourceType.TEMPLATE) {
+                    promise = TemplateService.getTemplate(originalResourceId);
+                } else if (updatedResourceType === CONST.resourceType.ELEMENT) {
+                    promise = TemplateElementService.getTemplateElement(originalResourceId);
+                } else if (updatedResourceType === CONST.resourceType.FIELD) {
+                    promise = TemplateFieldService.getTemplateField(originalResourceId);
+                }
 
-              AuthorizedBackendService.doCall(
-                  promise,
-                  function (response) {
-                    resolve(response.data);
-                  },
-                  function (err) {
-                    const message = (err.data.errorKey === 'noReadAccessToArtifact') ? '' : $translate.instant('SERVER.TEMPLATE.load.error');
-                    reject(err);
-                    UIMessageService.acknowledgedExecution(
-                        function () {},
-                        'GENERIC.Warning',
-                        message,
-                        'GENERIC.Ok');
-                  });
+                AuthorizedBackendService.doCall(
+                    promise,
+                    function (response) {
+                        resolve(response.data);
+                    },
+                    function (err) {
+                        const message = (err.data.errorKey === 'noReadAccessToArtifact') ? '' : $translate.instant('SERVER.TEMPLATE.load.error');
+                        reject(err);
+                        UIMessageService.acknowledgedExecution(
+                            function () { },
+                            'GENERIC.Warning',
+                            message,
+                            'GENERIC.Ok');
+                    });
             });
-          }
+        }
 
-          function getResourceReportById(resourceId, resourceType) {
+        function getResourceReportById(resourceId, resourceType) {
             return new Promise((resolve, reject) => {
-              let url;
-              switch (resourceType) {
-                case CONST.resourceType.FOLDER:
-                  url = UrlService.folders() + '/' + encodeURIComponent(resourceId);
-                  break;
-                case CONST.resourceType.ELEMENT:
-                  url = UrlService.getTemplateElement(resourceId) + '/report';
-                  break;
-                case CONST.resourceType.FIELD:
-                  url = UrlService.getTemplateField(resourceId) + '/report';
-                  break;
-                case CONST.resourceType.TEMPLATE:
-                  url = UrlService.getTemplate(resourceId) + '/report';
-                  break;
-                case CONST.resourceType.INSTANCE:
-                  url = UrlService.getTemplateInstance(resourceId) + '/report';
-                  break;
-              }
-              AuthorizedBackendService.doCall(
-                  HttpBuilderService.get(url),
-                  function (response) {
-                    resolve(response.data);
-                  },
-                  function (error) {
-                      const message = (error.data.errorKey === 'noReadAccessToArtifact') ? $translate.instant('ARP.GENERIC.openOriginalError') : $translate.instant('ARP.GENERIC.missingPermissionToOpenOriginal');
-                      reject(error);
-                      UIMessageService.acknowledgedExecution(
-                          function () {},
-                          'GENERIC.Warning',
-                          message,
-                          'GENERIC.Ok');
-                  });
+                let url;
+                switch (resourceType) {
+                    case CONST.resourceType.FOLDER:
+                        url = UrlService.folders() + '/' + encodeURIComponent(resourceId);
+                        break;
+                    case CONST.resourceType.ELEMENT:
+                        url = UrlService.getTemplateElement(resourceId) + '/report';
+                        break;
+                    case CONST.resourceType.FIELD:
+                        url = UrlService.getTemplateField(resourceId) + '/report';
+                        break;
+                    case CONST.resourceType.TEMPLATE:
+                        url = UrlService.getTemplate(resourceId) + '/report';
+                        break;
+                    case CONST.resourceType.INSTANCE:
+                        url = UrlService.getTemplateInstance(resourceId) + '/report';
+                        break;
+                }
+                AuthorizedBackendService.doCall(
+                    HttpBuilderService.get(url),
+                    function (response) {
+                        resolve(response.data);
+                    },
+                    function (error) {
+                        const message = (error.data.errorKey === 'noReadAccessToArtifact') ? $translate.instant('ARP.GENERIC.openOriginalError') : $translate.instant('ARP.GENERIC.missingPermissionToOpenOriginal');
+                        reject(error);
+                        UIMessageService.acknowledgedExecution(
+                            function () { },
+                            'GENERIC.Warning',
+                            message,
+                            'GENERIC.Ok');
+                    });
             });
-          }
+        }
 
-          async function openOriginalVersionEditor(resource) {
+        async function openOriginalVersionEditor(resource) {
             const resourceId = resource['pav:derivedFrom'];
             const resourceType = getContentType(resource);
             const report = await getResourceReportById(resourceId, resourceType);
             const parentFolderId = report.pathInfo[report.pathInfo.length - 2]['@id'];
             switch (resourceType) {
-              case CONST.resourceType.INSTANCE:
-                return '/instances/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
-              case CONST.resourceType.ELEMENT:
-                return '/elements/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
-              case CONST.resourceType.FIELD:
-                return '/fields/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
-              case CONST.resourceType.TEMPLATE:
-                return '/templates/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+                case CONST.resourceType.INSTANCE:
+                    return '/instances/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+                case CONST.resourceType.ELEMENT:
+                    return '/elements/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+                case CONST.resourceType.FIELD:
+                    return '/fields/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
+                case CONST.resourceType.TEMPLATE:
+                    return '/templates/edit/' + resourceId + '?folderId=' + encodeURIComponent(parentFolderId);
             }
-          }
-        
+        }
+
         async function downloadZip(resources, zipFileName) {
             const deferred = $q.defer();
             const zip = new JSZip();
-            for(let [resourceId, resourceDetails] of resources) {
+            for (let [resourceId, resourceDetails] of resources) {
                 const resourceType = resourceDetails['resourceType'];
                 if (resourceType === CONST.resourceType.FOLDER) {
                     await getResourceReportById(resourceId, resourceType).then(content => {
@@ -505,7 +534,7 @@ define([
                     });
                 }
             }
-            
+
             const zipFileNameWithExtension = zipFileName.replace(' ', '_') + '_export.zip';
 
             zip.generateAsync({ type: 'blob' })
@@ -541,7 +570,7 @@ define([
             }
             return result;
         }
-        
+
         function getResourceIcon(resourceType) {
             switch (resourceType) {
                 case CONST.resourceType.FOLDER:
@@ -556,7 +585,7 @@ define([
                     return "fa-cube";
                 default:
                     return "fa-question-circle";
-            }            
+            }
         }
 
         function isInTheDataverseFolder(resourceReport) {

@@ -56,6 +56,7 @@ define([
           vm.isArpCopyButtonEnabled = arpService.isArpCopyButtonEnabled();
           vm.isArpDownloadZipButtonEnabled = arpService.isArpDownloadZipButtonEnabled();
           vm.isArpImportButtonEnabled = arpService.isArpImportButtonEnabled();
+          vm.isDtrImportButtonEnabled = arpService.isDtrImportButtonEnabled();
           vm.doSearch = doSearch;
           vm.editResource = editResource;
           vm.facets = {};
@@ -74,6 +75,7 @@ define([
           vm.showFlowModal = showFlowModal;
           vm.showImportModal = showImportModal;
           vm.showArpImportModal = showArpImportModal;
+          vm.showDtrImportModal = showDtrImportModal;
 
           vm.copyModalVisible = false;
           vm.arpCopyModalVisible = false;
@@ -85,6 +87,7 @@ define([
           vm.flowModalVisible = false;
           vm.importModalVisible = false;
           vm.arpImportModalVisible = false;
+          vm.dtrImportModalVisible = false;
 
           vm.getFacets = getFacets;
           vm.getForms = getForms;
@@ -2512,6 +2515,12 @@ define([
           function showImportModal() {
             vm.importModalVisible = true;
             $scope.$broadcast('importModalVisible', [vm.importModalVisible, vm.getFolderId()]);
+          }
+          
+          // open the 'DTR import' modal
+          function showDtrImportModal() {
+            vm.dtrImportModalVisible = true;
+            $scope.$broadcast('dtrImportModalVisible', [vm.getFolderId()]);
           }
 
           // open the 'ARP import' modal

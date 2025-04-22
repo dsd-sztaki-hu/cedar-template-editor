@@ -1,0 +1,71 @@
+<div class="modal-dialog">
+    <!-- The modal uses ng-flow to manage the file uploads (documentation available at https://github.com/flowjs/ng-flow).
+    Note that in flow-init we set the chunkSize to less than 1MB because that's the default max size allowed by ningx
+    -->
+
+    <div class="modal-content">
+
+        <div class="modal-header" id="dtrImportModalHeader">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">DTR import</h4>
+        </div>
+
+        <div class="modal-body" style="display: flex; flex-direction: column;">
+            <div class="form-group">
+                <label for="dtrInput">DTR Resource ID</label>
+                <input type="text" class="form-control" id="dtrInput" ng-model="dtrimport.dtrInput" placeholder="Enter DTR Resource ID">
+            </div>
+            
+            <!-- Loading spinner -->
+            <div class="text-center" ng-if="dtrimport.isImporting">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-2">Importing DTR data...</p>
+            </div>
+
+            <!-- Result display -->
+            <div class="mt-3" ng-if="dtrimport.importResult">
+                <div class="alert" ng-class="{'alert-success': dtrimport.importResult.success, 'alert-danger': !dtrimport.importResult.success}">
+                    {{dtrimport.importResult.message}}
+                </div>
+            </div>
+        </div>
+
+        <!-- Validation messages -->
+        <div ng-if="showValidation==true" style="color:red; margin: 20px">
+            <span>Please correct the following errors and try again:</span>
+            <ul>
+                <li ng-repeat="message in validationMessages">
+                    {{message}}
+                </li>
+            </ul>
+        </div>
+
+        <!-- footer closes the dialog -->
+        <div class="modal-footer actions">
+            <div style="display: flex;justify-content:space-between;align-items: center;">
+
+                <div class="clear-save" style="width:100%">
+
+                    <button type="button" ng-click="dtrimport.resetModal()"
+                            class="btn done btn-clear" translate>
+                        Reset
+                    </button>
+
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="btn done btn-clear" translate>
+                        Close
+                    </button>
+
+            <button type="button" ng-click="dtrimport.startUpload()"
+                    aria-label="Import" class="btn btn-save" translate>
+              Import
+            </button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

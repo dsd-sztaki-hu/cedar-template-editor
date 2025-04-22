@@ -3,6 +3,7 @@
     "enableArpCopyButton": true,
     "enableArpResourceMergeButton": true,
     "enableArpDownloadZipButton": true,
-    "enableArpImportButton": true
+    "enableArpImportButton": true,
+    "enableDtrImportButton": true
   }
 }
