@@ -1,0 +1,4 @@
+property_name	dtr	cedar
+minLength	minLength	_valueConstraints.minLength
+maxLength	maxLength	_valueConstraints.maxLength
+regex	pattern	_valueConstraints.regex

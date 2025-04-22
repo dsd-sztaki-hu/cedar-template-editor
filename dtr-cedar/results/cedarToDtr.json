@@ -1,0 +1,55 @@
+{
+  "Identifier": "",
+  "name": "strField",
+  "provenance": {
+    "creationDate": "",
+    "lastModificationDate": ""
+  },
+  "Schema": {
+    "Type": "String",
+    "PropRelations": "ANDCEDA2",
+    "Properties": [
+      {
+        "Property": "minLength",
+        "Value": 7
+      },
+      {
+        "Property": "default",
+        "Value": "CEDARDEFVAL"
+      },
+      {
+        "Property": "maxLength",
+        "Value": 777
+      },
+      {
+        "Property": "pattern",
+        "Value": "CEDARREGEX"
+      },
+      {
+        "Property": "minimum",
+        "Value": 1
+      },
+      {
+        "Property": "maximum",
+        "Value": 7
+      }
+    ]
+  },
+  "description": "CEDARHELPTEXT/DESC",
+  "Aliases": [
+    "CEDARPREFLABEL"
+  ],
+  "ExpectedUse": "Expected Use CEDAR",
+  "Taxonomies": [
+    "21.T11969/2ba636a1ce6806a8d22cCEDAR",
+    "21.T11969/6f9b9af3cd6e8b8a73c2CEDAR"
+  ],
+  "MeasuredUnits": [
+    "uni0Cedar"
+  ],
+  "versioning": {
+    "version": "0.0.1",
+    "previousVersion": "21.T11969/2e1e09fe80ddc1dd4fb2CEDAR",
+    "nextVersion": "21.T11969/ef0a5647be7ca453bfd8CEDAR"
+  }
+}

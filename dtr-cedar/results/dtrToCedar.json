@@ -1,0 +1,529 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/Template",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "pages": [],
+    "order": [
+      "StrElemNameInProfile"
+    ],
+    "propertyLabels": {
+      "StrElemNameInProfile": "StrElemNameInProfile"
+    },
+    "propertyDescriptions": {
+      "StrElemNameInProfile": "Str Element Name In Profile Desc"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "rdfs": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2000/01/rdf-schema#"
+          ]
+        },
+        "xsd": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2001/XMLSchema#"
+          ]
+        },
+        "pav": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://purl.org/pav/"
+          ]
+        },
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://schema.org/"
+          ]
+        },
+        "oslc": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://open-services.net/ns/core#"
+          ]
+        },
+        "skos": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2004/02/skos/core#"
+          ]
+        },
+        "rdfs:label": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:isBasedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "schema:name": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:description": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "pav:derivedFrom": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:createdOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "pav:createdBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:lastUpdatedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "oslc:modifiedBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "skos:notation": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "StrElemNameInProfile": {
+          "enum": [
+            "21.T11969/b04d259b2443565660f9"
+          ]
+        }
+      },
+      "required": [
+        "xsd",
+        "pav",
+        "schema",
+        "oslc",
+        "schema:isBasedOn",
+        "schema:name",
+        "schema:description",
+        "pav:createdOn",
+        "pav:createdBy",
+        "pav:lastUpdatedOn",
+        "oslc:modifiedBy",
+        "StrElemNameInProfile"
+      ],
+      "additionalProperties": false
+    },
+    "@id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "schema:isBasedOn": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schema:name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema:description": {
+      "type": "string"
+    },
+    "pav:derivedFrom": {
+      "type": "string",
+      "format": "uri"
+    },
+    "pav:createdOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "pav:createdBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "pav:lastUpdatedOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "oslc:modifiedBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "StrElemNameInProfile": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "order": [
+          "fieldNameInElem"
+        ],
+        "propertyLabels": {
+          "fieldNameInElem": "fieldNameInElem"
+        },
+        "propertyDescriptions": {
+          "fieldNameInElem": "String Element Description"
+        }
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@context": {
+          "type": "object",
+          "properties": {
+            "fieldNameInElem": {
+              "enum": [
+                "21.T11969/2e1e09fe80ddc1dd4fb2"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "fieldNameInElem"
+          ]
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "fieldNameInElem": {
+          "@type": "https://schema.metadatacenter.org/core/TemplateField",
+          "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pav": "http://purl.org/pav/",
+            "bibo": "http://purl.org/ontology/bibo/",
+            "oslc": "http://open-services.net/ns/core#",
+            "schema": "http://schema.org/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "schema:name": {
+              "@type": "xsd:string"
+            },
+            "schema:description": {
+              "@type": "xsd:string"
+            },
+            "skos:prefLabel": {
+              "@type": "xsd:string"
+            },
+            "skos:altLabel": {
+              "@type": "xsd:string"
+            },
+            "pav:createdOn": {
+              "@type": "xsd:dateTime"
+            },
+            "pav:createdBy": {
+              "@type": "@id"
+            },
+            "pav:lastUpdatedOn": {
+              "@type": "xsd:dateTime"
+            },
+            "oslc:modifiedBy": {
+              "@type": "@id"
+            }
+          },
+          "type": "object",
+          "_ui": {
+            "inputType": "textfield"
+          },
+          "_valueConstraints": {
+            "requiredValue": true,
+            "minLength": 0,
+            "maxLength": 3
+          },
+          "properties": {
+            "@type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              ]
+            },
+            "@value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rdfs:label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "@value"
+          ],
+          "schema:name": "fieldNameInElem",
+          "schema:description": "String Element Description",
+          "pav:createdOn": null,
+          "pav:createdBy": null,
+          "pav:lastUpdatedOn": null,
+          "oslc:modifiedBy": null,
+          "schema:schemaVersion": "1.6.0",
+          "additionalProperties": false,
+          "bibo:status": "bibo:draft",
+          "pav:version": "0.0.1",
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "skos:prefLabel": "String Element Title",
+          "_arp": {
+            "dtr": {
+              "common": {
+                "expectedUse": "Expected Use"
+              }
+            }
+          },
+          "@id": "666e83d7-c9ce-4f53-a598-c5c603eb0760",
+          "title": "fieldNameInElem field schema",
+          "description": "fieldNameInElem generated by the DTR-CEDAR converter",
+          "schema:identifier": "fieldNameInElem"
+        }
+      },
+      "schema:name": "StrElemNameInProfile",
+      "schema:description": "Str Element Name In Profile Desc",
+      "required": [
+        "@context",
+        "@id",
+        "fieldNameInElem"
+      ],
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "pav:version": "77",
+      "bibo:status": "bibo:draft",
+      "_arp": {
+        "dtr": {
+          "common": {
+            "expectedUse": "Expected Use"
+          }
+        }
+      },
+      "skos:prefLabel": "Str Element Name In Profile",
+      "@id": "36e0eef8-e24e-4ceb-b15e-b16853de170a",
+      "title": "StrElemNameInProfile field schema",
+      "description": "StrElemNameInProfile generated by the DTR-CEDAR converter",
+      "schema:identifier": "StrElemNameInProfile"
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "schema:isBasedOn",
+    "schema:name",
+    "schema:description",
+    "pav:createdOn",
+    "pav:createdBy",
+    "pav:lastUpdatedOn",
+    "oslc:modifiedBy",
+    "StrElemNameInProfile"
+  ],
+  "schema:name": "strProfileName",
+  "schema:description": "Str Profile Desc",
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "23",
+  "bibo:status": "bibo:draft",
+  "_arp": {
+    "dtr": {
+      "common": {
+        "expectedUse": "Expected Use"
+      }
+    }
+  },
+  "title": "strProfileName field schema",
+  "description": "strProfileName generated by the DTR-CEDAR converter",
+  "schema:identifier": "strProfileName"
+}

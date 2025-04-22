@@ -1,0 +1,5 @@
+type_name	dtr	cedar
+string	String	textfield
+integer	Integer	xsd:int
+number	Number	xsd:double
+enum	Enum	list
