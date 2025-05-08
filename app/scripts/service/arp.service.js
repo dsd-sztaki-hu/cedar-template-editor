@@ -428,7 +428,7 @@ define([
             });
           }
 
-          function getResourceReportById(resourceId, resourceType) {
+          function getResourceReportById(resourceId, resourceType, doNotShowErrorMessage = false) {
             return new Promise((resolve, reject) => {
               let url;
               switch (resourceType) {
@@ -456,11 +456,13 @@ define([
                   function (error) {
                       const message = (error.data.errorKey === 'noReadAccessToArtifact') ? $translate.instant('ARP.GENERIC.openOriginalError') : $translate.instant('ARP.GENERIC.missingPermissionToOpenOriginal');
                       reject(error);
-                      UIMessageService.acknowledgedExecution(
-                          function () {},
-                          'GENERIC.Warning',
-                          message,
-                          'GENERIC.Ok');
+                      if (!doNotShowErrorMessage) {
+                          UIMessageService.acknowledgedExecution(
+                              function () {},
+                              'GENERIC.Warning',
+                              message,
+                              'GENERIC.Ok');
+                      }
                   });
             });
           }

@@ -2027,7 +2027,7 @@ define([
           }
         } else {
           try {
-            const resReport = await arpService.getResourceReportById(treeNode.content['@id'], treeNode.resourceType);
+            const resReport = await arpService.getResourceReportById(treeNode.content['@id'], treeNode.resourceType, true);
             treeNode.status = resourceImportStatus.CONFLICTING
             setParentFolderStatus(treeNode.parent, treeNode.status)
             // Get the parent folder ID from pathInfo
