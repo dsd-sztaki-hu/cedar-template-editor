@@ -367,7 +367,7 @@ define([
                         resolve(doUpdate(response));
                     },
                     function (err) {
-                        UIMessageService.showBackendError('ARP.import.error', err);
+                        UIMessageService.showBackendError('ARP.resourceImport.error.invalidResource', err);
                         reject(err);
                     }
                 );

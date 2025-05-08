@@ -972,7 +972,8 @@
         "unzip": "There was an error while unzipping the file. Please check the file and try again.",
         "unsupportedFileFormat": "Unsupported file format!",
         "unsupportedFileFormatText": "Only JSON and ZIP files are supported.",
-        "folderCreation": "There was an error while creating the folder."
+        "folderCreation": "There was an error while creating the folder.",
+        "invalidResource": "Reset the import. Please check the resource and try again."
       },
       "folderDescription": "This folder was created by the ARP Importer",
       "uploadFiles": "Upload files",

@@ -259,8 +259,14 @@ define([
 
             } catch (error) {
               console.error(`Error importing resource ${resource.id}:`, error);
+              throw error;
             }
           }
+
+          const tmpFolder = findTmpFolder();
+          if (tmpFolder) {
+            tmpFolder.isContentReplaced = true;
+          } 
 
           // All imports completed
           if (vm.uploadableResourcesMap.values().some(resource => resource.parent === jsTreeRootFolder)) {
@@ -268,12 +274,16 @@ define([
           }
 
         } catch (error) {
-          console.error('Error during import:', error);
+          await deleteTmpFolder();
           throw error;
         } finally {
-          await $timeout(() => {
-            vm.isImportDone = true;
-            $('#jstree-uploaded').jstree(true).refresh();
+          await $timeout(async () => {
+            try {
+              await finalizeFolderReplacement();
+              vm.isImportDone = true;
+              $('#jstree-uploaded').jstree(true).refresh();
+            } catch (error) {
+            }
           }, 500);
         }
       }
@@ -479,8 +489,12 @@ define([
        * @throws {Error} If folder creation fails
        */
       async function handleFolderImport(folderResource) {
-        async function uploadFolder(folderResource) {
+        async function uploadFolder(folderResource, isTmpFolder = false) {
           let folderName = folderResource.resolveMethod === 'createCopy' && folderResource.hasOwnProperty('copyName') ? folderResource.copyName : folderResource.text;
+          if (isTmpFolder) {
+            folderResource.originalName = folderName;
+            folderName = folderName + '_' + Date.now();
+          }
           const cedarFolderId = await arpService.createFolderAsync(
             vm.folderIds.get(folderResource.parent),
             folderName,
@@ -489,31 +503,6 @@ define([
           vm.folderIds.set(folderResource.id, cedarFolderId);
           folderResource.cedarId = cedarFolderId;
           folderResource.text = folderName;
-        }
-
-        // During a folder replacement, to prevent data loss, for now we only update the description of the folder
-        // the conent of the folder will be replaced with the new content if the content id mathces the original content id
-        // otherwise the resource will be uploaded as a new resource
-        // no data is removed from the folder
-        async function replaceFolder(folderResource) {
-          // Update the description of the folder
-          await new Promise((innerResolve, innerReject) => {
-            resourceService.updateFolder(
-              {
-                '@id': folderResource.conflictsWith,
-                'schema:description': folderResource.cedarDescription || $translate.instant('ARP.resourceImport.folderDescription')
-              },
-              () => innerResolve(),
-              (error) => innerReject(error)
-            );
-          });
-
-          // Upload the folder
-          // await uploadFolder(folderResource);
-          folderResource.uploadMethod = 'replaced';
-
-          // Remove the temporary folder
-          // await arpService.deleteFolder(folderResource.conflictsWith, true);
         }
 
         return new Promise(async (resolve, reject) => {
@@ -527,7 +516,10 @@ define([
                 folderResource.uploadMethod = simpleUpload ? 'uploaded to destination folder' : 'copied';
               } else if (folderResource.resolveMethod === 'replace') {
                 if (!simpleUpload) {
-                  await replaceFolder(folderResource);
+                  await uploadFolder(folderResource, true);
+                  folderResource.uploadMethod = 'replaced';
+                  folderResource.isTmp = true;
+                  folderResource.isContentReplaced = false;
                 } else {
                   await uploadFolder(folderResource);
                   folderResource.uploadMethod = 'uploaded to destination folder';
@@ -539,13 +531,86 @@ define([
                 folderResource.uploadMethod = 'uploaded to destination folder';
               }
             } else {
-              folderResource.uploadMethod = 'empty folder skipped';
+              if (!folderResource.hasOwnProperty('conflictsWith')) {
+                folderResource.uploadMethod = 'empty folder skipped';
+              } else {
+                folderResource.uploadMethod = 'replaced';
+              }
             }
             resolve();
           } catch (error) {
             reject(error);
           }
         });
+      }
+
+      /**
+       * Deletes the temporary folder after a folder replacement
+       * @returns {Promise} Resolves when the temporary folder is deleted
+       * 
+       * Folder Deletion Process:
+       * 1. Finds the temporary folder
+       * 2. Deletes the temporary folder
+       * 
+       * Error Handling:
+       * - Deletion failures
+       * - Permission errors
+       *  
+       * @throws {Error} If folder deletion fails
+       */
+      async function deleteTmpFolder() {
+        const tmpFolder = findTmpFolder();
+        if (tmpFolder) {
+          return new Promise(async (resolve, reject) => {
+            try {
+              await arpService.deleteFolder(tmpFolder.cedarId, true);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          });
+        } else {
+          resolve();
+        }
+      }
+
+      function findTmpFolder() {
+        for (const resource of vm.uploadableResourcesMap.values()) {
+          if (resource.resourceType === CONST.resourceType.FOLDER && resource.isTmp) {
+            return resource;
+          }
+        }
+        return null;
+      }
+
+      async function finalizeFolderReplacement() {
+        const tmpFolder = findTmpFolder();
+        if (tmpFolder && tmpFolder.isContentReplaced) {
+          try {
+            tmpFolder.text = tmpFolder.originalName;
+            // Then delete the old folder
+            await arpService.deleteFolder(tmpFolder.conflictsWith, true);
+      
+            // Update the tmp folder's name to the original name
+            await new Promise((resolve, reject) => {
+              resourceService.updateFolder(
+                {
+                  '@id': tmpFolder.cedarId,
+                  'schema:description': tmpFolder.cedarDescription || $translate.instant('ARP.resourceImport.folderDescription'),
+                  'schema:name': tmpFolder.text
+                },
+                resolve,
+                reject
+              );
+            });
+      
+            // Remove the isTmp flag
+            tmpFolder.isTmp = false;
+          } catch (error) {
+            console.error('Error finalizing folder replacement:', error);
+            throw error;
+          }
+        }
       }
 
       function supportsFileAndDirectoryUpload() {
@@ -1205,7 +1270,7 @@ define([
       // Opens the resource in CEDAR
       vm.openInCedar = function (nodeId) {
         const resource = vm.uploadableResourcesMap.get(nodeId);
-        if (!resource.hasReadPermission) {
+        if (!resource.hasReadPermission && !resource.hasWritePermission) {
           UIMessageService.showArpImportOpenError('ARP.resourceImport.importPermissionError', 'ARP.resourceImport.importPermissionErrorMessage');
           return;
         }
