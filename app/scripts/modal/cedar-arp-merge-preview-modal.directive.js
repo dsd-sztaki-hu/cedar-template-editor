@@ -755,7 +755,7 @@ define([
                 return CONST.resourceType.ELEMENT;
               case 'Template':
                 return CONST.resourceType.TEMPLATE;
-              case 'Field':
+              case 'TemplateField':
                 return CONST.resourceType.FIELD;
             }
           }
