@@ -10,7 +10,7 @@ define([
                                    "$filter", "HeaderService", "StagingService", "DataTemplateService", "schemaService",
                                    "FieldTypeService", "TemplateFieldService", "resourceService", "ValidationService","UIMessageService",
                                    "DataManipulationService", "UIUtilService", "AuthorizedBackendService",
-                                   "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", "arpService"];
+                                   "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", "arpService", "$window"];
 
 
   function CreateFieldController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
@@ -18,7 +18,7 @@ define([
                                  TemplateFieldService, resourceService, ValidationService,UIMessageService,
                                  DataManipulationService,
                                  UIUtilService, AuthorizedBackendService, FrontendUrlService, QueryParamUtilsService,
-                                 CONST,CedarUser, arpService) {
+                                 CONST,CedarUser, arpService, $window) {
 
     // shortcut
     var dms = DataManipulationService;
@@ -494,7 +494,7 @@ define([
       $timeout(async function() {
         try {
           const url = await arpService.openOriginalVersionEditor($scope.form);
-          $location.url(url);
+          $window.open(url, '_blank');
         } catch (error) {
         } finally {
           $scope.openOriginalVersionLoading = false;

@@ -14,7 +14,7 @@ define([
                                           "controlledTermDataService", "StringUtilsService",
                                           "DataUtilService", "AuthorizedBackendService",
                                           "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", 
-                                          "TemplateElementService", "arpService"];
+                                          "TemplateElementService", "arpService", "$window"];
 
       function CreateTemplateController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
                                         TrackingService, HeaderService, StagingService, DataTemplateService,
@@ -23,7 +23,7 @@ define([
                                         controlledTermDataService, StringUtilsService,
                                         DataUtilService, AuthorizedBackendService,
                                         FrontendUrlService, QueryParamUtilsService, CONST, CedarUser, 
-                                        TemplateElementService, arpService) {
+                                        TemplateElementService, arpService, $window) {
 
         $rootScope.showSearch = false;
 
@@ -80,7 +80,7 @@ define([
           $timeout(async function() {
             try {
               const url = await arpService.openOriginalVersionEditor($scope.form);
-              $location.url(url);
+              $window.open(url, '_blank');
             } catch (error) {
             } finally {
               $scope.openOriginalVersionLoading = false;

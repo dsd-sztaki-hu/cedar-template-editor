@@ -10,7 +10,7 @@ define([
                                      "$filter", "HeaderService", "StagingService", "DataTemplateService",
                                      "FieldTypeService", "TemplateElementService", "resourceService", "ValidationService","UIMessageService",
                                      "DataManipulationService", "schemaService","DataUtilService", "UIUtilService", "AuthorizedBackendService",
-                                     "FrontendUrlService", "QueryParamUtilsService", "CONST","CedarUser", "arpService"];
+                                     "FrontendUrlService", "QueryParamUtilsService", "CONST","CedarUser", "arpService", "$window"];
 
 
   function CreateElementController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
@@ -19,7 +19,7 @@ define([
                                    DataManipulationService,schemaService,
                                    DataUtilService,UIUtilService,
                                    AuthorizedBackendService, FrontendUrlService, QueryParamUtilsService, CONST,
-                                   CedarUser, arpService) {
+                                   CedarUser, arpService, $window) {
 
     var dms = DataManipulationService;
 
@@ -745,7 +745,7 @@ define([
       $timeout(async function() {
         try {
           const url = await arpService.openOriginalVersionEditor($scope.element);
-          $location.url(url);
+          $window.open(url, '_blank');
         } catch (error) {
         } finally {
           $scope.openOriginalVersionLoading = false;
