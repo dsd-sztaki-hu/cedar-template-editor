@@ -1,8 +1,8 @@
 {
   "featureFlags": {
-    "enableArpCopyButton": true,
-    "enableArpResourceMergeButton": true,
-    "enableArpDownloadZipButton": true,
-    "enableArpImportButton": true
+    "enableArpCopyButton": false,
+    "enableArpResourceMergeButton": false,
+    "enableArpDownloadZipButton": false,
+    "enableArpImportButton": false
   }
 }
