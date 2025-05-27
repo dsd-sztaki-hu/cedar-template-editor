@@ -200,11 +200,22 @@
               <button id="button-cancel-template" type="button" class="btn btn-clear template"
                       ng-click="cancelTemplate()" translate>GENERIC.Cancel
               </button>
-              <button id="button-export-template" ng-disabled="arpExportButtonDisabled()" type="button"
-                      class="btn btn-clear template" ng-click="arpExportTemplate()" ng-if="canArpExportTemplate() && isInTheDataverseFolder"
-                      translate>
-                ARP.ExportTemplate
-              </button>
+              <span uib-tooltip="{{!isInTheDataverseFolder ? ('ARP.ResourceNotPublic' | translate) : ''}}"
+                    tooltip-append-to-body="true"
+                    tooltip-trigger="mouseenter"
+                    tooltip-animation="false"
+                    tooltip-placement="top"
+                    data-toggle="tooltip">
+                <button id="button-export-template" 
+                        ng-disabled="arpExportButtonDisabled() || !isInTheDataverseFolder" 
+                        type="button"
+                        class="btn btn-clear template" 
+                        ng-click="arpExportTemplate()" 
+                        ng-if="canArpExportTemplate()"
+                        translate>
+                  ARP.ExportTemplate
+                </button>
+              </span>
               <button id="button-save-template" ng-disabled="saveButtonDisabled" type="button"
                       class="btn btn-save template" ng-click="saveTemplate()"
                       translate>

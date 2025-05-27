@@ -791,6 +791,7 @@
   "ARP": {
     "Exported": "Exported",
     "ExportTemplate": "Export to Dataverse",
+    "ResourceNotPublic": "Resource is not public, so it cannot be exported to Dataverse",
     "ExportResult": {
       "success": "The template <b>{{title}}</b> has been exported to Dataverse.",
       "error": "There was an error while exporting the template to Dataverse!<br /><br />VIEW TECHNICAL DETAILS!"
