@@ -1737,6 +1737,12 @@ define([
           const resolvedFullPath = `${parentDirectory.replace(/\/$/, '')}/${directoryName}/`;
           let cedarDescription = '';
 
+          // Check if directory already exists in uploadedResources
+          const existingDirectory = vm.uploadedResources.find(res => res.id === resolvedFullPath);
+          if (existingDirectory) {
+            return resolve(); // Skip if already processed
+          }
+
           const directoryTreeNode = {
             id: resolvedFullPath, // Unique ID for the resource
             parent: parentDirectory, // Parent directory ID
@@ -2344,18 +2350,34 @@ define([
           vm.uploadedResourcesSummary[key].count = 0;
         });
 
+        // Create a Set to track processed resource IDs
+        const processedIds = new Set();
+
         // Single iteration through resources
         vm.uploadedResources.forEach(resource => {
-          if (vm.uploadableResourcesMap.has(resource.id) && (resource.status === resourceImportStatus.VALID || resource.status === resourceImportStatus.CONFLICTING)) {
+          // Skip if already processed
+          if (processedIds.has(resource.id)) {
+            return;
+          }
+          processedIds.add(resource.id);
+
+          if (vm.uploadableResourcesMap.has(resource.id) &&
+              (resource.status === resourceImportStatus.VALID ||
+                  resource.status === resourceImportStatus.CONFLICTING)) {
+
             const uploadableResource = vm.uploadableResourcesMap.get(resource.id);
-            if (uploadableResource.resourceType === CONST.resourceType.FOLDER && !shouldBeUploaded(uploadableResource)) {
+
+            if (uploadableResource.resourceType === CONST.resourceType.FOLDER &&
+                !shouldBeUploaded(uploadableResource)) {
               vm.uploadedResourcesSummary.skipped.resources.push(uploadableResource);
               vm.uploadedResourcesSummary.skipped.count++;
-            } else if (uploadableResource.resourceType !== CONST.resourceType.FOLDER && checkConflictingParentSkipped(uploadableResource)) {
+            } else if (uploadableResource.resourceType !== CONST.resourceType.FOLDER &&
+                checkConflictingParentSkipped(uploadableResource)) {
               vm.uploadedResourcesSummary.skipped.resources.push(uploadableResource);
               vm.uploadedResourcesSummary.skipped.count++;
             } else if (uploadableResource.status === resourceImportStatus.VALID ||
-              (uploadableResource.resourceType === CONST.resourceType.FOLDER && !uploadableResource.conflictsWith)) {
+                (uploadableResource.resourceType === CONST.resourceType.FOLDER &&
+                    !uploadableResource.conflictsWith)) {
               vm.uploadedResourcesSummary.valid.resources.push(uploadableResource);
               vm.uploadedResourcesSummary.valid.count++;
             } else if (uploadableResource.status === resourceImportStatus.CONFLICTING) {
