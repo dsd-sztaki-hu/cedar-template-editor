@@ -56,6 +56,18 @@ define([
       return arpService + "/cedarToMdb/" + arpDvCollection + "?key=" + key;
     };
 
+    service.arpExtractTemplateElements = function (apiKey) {
+      return arpService + "/extractTemplateElements?key=" + apiKey;
+    };
+
+    service.arpExtractTemplateFields = function (apiKey) {
+      return arpService + "/extractTemplateFields?key=" + apiKey;
+    };
+
+    service.arpExtractResources = function (apiKey) {
+      return arpService + "/extractResources?key=" + apiKey;
+    };
+
     service.arpValidateResourceJson = function () {
       return arpService + "/checkCedarTemplate";
     };

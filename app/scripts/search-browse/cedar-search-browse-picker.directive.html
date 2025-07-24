@@ -282,6 +282,7 @@
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
                                                arp-zip-download="dc.showArpZipDownloadModal"
+                                               arp-extract-resources="dc.showArpExtractResourcesModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
                                                can-not-arp-copy="dc.canNotArpCopy"
                                                has-derived-from="dc.hasDerivedFrom"
@@ -304,6 +305,7 @@
                                                can-not-open-open="true"
                                                can-not-open-datacite="dc.canNotOpenDatacite"
                                                is-folder="dc.isFolder()" copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
+                                               is-extractable-resource="dc.isExtractableResource()"
                                                copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
                                                get-folder-id="dc.getFolderId" get-parent-folder-id="dc.getParentFolderId"
                                                is-meta="dc.isMeta()">
@@ -384,6 +386,7 @@
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
                                                arp-zip-download="dc.showArpZipDownloadModal"
+                                               arp-extract-resources="dc.showArpExtractResourcesModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
                                                can-not-arp-copy="dc.canNotArpCopy"
                                                has-derived-from="dc.hasDerivedFrom"
@@ -407,6 +410,7 @@
                                                can-not-open-open="dc.canNotOpenOpen"
                                                can-not-open-datacite="dc.canNotOpenDatacite"
                                                is-folder="dc.isFolder()" copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
+                                               is-extractable-resource="dc.isExtractableResource()"
                                                copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
                                                get-selected-folder-id="dc.getSelectedFolderId" get-selected-parent-folder-id="dc.getSelectedParentFolderId"
                                                is-meta="dc.isMeta()">
@@ -555,6 +559,7 @@
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
                                            arp-zip-download="dc.showArpZipDownloadModal"
+                                           arp-extract-resources="dc.showArpExtractResourcesModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
                                            can-not-arp-copy="dc.canNotArpCopy"
                                            has-derived-from="dc.hasDerivedFrom"
@@ -574,6 +579,7 @@
                                            can-not-submit="dc.canNotSubmit" can-not-rename="dc.canNotRename"
                                            can-not-share="dc.canNotShare" can-not-delete="dc.canNotDelete"
                                            is-folder="dc.isFolder()"
+                                           is-extractable-resource="dc.isExtractableResource()"
                                            can-not-make-open="dc.canNotMakeOpen"
                                            can-not-make-not-open="dc.canNotMakeNotOpen"
                                            can-not-open-open="dc.canNotOpenOpen"
@@ -719,6 +725,7 @@
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
                                            arp-zip-download="dc.showArpZipDownloadModal"
+                                           arp-extract-resources="dc.showArpExtractResourcesModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
                                            can-not-arp-copy="dc.canNotArpCopy"
                                            has-derived-from="dc.hasDerivedFrom"
@@ -738,6 +745,7 @@
                                            can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
                                            can-not-share="dc.canNotShare" can-not-delete="dc.canNotDelete"
                                            is-folder="dc.isFolder()"
+                                           is-extractable-resource="dc.isExtractableResource()"
                                            can-not-make-open="dc.canNotMakeOpen"
                                            can-not-make-not-open="dc.canNotMakeNotOpen"
                                            can-not-open-open="dc.canNotOpenOpen"
@@ -1101,6 +1109,14 @@
                                  tabindex="-1" role="dialog" aria-labelledby="arpZipDownloadModalHeader"
                                  data-keyboard="true" data-backdrop="static" arp-zip-download-resource="resource">
   </cedar-arp-zip-download-modal>
+</section>
+
+<!-- ARP extract resources modal -->
+<section>
+  <cedar-arp-extract-resources-modal cedar-modal-show modal-visible="dc.arpExtractResourcesModalVisible" class="modal fade" id="arp-extract-resources-modal"
+                                tabindex="-1" role="dialog" aria-labelledby="arpExtractResourcesModalHeader"
+                                data-keyboard="true" data-backdrop="static" arp-extract-resources-resource="resource">
+  </cedar-arp-extract-resources-modal>
 </section>
 
 <!-- move modal -->

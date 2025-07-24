@@ -44,6 +44,7 @@ define([
             isArpMergeButtonEnabled: isArpMergeButtonEnabled,
             isArpDownloadZipButtonEnabled: isArpDownloadZipButtonEnabled,
             isArpImportButtonEnabled: isArpImportButtonEnabled,
+            extractResources: extractResources,
         };
 
         function getFeatureFlag(flagName, defaultValue = false) {
@@ -339,6 +340,23 @@ define([
         function validateResource(resource) {
             return HttpBuilderService.post(UrlService.arpValidateResourceJson(), angular.toJson(resource));
             
+        }
+
+        function extractResources(template, params, extractType) {
+            const requestBody = {
+                cedarResource: template,
+                cedarParams: params
+            };
+            switch (extractType) {
+                case "templateElements":
+                    return HttpBuilderService.post(UrlService.arpExtractTemplateElements(params.apiKey), angular.toJson(requestBody));
+                case "templateFields":
+                    return HttpBuilderService.post(UrlService.arpExtractTemplateFields(params.apiKey), angular.toJson(requestBody));
+                case "templateElementsAndFields":
+                    return HttpBuilderService.post(UrlService.arpExtractResources(params.apiKey), angular.toJson(requestBody));
+                default:
+                    return Promise.reject("Invalid resource type");
+            }
         }
 
         function importResource(resource, parentFolderId) {

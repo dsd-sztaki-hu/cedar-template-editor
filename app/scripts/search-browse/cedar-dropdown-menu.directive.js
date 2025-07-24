@@ -60,6 +60,8 @@ define([
         arpGoToOriginal             : "=",
         hasDerivedFrom              : "=",
         arpZipDownload              : "=",
+        arpExtractResources         : "=",
+        isExtractableResource               : "=",
         isArpCopyButtonEnabled      : "=",
         isArpDownloadZipButtonEnabled : "=",
       },

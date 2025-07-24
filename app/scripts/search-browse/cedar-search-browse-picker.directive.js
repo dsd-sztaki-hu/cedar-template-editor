@@ -66,6 +66,7 @@ define([
           vm.showCopyModal = showCopyModal;
           vm.showArpCopyModal = showArpCopyModal;
           vm.showArpZipDownloadModal = showArpZipDownloadModal;
+          vm.showArpExtractResourcesModal = showArpExtractResourcesModal;
           vm.showMoveModal = showMoveModal;
           vm.showPublishModal = showPublishModal;
           vm.showShareModal = showShareModal;
@@ -185,6 +186,7 @@ define([
           vm.isTemplate = isTemplate;
           vm.isElement = isElement;
           vm.isFolder = isFolder;
+          vm.isExtractableResource = isExtractableResource;
           vm.isMeta = isMeta;
           vm.buildBreadcrumbTitle = buildBreadcrumbTitle;
 
@@ -2000,6 +2002,16 @@ define([
             return result;
           }
 
+          function isExtractableResource(resource) {
+            let result = false;
+            if (resource) {
+              result = (resource.resourceType === CONST.resourceType.TEMPLATE || resource.resourceType === CONST.resourceType.ELEMENT);
+            } else {
+              result = (hasSelected() && (getSelected().resourceType === CONST.resourceType.TEMPLATE || getSelected().resourceType === CONST.resourceType.ELEMENT))
+            }
+            return result;
+          }
+
           function getSelectedFolderId() {
             const resource = getSelected();
             if (!resource || !resource['@id'])
@@ -2448,6 +2460,25 @@ define([
               vm.arpZipDownloadModalVisible = true;
               $scope.$broadcast('arpZipDownloadModalVisible',
                   [r, vm.currentPath, folderId, homeFolderId, vm.resourceTypes, CedarUser.getSort()]);
+            }
+          }
+
+          function getGrandParentFolderId() {
+            const {pathInfo} = getSelected();
+            if (!pathInfo?.length)
+              return;
+            // grandparent is the third last
+            return pathInfo[pathInfo.length - 3]['@id'];
+          }
+          
+          // open the 'ARP Extract Resources' modal
+          function showArpExtractResourcesModal(resource) {
+            let r = resource || getSelected();
+            if (r) {
+              const folderId = vm.currentFolderId || getSelectedParentFolderId()
+              vm.arpExtractResourcesModalVisible = true;
+              $scope.$broadcast('arpExtractResourcesModalVisible',
+                  [r, folderId, getGrandParentFolderId(), CedarUser.getApiKeys()[0].key]);
             }
           }
 

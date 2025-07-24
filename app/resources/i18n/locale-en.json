@@ -941,7 +941,13 @@
       "arpCopy": "ARP Copy to...",
       "arpDelete": "ARP Delete",
       "arpGoToOriginal": "ARP Go to original",
-      "arpZipDownload": "ARP Download ZIP"
+      "arpZipDownload": "ARP Download ZIP",
+      "arpExtractResources": "ARP Extract Resources"
+    },
+    "extractResources": {
+      "success": "The resources have been extracted.",
+      "started": "Extracting resources started.",
+      "error": "There was an error during extracting resources."
     },
     "copy": {
       "copied": "ARP Copied",

@@ -1,0 +1,64 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="row copyToModalContainer">
+
+      <div class="col-sm-12 copyToModalRightPanel">
+
+        <div class="modal-header row" id="arpExtractResourcesModalHeader">
+
+          <div class="col-sm-11">
+            <p>
+               <span style="font-size: 20px;">
+                 Choose an option to extract resources
+                </span> 
+            </p>
+          </div>
+
+          <div class="col-sm-1 pull-right">
+            <button class="close" type="button" ng-click="dc.arpExtractResourcesModalVisible=false;arpextractresources.hideModal()" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+          </div>
+
+        </div>
+
+        <div class="modal-body" style="cursor: default;">
+          <div class="box-row row" style="cursor: default;">
+            <div class="col-sm-12" style="cursor: default;">
+              <div class="radio radio-primary">
+                <div class="radio-option">
+                  <input id="extract-option-1" class="radio-option" type="radio" name="extractOption" ng-model="arpextractresources.extractOption" value="templateElementsAndFields" ng-click="$event.stopPropagation()"/>
+                  <label style="cursor: default;">Extract TemplateElements and TemplateFields</label>
+                </div>
+                <div class="radio-option">
+                  <input id="extract-option-2" class="radio-option" type="radio" name="extractOption" ng-model="arpextractresources.extractOption" value="templateElements" ng-click="$event.stopPropagation()"/>
+                  <label style="cursor: default;">Extract TemplateElements</label>
+                </div>
+                <div class="radio-option">
+                  <input id="extract-option-3" class="radio-option" type="radio" name="extractOption" ng-model="arpextractresources.extractOption" value="templateFields" ng-click="$event.stopPropagation()"/>
+                  <label style="cursor: default;">Extract TemplateFields</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer actions">
+          <div class="clear-save">
+            <button  ng-click="arpextractresources.extractResources();dc.arpExtractResourcesModalVisible=false;arpextractresources.hideModal()"
+                    type="button"
+                    class="btn btn-save confirm"> ARP Extract Resources
+            </button>
+          </div>
+          <div class="clear-save">
+            <button type="button" class="btn btn-clear" ng-click="arpextractresources.arpExtractResourcesModalVisible=false;arpextractresources.hideModal()" translate="">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
