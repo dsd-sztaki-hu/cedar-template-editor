@@ -375,7 +375,7 @@ define([
           AuthorizedBackendService.doCall(
               arpService.validateResource($scope.form),
               function (response) {
-                if (JSON.stringify(response.data.data.warnings) !== '{}') {
+                if (JSON.stringify(response.data.data.warnings) !== '[]') {
                   UIMessageService.flashWarning('ARP.validate.warning.text', 'ARP.validate.warning.text', "ARP.validate.warning.title");
                 }
                 $scope.doSaveTemplate();
