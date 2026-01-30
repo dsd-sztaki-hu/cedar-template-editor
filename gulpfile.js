@@ -69,7 +69,8 @@ gulp.task('server-development', function (done) {
     root      : 'app',
     port      : 4200,
     livereload: true,
-    fallback  : 'app/index.html'
+    fallback  : 'app/index.html',
+    host: '0.0.0.0' // Listen on all interfaces
   });
   done();
 });
@@ -101,6 +102,23 @@ gulp.task('replace-url', function (done) {
       .pipe(replace('CEDAR_FRONTEND_ARP_DV_COLLECTION', CEDAR_FRONTEND_ARP_DV_COLLECTION))
       .pipe(replace('CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID', CEDAR_FRONTEND_ARP_FILE_ELEMENT_ID))
       .pipe(replace('CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID', CEDAR_FRONTEND_ARP_DATASET_ELEMENT_ID))
+      .pipe(replace('downloadBaseUrl', 'https://bridging.' + cedarRestHost + '/resources/download'))
+      .pipe(gulp.dest('app/config/'));
+  done();
+  gulp.src(['app/config/src/embeddable-editor-config.json'])
+      .pipe(replace('terminologyIntegratedSearchUrlValue', 'https://terminology.' + cedarRestHost + '/bioportal/integrated-search'))
+      .pipe(replace('iriPrefixValue', 'https://repo.' + cedarRestHost + '/'))
+      .pipe(replace('extAuthBaseUrlValue', 'https://bridge.' + cedarRestHost + '/ext-auth/'))
+      .pipe(replace('orcidIntegratedExtAuthUrlValue', 'orcid/search-by-name'))
+      .pipe(replace('orcidIntegratedDetailsUrlValue', 'orcid'))
+      .pipe(replace('rorIntegratedExtAuthUrlValue', 'ror/search-by-name'))
+      .pipe(replace('rorIntegratedDetailsUrlValue', 'ror'))
+      .pipe(replace('pfasIntegratedExtAuthUrlValue', 'comp-tox/search-by-name'))
+      .pipe(replace('pfasIntegratedDetailsUrlValue', 'comp-tox'))
+      .pipe(replace('pmidIntegratedExtAuthUrlValue', 'pmid/search-by-name'))
+      .pipe(replace('pmidIntegratedDetailsUrlValue', 'pmid'))
+      .pipe(replace('rridIntegratedExtAuthUrlValue', 'rrid/search-by-name'))
+      .pipe(replace('rridIntegratedDetailsUrlValue', 'rrid'))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -120,6 +138,7 @@ gulp.task('replace-version', function (done) {
       .pipe(replace('cedarVersionModifierValue', cedarVersionModifier))
       .pipe(replace('dataciteEnabledValue', dataciteEnabled))
       .pipe(replace('authBaseValue', 'https://auth.' + cedarRestHost))
+      .pipe(replace('cedarGA4TrackingIdValue', cedarGA4TrackingId))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -406,6 +425,7 @@ function getFrontendEnvVar(varNameSuffix) {
 // Get environment variables
 let envConfig = {
   'CEDAR_ANALYTICS_KEY'       : null,
+  'CEDAR_GA4_TRACKING_ID'     : null,
   'CEDAR_FRONTEND_BEHAVIOR'   : null,
   'CEDAR_FRONTEND_TARGET'     : null,
   'CEDAR_VERSION'             : null,
@@ -423,6 +443,7 @@ console.log(
 console.log("- Starting CEDAR front end server...".green);
 readAllEnvVarsOrFail();
 const cedarAnalyticsKey = envConfig['CEDAR_ANALYTICS_KEY'];
+const cedarGA4TrackingId = envConfig['CEDAR_GA4_TRACKING_ID'];
 const cedarFrontendBehavior = envConfig['CEDAR_FRONTEND_BEHAVIOR'];
 const cedarFrontendTarget = envConfig['CEDAR_FRONTEND_TARGET'];
 const cedarVersion = envConfig['CEDAR_VERSION'];

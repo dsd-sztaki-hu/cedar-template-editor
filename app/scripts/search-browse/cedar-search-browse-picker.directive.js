@@ -9,10 +9,10 @@ define([
       ]).directive('cedarSearchBrowsePicker', cedarSearchBrowsePickerDirective);
 
       cedarSearchBrowsePickerDirective.$inject = ['CedarUser', 'DataManipulationService', 'schemaService', 'UIUtilService',
-        'CategoryService', '$sce'];
+        'UrlService', 'CategoryService', 'UserService', '$http', '$sce'];
 
       function cedarSearchBrowsePickerDirective(CedarUser, DataManipulationService, schemaService, UIUtilService,
-                                                CategoryService, $sce) {
+                                                UrlService, CategoryService, UserService, $http, $sce) {
 
         cedarSearchBrowsePickerController.$inject = [
           '$location',
@@ -108,11 +108,17 @@ define([
           vm.makeNotOpen = makeNotOpen;
           vm.openOpen = openOpen;
           vm.openDatacite = openDatacite;
+          vm.openDownload = openDownload;
           vm.isSelected = isSelected;
           vm.copyFolderId2Clipboard = copyFolderId2Clipboard;
           vm.copyParentFolderId2Clipboard = copyParentFolderId2Clipboard;
           vm.getSelectedFolderId = getSelectedFolderId;
           vm.getSelectedParentFolderId = getSelectedParentFolderId;
+          vm.copyOwnId2Clipboard = copyOwnId2Clipboard;
+          vm.getSelectedId = getSelectedId;
+          vm.hasDOI = hasDOI;
+          vm.getDOI = getDOI;
+          vm.copyDOIToClipboard = copyDOIToClipboard;
 
           vm.onDashboard = onDashboard;
           vm.narrowContent = narrowContent;
@@ -606,6 +612,7 @@ define([
             vm.canNotMakeNotOpen = !vm.canMakeNotOpen();
             vm.canNotOpenOpen = !vm.canOpenOpen();
             vm.canNotOpenDatacite = !vm.canOpenDatacite();
+            vm.canNotOpenDownload = !vm.canOpenDownload();
             vm.isAdmin = resourceService.isAdmin();
             vm.updateCanNotArpDelete();
             vm.updateCanNotArpCopy();
@@ -769,6 +776,10 @@ define([
 
           vm.canOpenDatacite = function () {
             return window.dataciteEnabled && resourceService.canOpenDatacite(vm.getSelectedNode());
+          };
+
+          vm.canOpenDownload = function () {
+            return true;
           };
 
           vm.doShowCategoryTree = function () {
@@ -1426,7 +1437,7 @@ define([
           }
 
           // set publication status as draft
-          function createDraftResource(resource, version) {
+          function createDraftResource(resource, version, buttonText, newFolderName) {
             if (!resource) {
               resource = getSelected();
             }
@@ -1441,11 +1452,16 @@ define([
                 folderId,
                 newVersion,
                 propagateSharing,
+                newFolderName,
                 function (response) {
                   const title = vm.getTitle(resource);
                   UIMessageService.flashSuccess('SERVER.RESOURCE.createDraftResource.success', {"title": title},
                       'GENERIC.CreatedDraft');
-                  vm.refreshWorkspace(resource);
+                  $timeout(function () {
+                    vm.refreshWorkspace(resource);
+                    UIMessageService.flashWarning('DELTAFINDER.DraftCreated.workspace.refreshed', {},
+                        'GENERIC.Warning');
+                  }, 1000);
                 },
                 function (response) {
                   UIMessageService.showBackendError('SERVER.RESOURCE.createDraftResource.error', response);
@@ -1593,14 +1609,76 @@ define([
             }
           }
 
+          function openDownload(resource, format) {
+            if (!resource) {
+              resource = getSelected();
+            }
+
+            let sourceArtifactId = resource['@id'];
+            let downloadUrl = null;
+
+            if (sourceArtifactId) {
+              if (sourceArtifactId.indexOf('template-fields') !== -1) {
+                downloadUrl = UrlService.downloadTemplateField(sourceArtifactId, format === 'yamlc');
+              } else if (sourceArtifactId.indexOf('template-elements') !== -1) {
+                downloadUrl = UrlService.downloadTemplateElement(sourceArtifactId, format === 'yamlc');
+              } else if (sourceArtifactId.indexOf('template-instances') !== -1) {
+                downloadUrl = UrlService.downloadTemplateInstance(sourceArtifactId, format === 'yamlc');
+              } else if (sourceArtifactId.indexOf('templates') !== -1) {
+                downloadUrl = UrlService.downloadTemplate(sourceArtifactId, format === 'yamlc');
+              }
+            }
+
+            var accept = '*/*';
+            if (format === 'json') {
+              accept = 'application/json';
+            } else if (format === 'yaml' || format === 'yamlc') {
+              accept = 'application/x-yaml';
+            }
+
+            var token = UserService.getToken();
+
+            var config = {
+              headers: {
+                'Accept'                 : accept,
+                "Authorization"          : token == null ? "" : "Bearer " + token,
+                "CEDAR-Client-Session-Id": $window.cedarClientSessionId,
+                "CEDAR-Debug"            : true
+              },
+              responseType: 'blob'
+            };
+
+            $http.post(downloadUrl || '', {}, config).then(function(response) {
+              var blob = new Blob([response.data], { type: response.headers('Content-Type') });
+              var downloadUrl = URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = downloadUrl;
+
+              var contentDisposition = response.headers('Content-Disposition');
+              var fileName = 'downloaded_file.yaml'; // Default filename
+              if (contentDisposition) {
+                var matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                if (matches && matches[1]) {
+                  fileName = matches[1].replace(/['"]/g, '');
+                }
+              }
+
+              a.download = fileName;
+              a.click();
+              URL.revokeObjectURL(downloadUrl); // Cleanup blob URL
+            }, function(error) {
+              console.error('Download failed', error);
+            });
+          }
+
           function launchInstance(value) {
             const resource = value || getSelected();
             if (resource) {
               let url = null;
-              if (CedarUser.useMetadataEditorV2()) {
-                url = FrontendUrlService.eeCreateInstance(resource['@id'], vm.getFolderId());
-                let win = $window.open(url, '_blank');
-              } else {
+              // if (CedarUser.useMetadataEditorV2()) {
+              //   url = FrontendUrlService.ceeCreateInstance(resource['@id'], vm.getFolderId());
+              //   let win = $window.open(url, '_blank');
+              // } else {
                 url = FrontendUrlService.getInstanceCreate(resource['@id'], vm.getFolderId());
                 // TODO exceptionally painful for users if we turn this on
                 // if (vm.getResourcePublicationStatus(resource)  == CONST.publication.DRAFT) {
@@ -1616,7 +1694,7 @@ define([
                 //   $location.url(url);
                 // }
                 $location.url(url);
-              }
+              // }
             }
           }
 
@@ -1656,12 +1734,12 @@ define([
                   }
                   break;
                 case CONST.resourceType.INSTANCE:
-                  if (CedarUser.useMetadataEditorV2()) {
-                    const url = FrontendUrlService.eeEditInstance(resource['@id']);
-                    let win = $window.open(url, '_blank');
-                  } else {
-                    $location.path(FrontendUrlService.getInstanceEdit(id));
-                  }
+                  // if (CedarUser.useMetadataEditorV2()) {
+                  //   const url = FrontendUrlService.eeEditInstance(resource['@id']);
+                  //   let win = $window.open(url, '_blank');
+                  // } else {
+                  $location.path(FrontendUrlService.getInstanceEdit(id));
+                  // }
                   break;
                 case CONST.resourceType.FIELD:
                   $location.path(FrontendUrlService.getFieldEdit(id));
@@ -2020,6 +2098,15 @@ define([
             return folderId;
           }
 
+          function getSelectedId() {
+            const resource = getSelected();
+            if (!resource || !resource['@id']) {
+              return;
+            }
+            const selectedId = resource['@id'];
+            return selectedId;
+          }
+
           function getSelectedParentFolderId() {
             const {pathInfo} = getSelected();
             if (!pathInfo?.length)
@@ -2039,6 +2126,28 @@ define([
           function copyParentFolderId2Clipboard() {
             const parentFolderId = getSelectedParentFolderId();
             navigator.clipboard.writeText(parentFolderId);
+          }
+
+          function copyOwnId2Clipboard() {
+            const selectedId = getSelectedId();
+            navigator.clipboard.writeText(selectedId);
+          }
+
+          function hasDOI() {
+            return getDOI() !== null ;
+          }
+
+          function getDOI() {
+            const resource = getSelected();
+            if (!resource || !resource['@id'])
+              return;
+            const doi = resource['doi'];
+            return doi;
+          }
+
+          function copyDOIToClipboard() {
+            const doi = getDOI();
+            navigator.clipboard.writeText(doi);
           }
 
           function isMeta(resource) {
@@ -2236,9 +2345,10 @@ define([
 
           function activeResourceTypes() {
             const activeResourceTypes = [];
+            const _onDashboard = vm.onDashboard();
             angular.forEach(Object.keys(vm.resourceTypes), function (value, key) {
               if (vm.resourceTypes[value]) {
-                if (!vm.onDashboard()) {
+                if (_onDashboard && _onDashboard === false) {
                   // just elements can be selected
                   if (value === 'element') {
                     activeResourceTypes.push(value);

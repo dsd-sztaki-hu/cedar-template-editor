@@ -245,7 +245,6 @@ var TemplateCreatorPage = function () {
     "_ui"                 : {
       "title"         : "Untitled",
       "description"   : "Description",
-      "pages"         : [],
       "order"         : [],
       "propertyLabels": {}
     },

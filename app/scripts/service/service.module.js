@@ -42,7 +42,9 @@ define([
   'cedar/template-editor/service/temporal-runtime-field.service',
   'cedar/template-editor/service/temporal-editor-field.service',
   'cedar/template-editor/service/question-text.service',
-  'cedar/template-editor/service/import.service'
+  'cedar/template-editor/service/import.service',
+  'cedar/template-editor/service/inclusion.service',
+  'cedar/template-editor/service/cee-config.service'
 ], function(angular) {
   angular.module('cedar.templateEditor.service', [
     'cedar.templateEditor.service.authorizedBackendService',
@@ -85,6 +87,8 @@ define([
     'cedar.templateEditor.service.temporalRuntimeFieldService',
     'cedar.templateEditor.service.temporalEditorFieldService',
     'cedar.templateEditor.service.questionTextService',
-    'cedar.templateEditor.service.importService'
+    'cedar.templateEditor.service.importService',
+    'cedar.templateEditor.service.inclusionService',
+    'cedar.templateEditor.service.ceeConfigService'
   ]);
 });

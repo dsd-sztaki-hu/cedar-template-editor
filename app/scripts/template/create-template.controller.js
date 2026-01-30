@@ -1,7 +1,8 @@
 'use strict';
 
 define([
-      'angular'
+  'angular',
+  'CedarModelTypescriptLibrary',
     ], function (angular) {
       angular.module('cedar.templateEditor.template.createTemplateController', [])
           .controller('CreateTemplateController', CreateTemplateController);
@@ -13,8 +14,8 @@ define([
                                           "DataManipulationService", "schemaService", "ValidationService",
                                           "controlledTermDataService", "StringUtilsService",
                                           "DataUtilService", "AuthorizedBackendService",
-                                          "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", 
-                                          "TemplateElementService", "arpService", "$window"];
+                                          "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser",
+                                          "CedarModelTypescriptLibrary","TemplateElementService", "arpService", "$window"];
 
       function CreateTemplateController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
                                         TrackingService, HeaderService, StagingService, DataTemplateService,
@@ -22,8 +23,8 @@ define([
                                         UIUtilService, DataManipulationService, schemaService, ValidationService,
                                         controlledTermDataService, StringUtilsService,
                                         DataUtilService, AuthorizedBackendService,
-                                        FrontendUrlService, QueryParamUtilsService, CONST, CedarUser, 
-                                        TemplateElementService, arpService, $window) {
+                                        FrontendUrlService, QueryParamUtilsService, CONST, CedarUser,
+                                        CedarModelTypescriptLibrary,TemplateElementService, arpService, $window) {
 
         $rootScope.showSearch = false;
 
@@ -53,6 +54,12 @@ define([
 
         $scope.isTemplate = true;
 
+        let jsonReaders = CedarModelTypescriptLibrary.CedarJsonReaders.getStrict();
+        $scope.templateReader = jsonReaders.getTemplateReader();
+        let yamlWriters = CedarModelTypescriptLibrary.CedarYamlWriters.getStrict();
+        $scope.templateWriter = yamlWriters.getTemplateWriter();
+
+        $scope.updateTemplateWithInstancesModalVisible = false;
         $scope.arpExportButtonDisabled = function() {
           return UIUtilService.isDirty() || $routeParams.id === undefined;
         };
@@ -290,9 +297,8 @@ define([
               UIUtilService.scrollToDomId(domId);
               UIUtilService.setDirty(true);
               ValidationService.checkValidation($scope.form);
-
+              $rootScope.$broadcast("form:update", element);
             });
-            $rootScope.$broadcast("form:update", element);
           }
         };
 
@@ -309,9 +315,8 @@ define([
               UIUtilService.scrollToDomId(domId);
               UIUtilService.setDirty(true);
               ValidationService.checkValidation($scope.form);
-
+              $rootScope.$broadcast("form:update", node);
             });
-            $rootScope.$broadcast("form:update", node);
           }
         };
 
@@ -493,15 +498,54 @@ define([
               $rootScope.jsonToSave = $scope.form;
               var copiedForm = jQuery.extend(true, {}, $scope.form);
               if (copiedForm) {
-                // strip the temps from the copied form only, and save the copy
+                // strip the temps from the copied form only and save the copy
                 DataManipulationService.stripTmps(copiedForm);
                 AuthorizedBackendService.doCall(
-                    TemplateService.updateTemplate(id, copiedForm),
+                    TemplateService.checkUpdateTemplate(id, copiedForm),
                     function (response) {
-                      doUpdate(response);
+                      var canBeUpdated = response.data['canBeUpdated'];
+                      if (canBeUpdated) {
+                        AuthorizedBackendService.doCall(
+                            TemplateService.updateTemplate(id, copiedForm),
+                            function (response) {
+                              doUpdate(response);
+                            },
+                            function (err) {
+                              UIMessageService.showBackendError('SERVER.TEMPLATE.update.error', err);
+                              owner.enableSaveButton();
+                            }
+                        );
+                      } else {
+                        $scope.updateTemplateWithInstancesModalVisible = true;
+                        $rootScope.$broadcast('updateTemplateWithInstancesModalVisible', [true, response, id, copiedForm]);
+                        // UIMessageService.confirmedExecution(
+                        //     function () {
+                        //       AuthorizedBackendService.doCall(
+                        //           TemplateService.publishCreateDraftTemplate(id, copiedForm),
+                        //           function (response) {
+                        //             var newTemplateId = response.data['@id'];
+                        //             var newVersion = response.data['pav:version'];
+                        //             var newTitle = response.data['schema:name'];
+                        //             var folderId = QueryParamUtilsService.getFolderId();
+                        //             $location.path(FrontendUrlService.getTemplateEdit(newTemplateId, folderId));
+                        //             UIMessageService.flashSuccess('DELTAFINDER.DestructiveDetected.create.success', {"title": newTitle, "version": newVersion},
+                        //                 'GENERIC.Created');
+                        //           },
+                        //           function (err) {
+                        //             UIMessageService.showBackendError('SERVER.TEMPLATE.update.error', err);
+                        //             owner.enableSaveButton();
+                        //           }
+                        //       );
+                        //     },
+                        //     'DELTAFINDER.DestructiveDetected.title',
+                        //     'DELTAFINDER.DestructiveDetected.text',
+                        //     'GENERIC.YesSaveIt'
+                        // );
+                        owner.enableSaveButton();
+                      }
                     },
                     function (err) {
-                      UIMessageService.showBackendError('SERVER.TEMPLATE.update.error', err);
+                      UIMessageService.showBackendError('SERVER.TEMPLATE.checkUpdate.error', err);
                       owner.enableSaveButton();
                     }
                 );
@@ -600,6 +644,15 @@ define([
           return copiedForm;
         };
 
+        $scope.getYamlRepresentation = function () {
+          let copiedForm = jQuery.extend(true, {}, $rootScope.jsonToSave);
+          if (copiedForm) {
+            DataManipulationService.stripTmps(copiedForm);
+            DataManipulationService.updateKeys(copiedForm);
+          }
+          let jsonTemplateReaderResult = $scope.templateReader.readFromObject(copiedForm);
+          return $scope.templateWriter.getAsYamlString(jsonTemplateReaderResult.template);
+        };
 
         $scope.toRDF = function () {
           var jsonld = require('jsonld');
@@ -636,12 +689,12 @@ define([
         // };
 
         $scope.pickElementFromPicker = function (resource) {
+
           if (resource.resourceType == 'element') {
             $scope.addElementToTemplate(resource);
           } else if (resource.resourceType == 'field') {
             $scope.addStandAloneFieldToTemplate(resource);
           }
-
           $scope.hideSearchBrowsePicker();
         };
 
@@ -736,6 +789,17 @@ define([
             $scope.$apply();
           }).catch((err)=>{
             UIMessageService.flashWarning('METADATAEDITOR.JsonSchemaCopyFail', {"title": "METADATAEDITOR.JsonSchemaCopyFail"}, 'GENERIC.Error');
+            console.error(err);
+            $scope.$apply();
+          });
+        };
+
+        $scope.copyYaml2Clipboard = function () {
+          navigator.clipboard.writeText(this.getYamlRepresentation()).then(function(){
+            UIMessageService.flashSuccess('METADATAEDITOR.YamlCopied', {"title": "METADATAEDITOR.YamlCopied"}, 'GENERIC.Copied');
+            $scope.$apply();
+          }).catch((err)=>{
+            UIMessageService.flashWarning('METADATAEDITOR.YamlCopyFail', {"title": "METADATAEDITOR.YamlCopyFail"}, 'GENERIC.Error');
             console.error(err);
             $scope.$apply();
           });

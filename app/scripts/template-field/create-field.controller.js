@@ -1,16 +1,21 @@
 'use strict';
 
 define([
-  'angular'
-], function (angular) {
+  'angular',
+  'CedarModelTypescriptLibrary',
+], function (angular, CedarModelTypescriptLibrary) {
   angular.module('cedar.templateEditor.templateField.createFieldController', [])
+      .factory('CedarModelTypescriptLibrary', function() {
+        return CedarModelTypescriptLibrary;  // Return the UMD bundle object
+      })
       .controller('CreateFieldController', CreateFieldController);
 
   CreateFieldController.$inject = ["$rootScope", "$scope", "$routeParams", "$timeout", "$location", "$translate",
                                    "$filter", "HeaderService", "StagingService", "DataTemplateService", "schemaService",
                                    "FieldTypeService", "TemplateFieldService", "resourceService", "ValidationService","UIMessageService",
                                    "DataManipulationService", "UIUtilService", "AuthorizedBackendService",
-                                   "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", "arpService", "$window"];
+                                   "FrontendUrlService", "QueryParamUtilsService", "CONST", "CedarUser", "InclusionService",
+                                   "CedarModelTypescriptLibrary", "arpService", "$window"];
 
 
   function CreateFieldController($rootScope, $scope, $routeParams, $timeout, $location, $translate, $filter,
@@ -18,7 +23,8 @@ define([
                                  TemplateFieldService, resourceService, ValidationService,UIMessageService,
                                  DataManipulationService,
                                  UIUtilService, AuthorizedBackendService, FrontendUrlService, QueryParamUtilsService,
-                                 CONST,CedarUser, arpService, $window) {
+                                 CONST,CedarUser, InclusionService,
+                                 CedarModelTypescriptLibrary, arpService, $window) {
 
     // shortcut
     var dms = DataManipulationService;
@@ -53,6 +59,11 @@ define([
     $scope.cannotWrite;
     $scope.lockReason = '';
 
+    $scope.inclusionModalVisible = false;
+
+    let jsonReaders = CedarModelTypescriptLibrary.CedarJsonReaders.getStrict();
+    $scope.fieldReader = jsonReaders.getTemplateFieldReader();
+    $scope.yamlWriters = CedarModelTypescriptLibrary.CedarYamlWriters.getStrict();
 
     $scope.canWrite = function () {
       if (!$scope.details) {
@@ -124,7 +135,7 @@ define([
       var title = schemaService.getTitle($scope.field);
       var description = schemaService.getDescription($scope.field);
       var identifier = schemaService.getIdentifier($scope.field);
-      
+
       populateCreatingFieldOrElement();
       if (dontHaveCreatingFieldOrElement()) {
 
@@ -240,6 +251,7 @@ define([
     };
 
     $scope.saveField = function () {
+
       populateCreatingFieldOrElement();
       if (dontHaveCreatingFieldOrElement()) {
         UIMessageService.conditionalOrConfirmedExecution(
@@ -357,6 +369,7 @@ define([
 
                   owner.enableSaveButton();
                   $scope.setClean();
+                  $scope.handleInclusion(id);
 
                 },
                 function (err) {
@@ -368,6 +381,22 @@ define([
         }
       }
     };
+
+    $scope.handleInclusion = function(id){
+      const inclusionGraph = {"@id":id};
+      AuthorizedBackendService.doCall(
+          InclusionService.getInclusions(inclusionGraph),
+          function ({data:includingArtifacts}) {
+            const {elements, templates} = includingArtifacts;
+            if (Object.keys(elements).length || Object.keys(templates).length) {
+              $scope.showInclusionModal(includingArtifacts);
+            }
+          },
+          function (err) {
+            UIMessageService.showBackendError('Can not get inclusion graph', err);
+          }
+      );
+    }
 
     $scope.invalidFieldStates = {};
     $scope.invalidFieldStates = {};
@@ -430,6 +459,16 @@ define([
       return copiedForm;
     };
 
+    $scope.getYamlRepresentation = function () {
+      let copiedForm = jQuery.extend(true, {}, $rootScope.jsonToSave);
+      if (copiedForm) {
+        dms.stripTmps(copiedForm);
+      }
+      let jsonTemplateFieldReaderResult = $scope.fieldReader.readFromObject(copiedForm);
+      let fieldWriter = $scope.yamlWriters.getFieldWriterForField(jsonTemplateFieldReaderResult.field);
+      return fieldWriter.getAsYamlString(jsonTemplateFieldReaderResult.field);
+    };
+
     $scope.cancelField = function () {
       $location.url(FrontendUrlService.getFolderContents(QueryParamUtilsService.getFolderId()));
     };
@@ -481,6 +520,23 @@ define([
         $scope.$apply();
       });
     };
+
+    $scope.copyYaml2Clipboard = function () {
+      navigator.clipboard.writeText(this.getYamlRepresentation()).then(function(){
+        UIMessageService.flashSuccess('METADATAEDITOR.YamlCopied', {"title": "METADATAEDITOR.YamlCopied"}, 'GENERIC.Copied');
+        $scope.$apply();
+      }).catch((err)=>{
+        UIMessageService.flashWarning('METADATAEDITOR.YamlCopyFail', {"title": "METADATAEDITOR.YamlCopyFail"}, 'GENERIC.Error');
+        console.error(err);
+        $scope.$apply();
+      });
+    };
+
+    // open the 'inclusion' modal
+    $scope.showInclusionModal = function(response) {
+      $scope.inclusionModalVisible = true;
+      $scope.$broadcast('inclusionModalVisible', response, 'field', schemaService.getTitle($scope.field));
+    }
 
     $scope.hasDerivedFrom = function() {
       if ($scope.form) {

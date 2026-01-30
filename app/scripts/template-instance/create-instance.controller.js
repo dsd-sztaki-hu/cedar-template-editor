@@ -1,7 +1,7 @@
 'use strict';
 
 define([
-  'angular', 'flow'
+  'angular', 'flow', 'CedarModelTypescriptLibrary'
 ], function (angular, flow) {
   angular.module('cedar.templateEditor.templateInstance.createInstanceController', [])
       .controller('CreateInstanceController', CreateInstanceController);
@@ -11,20 +11,39 @@ define([
     "UIMessageService", "AuthorizedBackendService", "CONST", "$timeout",
     "QueryParamUtilsService", "FrontendUrlService", "ValidationService",
     "ValueRecommenderService", "UIUtilService", "DataManipulationService",
-    "CedarUser", "UrlService"];
+    "CedarUser", "UrlService", "CedarModelTypescriptLibrary", "CeeConfigService"];
 
   function CreateInstanceController($translate, $rootScope, $scope, $routeParams, $location,
                                     HeaderService, TemplateService, resourceService, TemplateInstanceService,
                                     UIMessageService, AuthorizedBackendService, CONST, $timeout,
                                     QueryParamUtilsService, FrontendUrlService, ValidationService,
-                                    ValueRecommenderService, UIUtilService, DataManipulationService, CedarUser, UrlService) {
+                                    ValueRecommenderService, UIUtilService, DataManipulationService, CedarUser, UrlService,
+                                    CedarModelTypescriptLibrary, CeeConfigService) {
+
+    let vm = this;
+    vm.useCee = CedarUser.useMetadataEditorV2();
+
+    if(vm.useCee){
+      $scope.ceeConfig = {};
+      $scope.ceeConfig = CeeConfigService.getConfig();
+      $timeout(function() {
+        let editorElement = document.querySelector('cedar-embeddable-editor');
+        if (editorElement) {
+          editorElement.config = $scope.ceeConfig;
+        }}, 0);
+    }
 
     // Get/read template with given id from $routeParams
     $scope.getTemplate = function () {
       AuthorizedBackendService.doCall(
           TemplateService.getTemplate(UrlService.fixSingleSlashHttps($routeParams.templateId)),
           function (response) {
-            // Assign returned form object from FormService to $scope.form
+            if(vm.useCee){
+              let cee = document.querySelector('cedar-embeddable-editor');
+              if(response.data){
+                cee.templateObject = response.data;
+              }
+            }
             $scope.form = response.data;
             UIUtilService.setStatus($scope.form[CONST.publication.STATUS]);
             UIUtilService.setVersion($scope.form[CONST.publication.VERSION]);
@@ -51,11 +70,15 @@ define([
                 message,
                 'GENERIC.Ok');
           });
-
     };
 
     $scope.details;
     $scope.cannotWrite;
+
+    let jsonReaders = CedarModelTypescriptLibrary.CedarJsonReaders.getStrict();
+    $scope.instanceReader = jsonReaders.getTemplateInstanceReader();
+    let yamlWriters = CedarModelTypescriptLibrary.CedarYamlWriters.getStrict();
+    $scope.instanceWriter = yamlWriters.getTemplateInstanceWriter();
 
 
 // create a copy of the form with the _tmp fields stripped out
@@ -83,8 +106,8 @@ define([
       UIUtilService.setLocked($scope.cannotWrite);
     });
 
-    $scope.copyJson2Clipboard = function () {
-        navigator.clipboard.writeText(JSON.stringify($rootScope.jsonToSave)).then(function(){
+    $scope.copyJson2Clipboard = function (json) {
+        navigator.clipboard.writeText(json).then(function(){
             UIMessageService.flashSuccess('METADATAEDITOR.JsonLDCopied', {"title": "METADATAEDITOR.JsonLDCopied"}, 'GENERIC.Copied');
             $scope.$apply();
         }).catch((err)=>{
@@ -104,6 +127,26 @@ define([
               $scope.$apply();
           });
       };
+
+    $scope.getYamlRepresentation = function () {
+      const copiedForm = jQuery.extend(true, {}, $scope.instance);
+      if (copiedForm) {
+        DataManipulationService.stripTmps(copiedForm);
+      }
+      let jsonTemplateInstanceReaderResult = $scope.instanceReader.readFromObject(copiedForm);
+      return $scope.instanceWriter.getAsYamlString(jsonTemplateInstanceReaderResult.instance);
+    };
+
+    $scope.copyYaml2Clipboard = function () {
+      navigator.clipboard.writeText(this.getYamlRepresentation()).then(function(){
+        UIMessageService.flashSuccess('METADATAEDITOR.YamlCopied', {"title": "METADATAEDITOR.YamlCopied"}, 'GENERIC.Copied');
+        $scope.$apply();
+      }).catch((err)=>{
+        UIMessageService.flashWarning('METADATAEDITOR.YamlCopyFail', {"title": "METADATAEDITOR.YamlCopyFail"}, 'GENERIC.Error');
+        console.error(err);
+        $scope.$apply();
+      });
+    };
 
     const getDetails = function (id) {
       if (id) {
@@ -128,18 +171,23 @@ define([
           TemplateInstanceService.getTemplateInstance($routeParams.id),
           function (instanceResponse) {
             $scope.instance = instanceResponse.data;
-            ValidationService.checkValidation();
             UIUtilService.instanceToSave = $scope.instance;
+            ValidationService.checkValidation();
             $scope.isEditData = true;
             $rootScope.documentTitle = $scope.instance['schema:name'];
             getDetails($scope.instance['@id']);
-
 
             AuthorizedBackendService.doCall(
                 TemplateService.getTemplate(instanceResponse.data['schema:isBasedOn']),
                 function (templateResponse) {
                   // Assign returned form object from FormService to $scope.form
                   $scope.form = templateResponse.data;
+
+                  if(vm.useCee) {
+                    const cee = document.querySelector('cedar-embeddable-editor');
+                    cee.templateAndInstanceObject = {templateObject: $scope.form, instanceObject: $scope.instance};
+                  }
+
                   $rootScope.jsonToSave = $scope.form;
                   // Initialize value recommender service
                   const templateId = instanceResponse.data['schema:isBasedOn'];
@@ -180,6 +228,7 @@ define([
         UIMessageService.flashSuccess('SERVER.INSTANCE.create.success', null, 'GENERIC.Created');
 
         //$rootScope.$broadcast("form:clean");
+
         UIUtilService.setDirty(false);
         $rootScope.$broadcast(CONST.eventId.form.VALIDATION, {state: true});
 
@@ -210,6 +259,12 @@ define([
       $scope.runtimeErrorMessages = [];
       $scope.runtimeSuccessMessages = [];
 
+      if(vm.useCee){
+        const cee = document.querySelector('cedar-embeddable-editor');
+        $scope.instance = cee.currentMetadata;
+      }
+
+
       if ($scope.instance['@id'] === undefined) {
         // '@id' and 'templateId' haven't been populated yet, create now
         // $scope.instance['@id'] = $rootScope.idBasePath + $rootScope.generateGUID();
@@ -217,12 +272,14 @@ define([
         // Create fields that will store information used by the UI
         $scope.instance['schema:name'] = $scope.form['schema:name'] + $translate.instant("GENERATEDVALUE.instanceTitle")
         $scope.instance['schema:description'] = $scope.form['schema:description'] + $translate.instant("GENERATEDVALUE.instanceDescription");
+
         // Make create instance call
         AuthorizedBackendService.doCall(
             TemplateInstanceService.saveTemplateInstance(
                 (QueryParamUtilsService.getFolderId() || CedarUser.getHomeFolderId()), $scope.instance),
             function (response) {
               doSave(response);
+              UIUtilService.setDirty(false);
             },
             function (err) {
 
@@ -254,6 +311,7 @@ define([
             TemplateInstanceService.updateTemplateInstance($scope.instance['@id'], $scope.instance),
             function (response) {
               doUpdate(response);
+              UIUtilService.setDirty(false);
             },
             function (err) {
               UIMessageService.showBackendError('SERVER.INSTANCE.update.error', err);
@@ -338,7 +396,6 @@ define([
       return Object.keys(value).length;
     };
 
-
 // cancel the form and go back to folder
     $scope.cancelTemplate = function () {
       $location.url(FrontendUrlService.getFolderContents(QueryParamUtilsService.getFolderId()));
@@ -373,6 +430,14 @@ define([
       }
     };
 
+    $timeout(() => {
+      const cee = document.querySelector('cedar-embeddable-editor');
+      if (!cee) return;
+      cee.addEventListener('change', event => {
+        UIUtilService.setDirty(true);
+      });
+    }, 0);
+
 
 // // open the airr submission modal
 // $scope.flowModalVisible = false;
@@ -382,6 +447,5 @@ define([
 // };
 
   }
+});
 
-})
-;

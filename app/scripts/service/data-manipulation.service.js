@@ -394,13 +394,6 @@ define([
           service.schemaOf(node)._ui.inputType = value;
         };
 
-        // Function that generates a basic field definition
-        service.isStaticField = function (node) {
-          if (node) {
-            return FieldTypeService.isStaticField(service.getInputType(node));
-          }
-        };
-
         // is this a numeric field?
         service.isNumericField = function (node) {
           return (service.getInputType(node) === 'numeric');
@@ -531,6 +524,29 @@ define([
         // is this a page break?
         service.isPageBreak = function (node) {
           return (service.getInputType(node) === 'page-break');
+        };
+
+        // is this an orcid field?
+        service.isOrcid = function (node) {
+          return (service.getInputType(node) === 'ext-orcid');
+        };
+
+        // is this a ror field?
+        service.isRor = function (node) {
+          return (service.getInputType(node) === 'ext-ror');
+        };
+
+        // is this a pfas field?
+        service.isPfas = function (node) {
+          return (service.getInputType(node) === 'ext-pfas');
+        };
+        // is this a rrid field?
+        service.isRrid = function (node) {
+          return (service.getInputType(node) === 'ext-rrid');
+        };
+        // is this a pubmed field?
+        service.isPmid = function (node) {
+          return (service.getInputType(node) === 'ext-pmid');
         };
 
         //
@@ -1098,18 +1114,24 @@ define([
 
           var field;
 
-          if (container) {
-            field = DataTemplateService.getContainerField(null);
-            field._ui.inputType = inputType;
-          } else if (FieldTypeService.isStaticField(inputType)) {
-            field = DataTemplateService.getStaticField(this.generateTempGUID());
+          if (FieldTypeService.isStaticField(inputType)) {
+            if (container) {
+              field = DataTemplateService.getStaticStandaloneField();
+            } else {
+              field = DataTemplateService.getStaticField(this.generateTempGUID());
+            }
             field._ui.inputType = inputType;
           } else if (FieldTypeService.isAttributeValueField(inputType)) {
             field = DataTemplateService.getAttributeValueField(this.generateTempGUID());
           } else {
-            field = DataTemplateService.getField(this.generateTempGUID());
-            field.properties['@value'].type = valueType;
-            field._ui.inputType = inputType;
+            if (container) {
+              field = DataTemplateService.getContainerField(null);
+              field._ui.inputType = inputType;
+            } else {
+              field = DataTemplateService.getField(this.generateTempGUID());
+              field.properties['@value'].type = valueType;
+              field._ui.inputType = inputType;
+            }
           }
           //field._ui.inputType = inputType;
 
@@ -1138,7 +1160,7 @@ define([
           }
 
           // The value of the link field is a URI, and note that @id cannot be null
-          if (inputType === "link") {
+          if (inputType === "link" || inputType === "ext-orcid" || inputType === "ext-ror" || inputType === "ext-pfas" || inputType === "ext-pubmed" || inputType === "ext-rrid") {
             // Define the @id field
             var idField = {};
             idField.type = "string";
@@ -1366,6 +1388,7 @@ define([
             const fieldValue = service.getValueLocation(field);
             // Checkbox or multi-choice  list
             if (service.isMultipleChoiceField(field)) {
+              model.length = 0;
               for (i = 0; i < literals.length; i++) {
                 if (literals[i].selectedByDefault) {
                   var newValue = {};
@@ -1466,7 +1489,7 @@ define([
           // usually it is in  @value
           let fieldValue = "@value";
           // but these three put it @id
-          if (service.getFieldControlledTerms(field) || service.hasValueConstraint(field) || service.isLinkType(field)) {
+          if (service.getFieldControlledTerms(field) || service.hasValueConstraint(field) || service.isLinkType(field) || service.isOrcid(field) || service.isRor(field) || service.isPfas(field) || service.isPmid(field) || service.isRrid(field)) {
             fieldValue = "@id";
           }
           return fieldValue;
@@ -1477,7 +1500,7 @@ define([
           // the printable value is usually in @value
           let location = "@value";
           // but a link puts it in @id
-          if (service.isLinkType(field)) {
+          if (service.isLinkType(field) || service.isOrcid(field) || service.isRor(field) || service.isRor(field) || service.isPfas(field) || service.isPmid(field) || service.isRrid(field)) {
             location = "@id";
             // and the constraint puts it rdfs:label
           } else if (service.hasValueConstraint(field)) {
@@ -1617,6 +1640,30 @@ define([
           });
           return order;
         };
+
+        service.hasAttributeValueField = function (templateOrElement) {
+          let properties = service.propertiesOf(templateOrElement);
+          let found = false;
+          angular.forEach(properties, function (value, key) {
+            if (!DataUtilService.isSpecialKey(key)) {
+              const child = service.getChildNode(templateOrElement, key);
+              if (service.isAttributeValueType(child)) {
+                found = true;
+              }
+            }
+          });
+          return found;
+        }
+
+        service.updateAdditionalProperties = function (templateOrElement) {
+          if (service.hasAttributeValueField(templateOrElement)) {
+            templateOrElement.properties["@context"].additionalProperties = DataTemplateService.getAdditionalPropertiesForContextOfAttributeValueField();
+            templateOrElement.additionalProperties = DataTemplateService.getAdditionalPropertiesForAttributeValueField();
+          } else {
+            templateOrElement.properties["@context"].additionalProperties = false;
+            templateOrElement.additionalProperties = false;
+          }
+        }
 
         // Add a field or element name to the top-level 'required' array in a template or element
         service.addKeyToRequired = function (templateOrElement, key) {
@@ -1937,7 +1984,8 @@ define([
               delete properties["@type"].oneOf[1].items.enum;
             }
           }
-          service.initializeSchema(node);
+          // Following call is breaking the validation so commented out at January 11, 2024
+          // service.initializeSchema(node);
         };
 
         // delete the branch in valueConstraints

@@ -238,6 +238,7 @@
           </div>
 
           <ng-include src="'scripts/layout/template-json-preview.html'"></ng-include>
+          <ng-include src="'scripts/layout/template-yaml-preview.html'"></ng-include>
 
 
         </div>
@@ -297,6 +298,14 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section>
+        <cedar-inclusion-modal id="inclusion-modal" cedar-modal-show modal-visible="inclusionModalVisible" class="modal fade"
+                               tabindex="-1" role="dialog" aria-labelledby="inclusionModalHeader"
+                               data-keyboard="true" data-backdrop="static" select-resource-callback="selectElementFromPicker"
+                               pick-resource-callback="pickElementFromPicker">
+        </cedar-inclusion-modal>
       </section>
 
 

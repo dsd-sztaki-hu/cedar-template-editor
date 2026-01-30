@@ -14,6 +14,7 @@ define([
     let openViewBase = null;
     let embeddableEditorBase = null;
     let dataciteDOIBase = null
+    let downloadBase = null
 
     let service = {
       serviceId: "FrontendUrlService"
@@ -23,6 +24,7 @@ define([
       openViewBase = config.openViewBase;
       embeddableEditorBase = config.artifactsFrontend;
       dataciteDOIBase = config.dataciteDOIBase;
+      downloadBase = config.downloadBase;
     };
 
     service.getTemplateEdit = function (id) {
@@ -93,7 +95,7 @@ define([
       return openViewBase + '/folders/' + encodeURIComponent(id);
     };
 
-    service.eeCreateInstance = function (id, folderId) {
+    service.ceeCreateInstance = function (id, folderId) {
       return embeddableEditorBase + '/instances/create/' + encodeURIComponent(id) + '?folderId=' + encodeURIComponent(folderId);
     };
 
@@ -107,6 +109,10 @@ define([
 
     service.dataciteInstance = function (id) {
       return dataciteDOIBase + '/' + encodeURIComponent(id);
+    };
+
+    service.downloadResource = function (id) {
+      return downloadBase + '/' + encodeURIComponent(id);
     };
 
     return service;

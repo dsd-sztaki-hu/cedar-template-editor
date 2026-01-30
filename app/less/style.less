@@ -651,6 +651,7 @@ button {
 .link-disabled:hover {
   color: @very-lt-gray !important;
   background: #f8f8f8 !important;
+  cursor: default !important;
 }
 
 .controls-bar {
@@ -2337,15 +2338,18 @@ body.search-browse-modal {
 }
 
 .template-header.template {
-  background-color: @background-side;
+  background-color: @background-side !important;
+  padding-top: 25px !important;
 }
 
 .template-header.element {
-  background-color: @background-side;
+  background-color: @background-side !important;
+  padding-top: 25px !important;
 }
 
 .template-header.field {
-  background-color: @background-side;
+  background-color: @background-side !important;
+  padding-top: 25px !important;
 }
 
 .template-body {
@@ -8638,6 +8642,23 @@ table.apiKey {
   }
 }
 
+#publish-modal {
+
+  .modal-dialog {
+    max-width: 700px;
+    width: 700px;
+    .modal-content {
+      max-width: 700px;
+      width: 700px;
+      margin: 0 auto;
+      .modal-body {
+        max-height:410px;
+        height:410px;
+      }
+    }
+  }
+}
+
 #share-modal {
 
   @media (max-width: @screen-sm-min) {
@@ -9291,14 +9312,17 @@ table.apiKey {
   }
 }
 
-#document-preview {
-  padding: 80px 0;
+#document-preview-json {
+  padding: 80px 0 0 0;
   clear: both;
-
 }
 
-#outputJSON,
-#templateJSON {
+#document-preview-yaml {
+  padding: 0 0;
+  clear: both;
+}
+
+#outputJSON, #templateJSON, #templateYAML {
   div.panel-group {
     background-color: @background-gray;
   }
@@ -9686,6 +9710,20 @@ div.resource-icon {
   .copyToModalLeftPanel ul {
     margin-left: -20px;
   }
+
+  .selected-badge {
+    background-color: #007bff;
+    color: #fff;
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin-left: 5px;
+  }
+
+  .finder-selected {
+    background-color: #f0f0f0;
+  }
+
+
 }
 
 #arp-merge-preview-modal {

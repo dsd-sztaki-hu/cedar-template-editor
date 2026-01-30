@@ -15,6 +15,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="/">
   <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <style type="text/css">@font-face{font-family:'Material Icons';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/materialicons/v142/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');}.material-icons{font-family:'Material Icons';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}</style>
 
   <style>
     html, body {
@@ -33,6 +36,8 @@
   <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css"/>
   <link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.min.css"/>
   <link rel="stylesheet" href="bower_components//ngprogress/ngProgress.css">
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.8.0/webcomponents-loader.js"></script>
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.8.0/custom-elements-es5-adapter.js"></script>
   <script src="config/version.js" type="text/javascript"></script>
 
   <!-- ARP google analytics and cookie consent -->
@@ -163,8 +168,8 @@
   <div id="user-menu-dropdown">
     <ul>
       <a href="/profile"><li id="user-profile-tool" >Profile</li></a>
-      <a target="_blank" href="http://metadatacenter.org/tools-training/support"><li id="user-help">Support</li></a>
-      <a target="_blank" href="http://metadatacenter.org/tools-training/orientation"><li id="user-about" >About</li></a>
+      <a target="_blank" href="https://metadatacenter.org/help/#subscribe"><li id="user-help">Help</li></a>
+      <a target="_blank" href="https://metadatacenter.org/#about"><li id="user-about" >About</li></a>
       <a href="/privacy"><li id="user-privacy" >Privacy</li></a>
       <a href="/settings"><li>Settings</li></a>
       <a href="/logout"><li id="user-logout-tool" >Logout</li></a>
@@ -197,6 +202,29 @@
     m.parentNode.insertBefore(a, m)
   })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 </script>
+
+<!-- Google tag with dynamic Tracking Id -->
+<script>
+  (function() {
+    if (window.cedarGA4TrackingId && window.cedarGA4TrackingId !== "false") {
+      let script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.cedarGA4TrackingId;
+      document.head.appendChild(script);
+      // Original gtag code:
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      // When the script is loaded, configure gtag
+      script.onload = function() {
+        gtag('js', new Date());
+        gtag('config', window.cedarGA4TrackingId);
+      };
+    } else {
+      console.log("GA4 tracking setup skipped. No valid Tracking ID.");
+    }
+  })();
+</script>
+
 
 </body>
 </html>

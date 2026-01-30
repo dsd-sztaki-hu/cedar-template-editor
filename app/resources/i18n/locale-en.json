@@ -52,6 +52,21 @@
       "youtube": {
         "NAME": "YouTube"
       },
+      "ext-orcid": {
+        "NAME": "ORCID"
+      },
+      "ext-ror": {
+        "NAME": "ROR"
+      },
+      "ext-pfas": {
+        "NAME": "PFAS"
+      },
+      "ext-rrid": {
+        "NAME": "RRID"
+      },
+      "ext-pubmed": {
+        "NAME": "PubMed"
+      },
       "file": {
         "NAME": "File"
       },
@@ -91,7 +106,6 @@
     "MoreTemplates": "More Templates",
     "Save": "Save",
     "Validate": "Validate",
-    "Next": "Next",
     "Previous": "Previous",
     "Name": "Name",
     "Identifier": "Identifier",
@@ -130,7 +144,6 @@
     "Elements": "Elements",
     "FilterBy": "Filter by",
     "Untitled": "Untitled",
-    "Description": "Description",
     "SelectToViewDetails": "Select a resource to view its details",
     "canRead": "can read",
     "canWrite": "can write",
@@ -210,7 +223,10 @@
     "Header": "Header Information",
     "Footer": "Footer Information",
     "NothingFound": "Nothing found",
-    "CopyToClipboard" : "Copy to clipboard"
+    "CopyToClipboard" : "Copy to clipboard",
+    "AddToSelectionList": "Add to Selection List",
+    "RemoveFromList": "Remove from list",
+    "TotalSelected": "Total Selected"
   },
   "HELP": {
     "createFolder": "Create folder",
@@ -243,7 +259,9 @@
     "removeProperty": "Remove property",
     "unreadMessageCount": "You have unread messages",
     "message": "Open messages",
-    "repoSubmission": "Submit to repository"
+    "repoSubmission": "Submit to repository",
+    "copyDOI": "Copy DOI",
+    "copyParentFolderId": "Copy parent folder id"
   },
   "resourceType": {
     "folder": "Folder",
@@ -473,8 +491,11 @@
       "makeopen": "Enable OpenView",
       "makenotopen": "Disable OpenView",
       "openopen": "Visit OpenView",
-      "opendatacite": "Create DOI using DataCite",
-      "populateEE": "Populate with new editor"
+      "opendatacite": "Create DOI using DataCite...",
+      "populateEE": "Populate with new editor",
+      "openDownloadJson": "Download JSON",
+      "openDownloadYaml": "Download YAML",
+      "openDownloadYamlc": "Download Compact YAML"
     },
     "delete": {
       "confirm": {
@@ -556,7 +577,14 @@
       "titleDraft": "Create Version",
       "instructions": "Publishing allows you to add a version number to a resource. ",
       "morePublish": "Published resources are not modifiable and cannot be deleted. Create a new version of a published resource by first creating a draft, and then modifying it.  When you are ready, publish the draft to disable further edits. ",
-      "moreDraft": "Published resources are not modifiable and cannot be deleted. Create a new version of a published resource by first creating a draft, and then modifying it.  When you are ready, publish the draft to disable further edits. "
+      "moreDraft": "Published resources are not modifiable and cannot be deleted. Create a new version of a published resource by first creating a draft, and then modifying it.  When you are ready, publish the draft to disable further edits. ",
+      "instancesNewFolderName": "New folder name:",
+      "instancesNewFolderNameTitle": "Cloning of instances",
+      "instancesNewFolderDescription": "The current template has {{numInstances}} instances. Creating a draft version will create clones of these instances. Please provide a folder name for the clones above.",
+      "draftOptionsTitle": "You have the following options:",
+      "draftOption1": "Create draft and clone instances - clone the existing instances, link them to the new draft template.",
+      "draftOption2": "Create draft, do not clone instances - leave the existing instances with the published template.",
+      "acceptButton": "Accept"
     }
   },
   "ELEMENTEDITOR": {
@@ -575,7 +603,9 @@
     "JsonSchemaCopied" : "JSON Schema copied to clipboard",
     "JsonSchemaCopyFail" : "JSON Schema can not be copied to clipboard",
     "RdfCopied" : "RDF copied to clipboard",
-    "RdfCopyFail" : "RDF can not be copied to clipboard"
+    "RdfCopyFail" : "RDF can not be copied to clipboard",
+    "YamlCopied" : "YAML copied to clipboard",
+    "YamlCopyFail" : "YAML can not be copied to clipboard"
   },
   "TEMPLATEEDITOR": {
     "clear": {
@@ -785,6 +815,48 @@
         "text" : {
           "template": "You need to publish the template open in order to get a DOI"
         }
+      }
+    }
+  },
+  "INCLUSION": {
+    "title": "Update Bubbling",
+    "instructions-field": "Following artifacts contain the recently updated field. Select the artifacts that you want this update to be reflected to and click save.",
+    "instructions-element": "Following artifacts contain the recently updated element. Select the artifacts that you want this update to be reflected to and click save.",
+    "update": "Update",
+    "update-error": "There was an error while updating the selected artifacts.",
+    "preview-error": "There was an error while getting the artifacts.",
+    "artifact-details-error": "There was an error while getting the artifact details",
+    "bubbling-success" : "Selected artifacts updates successfully",
+    "field-updated" : "Origin : Field",
+    "element-updated" : "Origin : Element",
+    "event" : "updated"
+  },
+  "DELTAFINDER": {
+    "DestructiveDetected":{
+      "title": "Destructive changes detected!",
+      "text" : "If you save your changes: 1) The current template (now in draft state) will be published. 2) A new draft version will be created with the new content. 3) The instances will reference to published template.",
+      "create": {
+        "success": "The template <b>{{title}}</b> version <b>{{version}}</b>  has been created."
+      }
+    },
+    "ChangedTemplate":{
+      "title": "Template changes detected!",
+      "templateInfo": "Template: <strong>{{templateName}}</strong> (version {{currentVersion}} draft)",
+      "text1" : "The template <strong>has {{numInstances}} instance(s)</strong>. If you save the template, the old version will be published, and the new version {{nextVersion}} will be saved as draft.",
+      "text2" : "You have the following options:",
+      "option1": "New version with clones - Produce a new version of this template, clone the old instances, link the clones to the new template.",
+      "option2": "New version no instances - Produce a new version of this template, leaving the current instances linked to the original template.",
+      "option3": "Revert - reload the original template, discarding any changes",
+      "newVersionWithCones": "New version with clones",
+      "newVersionNoCones": "New version no instances",
+      "revert": "Revert",
+      "instancesNewFolderName": "Folder name for cloned instances:",
+      "acceptButton": "Accept",
+      "cloneNotification": "The instances will be cloned into the specified folder."
+    },
+    "DraftCreated": {
+      "workspace": {
+        "refreshed":"The workspace might need a new refresh to show all the instances that were cloned."
       }
     }
   },

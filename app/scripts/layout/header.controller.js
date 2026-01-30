@@ -224,7 +224,7 @@ define([
     };
 
     vm.isDashboard = function () {
-      return (vm.path === "/dashboard");
+      return ((vm.path === "/dashboard") || (vm.path === '/'));
     };
 
     vm.isMessaging = function () {
@@ -323,11 +323,12 @@ define([
     };
 
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-      if (vm.isDirty() && !vm.confirmedBack && next.$$route.originalPath.startsWith('/dashboard')) {
+      if (vm.isDirty() && !vm.confirmedBack && !$rootScope.confirmedBack && next.$$route.originalPath.startsWith('/dashboard')) {
         event.preventDefault();
         vm.confirmBack();
       }
       vm.confirmedBack = true;
+      $rootScope.confirmedBack = false;
     });
 
     // clear the modal fade on location change

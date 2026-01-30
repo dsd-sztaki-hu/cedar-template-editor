@@ -296,6 +296,7 @@
                                                make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                                open-open="dc.openOpen"
                                                open-datacite="dc.openDatacite"
+                                               open-download="dc.openDownload"
                                                can-not-publish="dc.canNotPublish"
                                                can-not-create-draft="dc.canNotCreateDraft"
                                                can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
@@ -304,6 +305,7 @@
                                                can-not-make-open="dc.canNotMakeOpen" can-not-make-not-open="dc.canNotMakeNotOpen"
                                                can-not-open-open="true"
                                                can-not-open-datacite="dc.canNotOpenDatacite"
+                                               can-not-open-download="dc.canNotOpenDownload"
                                                is-folder="dc.isFolder()" copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
                                                is-extractable-resource="dc.isExtractableResource()"
                                                copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
@@ -400,6 +402,7 @@
                                                make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                                open-open="dc.openOpen"
                                                open-datacite="dc.openDatacite"
+                                               open-download="dc.openDownload"
                                                can-not-publish="dc.canNotPublish"
                                                can-not-create-draft="dc.canNotCreateDraft"
                                                can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
@@ -409,6 +412,7 @@
                                                can-not-make-not-open="dc.canNotMakeNotOpen"
                                                can-not-open-open="dc.canNotOpenOpen"
                                                can-not-open-datacite="dc.canNotOpenDatacite"
+                                               can-not-open-download="dc.canNotOpenDownload"
                                                is-folder="dc.isFolder()" copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
                                                is-extractable-resource="dc.isExtractableResource()"
                                                copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
@@ -573,6 +577,7 @@
                                            make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                            open-open="dc.openOpen"
                                            open-datacite="dc.openDatacite"
+                                           open-download="dc.openDownload"
                                            can-not-publish="dc.canNotPublish"
                                            can-not-create-draft="dc.canNotCreateDraft"
                                            can-not-populate="dc.canNotPopulate" can-not-write="dc.canNotWrite"
@@ -584,6 +589,7 @@
                                            can-not-make-not-open="dc.canNotMakeNotOpen"
                                            can-not-open-open="dc.canNotOpenOpen"
                                            can-not-open-datacite="dc.canNotOpenDatacite"
+                                           can-not-open-download="dc.canNotOpenDownload"
                                            copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
                                            copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
                                            get-selected-folder-id="dc.getSelectedFolderId" get-selected-parent-folder-id="dc.getSelectedParentFolderId"
@@ -739,6 +745,7 @@
                                            make-open="dc.makeOpen" make-not-open="dc.makeNotOpen" is-admin="dc.isAdmin"
                                            open-open="dc.openOpen"
                                            open-datacite="dc.openDatacite"
+                                           open-download="dc.openDownload"
                                            can-not-publish="dc.canNotPublish"
                                            can-not-create-draft="dc.canNotCreateDraft"
                                            can-not-submit="dc.canNotSubmit" can-not-rename="dc.canNotRename"
@@ -750,6 +757,7 @@
                                            can-not-make-not-open="dc.canNotMakeNotOpen"
                                            can-not-open-open="dc.canNotOpenOpen"
                                            can-not-open-datacite="dc.canNotOpenDatacite"
+                                           can-not-open-download="dc.canNotOpenDownload"
                                            copy-folder-id-2-clipboard="dc.copyFolderId2Clipboard"
                                            copy-parent-folder-id-2-clipboard="dc.copyParentFolderId2Clipboard"
                                            get-selected-folder-id="dc.getSelectedFolderId" get-selected-parent-folder-id="dc.getSelectedParentFolderId"
@@ -1059,6 +1067,54 @@
                       data-toggle="tooltip"
                       tooltip-append-to-body="true"
               >Copy parent folder Id</button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap padding-top" ng-if="dc.getSelected() && !dc.isFolder()">
+            <div class="flex flex-wrap padding-top" ng-if="dc.getSelected()">
+              <button class="btn-folder-id"
+                      ng-click="dc.copyOwnId2Clipboard()"
+                      uib-tooltip='{{dc.getSelectedId()}}'
+                      tooltip-trigger
+                      tooltip-animation="false"
+                      tooltip-placement="top"
+                      data-toggle="tooltip"
+                      tooltip-append-to-body="true"
+              >Copy resource Id</button>
+            </div>
+
+            <div class="info" ng-if="dc.getSelectedNode()">
+              <!--<div class="flex flex-wrap padding-top" ng-if="dc.getSelected()">
+                <div class="field-label ng-cloak" translate>Parent folder id</div>
+                <div class="owner-name"> {{dc.getSelectedParentFolderId()}}</div>
+                <div>
+                  <button
+                      style="background:transparent;"
+                      type="button"
+                      uib-tooltip='{{"HELP.copyParentFolderId" | translate}}'
+                      tooltip-trigger
+                      tooltip-animation="false"
+                      tooltip-placement="auto"
+                      data-toggle="tooltip"
+                      ng-click="dc.copyParentFolderId2Clipboard()"><i class="fa fa-copy graytext"></i></button>
+                </div>
+              </div>-->
+
+              <div class="flex flex-wrap padding-top" ng-if="dc.getSelected() && dc.hasDOI()">
+                <div class="field-label ng-cloak" translate>DOI</div>
+                <div class="owner-name"> <a href="{{dc.getDOI()}}" target="_blank">{{dc.getDOI()}}</a></div>
+                <div>
+                  <button
+                      style="background:transparent"
+                      type="button"
+                      uib-tooltip='{{"HELP.copyDOI" | translate}}'
+                      tooltip-trigger
+                      tooltip-animation="false"
+                      tooltip-placement="auto"
+                      data-toggle="tooltip"
+                      ng-click="dc.copyDOIToClipboard()"><i class="fa fa-copy graytext"></i></button>
+                </div>
+              </div>
             </div>
 
 
