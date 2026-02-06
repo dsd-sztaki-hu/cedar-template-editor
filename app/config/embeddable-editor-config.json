@@ -5,7 +5,7 @@
   "showFooter": false,
   "showTemplateDescription": false,
 
-  "terminologyIntegratedSearchUrl": "https://terminology.metadatacenter.orgx/bioportal/integrated-search",
+  "terminologyIntegratedSearchUrl": "https://terminology.arp.orgx/bioportal/integrated-search",
   "expandedInstanceDataFull": false,
   "showInstanceDataCore": false,
   "expandedInstanceDataCore": false,
@@ -17,12 +17,12 @@
   "defaultLanguage": "en",
   "fallbackLanguage": "en",
 
-  "iriPrefix": "https://repo.metadatacenter.orgx/",
+  "iriPrefix": "https://repo.arp.orgx/",
   "bioPortalPrefix": "https://bioportal.bioontology.org/ontologies/",
   "orcidPrefix": "https://orcid.org/",
   "rorPrefix": "https://ror.org/",
 
-  "extAuthBaseUrl": "https://bridge.metadatacenter.orgx/ext-auth/",
+  "extAuthBaseUrl": "https://bridge.arp.orgx/ext-auth/",
 
   "orcidIntegratedExtAuthUrl": "orcid/search-by-name",
   "orcidIntegratedDetailsUrl": "orcid",
