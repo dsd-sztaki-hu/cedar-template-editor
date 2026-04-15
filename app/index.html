@@ -138,8 +138,8 @@
 
       <div ng-if="!hc.isDashboard() && !hc.isProfile() && !hc.isPrivacy() && !hc.isMessaging() && !hc.isSettings()">
         <div class="navbar-back flex">
-          <div class="back-arrow-click flex-left" ng-click="hc.confirmBack()">
-            <i class="back-arrow fa fa-arrow-left"></i>
+          <div class="back-arrow-click flex-left">
+            <i class="back-arrow fa fa-arrow-left" ng-click="hc.confirmBack()"></i>
             <cedar-resource-icon resource-type="hc.resourceType"></cedar-resource-icon>
             <div class="document-title" uib-tooltip="{{hc.formatDocumentTitleFull()}}">{{hc.formatDocumentTitle()}}</div>
           </div>
