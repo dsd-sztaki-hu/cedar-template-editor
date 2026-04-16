@@ -334,6 +334,7 @@ button {
 
   .nav-container {
     padding: 5px 30px;
+    background-color: @background-side;
   }
 
   i.fa.fa-search {
@@ -2216,6 +2217,9 @@ body.search-browse-modal {
 .template-header {
   width: 100%;
   background-color: @background-side;
+  // Account for the extra "navbar-back" row in the fixed top nav.
+  // Without this, the back bar visually overlaps the header.
+  margin-top: 45px;
   padding: 60px 0 6px 0;
   min-height: 130px;
 
