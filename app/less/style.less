@@ -318,7 +318,7 @@ button {
   margin-bottom: 0;
   height: 65px;
   border: none;
-  background-color: @top-nav-color;
+  background-color: fade(@top-nav-color, 100%);
 
   &.metadata {
     height: 65px;
@@ -334,7 +334,7 @@ button {
 
   .nav-container {
     padding: 5px 30px;
-    background-color: @background-side;
+    background-color: fade(@top-nav-color, 100%);
   }
 
   i.fa.fa-search {
