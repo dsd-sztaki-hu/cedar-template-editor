@@ -16,5 +16,6 @@
   "dataciteDOIBase": "dataciteDOIBaseUrl",
   "downloadBase": "downloadBaseUrl",
   "arpAPI": "CEDAR_FRONTEND_ARP_API_URL",
-  "arpDvCollection": "CEDAR_FRONTEND_ARP_DV_COLLECTION"
+  "arpDvCollection": "CEDAR_FRONTEND_ARP_DV_COLLECTION",
+  "jsonDiffPreviewUrl": "CEDAR_FRONTEND_JSON_DIFF_PREVIEW_URL"
 }

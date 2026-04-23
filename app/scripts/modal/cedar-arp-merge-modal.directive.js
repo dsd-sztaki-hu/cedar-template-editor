@@ -3,7 +3,8 @@
 define([
       'angular',
       'cedar/template-editor/service/cedar-user',
-    ], function (angular) {
+      'json!config/url-service.conf.json'
+    ], function (angular, _cedarUserModule, urlConfig) {
       angular.module('cedar.templateEditor.modal.cedarArpMergeModalDirective', [
         'cedar.templateEditor.service.cedarUser'
       ]).directive('cedarArpMergeModal', cedarArpMergeModalDirective);
@@ -22,7 +23,8 @@ define([
           "schemaService", 
           "ValidationService", 
           "CONST",
-          "arpService"
+          "arpService",
+          "$sce"
         ];
 
         function cedarArpMergeModalController($scope,
@@ -34,7 +36,8 @@ define([
                                            schemaService,
                                            ValidationService,
                                            CONST,
-                                           arpService) {
+                                           arpService,
+                                           $sce) {
             
           const vm = this;
 
@@ -48,8 +51,19 @@ define([
           vm.elementMerge = elementMerge;
           vm.templateMerge = templateMerge;
           vm.hideModal = hideModal;
+          vm.jsonDiffPreviewUrl = null;
 
           const dms = DataManipulationService;
+          const previewUrlRaw = (urlConfig && urlConfig.jsonDiffPreviewUrl) ? urlConfig.jsonDiffPreviewUrl : 'http://localhost:5173';
+          vm.jsonDiffPreviewUrl = $sce.trustAsResourceUrl(previewUrlRaw);
+
+          function getPreviewOrigin() {
+            try {
+              return new URL(previewUrlRaw, window.location.href).origin;
+            } catch (e) {
+              return null;
+            }
+          }
           
           function elementMerge() {
               return vm.mergeResourceType === CONST.resourceType.ELEMENT;
@@ -64,12 +78,16 @@ define([
           
           function postTemplates(templates) {
             const iframe = document.getElementById('iframeId');
-            iframe.contentWindow.postMessage(templates, 'http://localhost:5173');
+            const previewOrigin = getPreviewOrigin();
+            if (!previewOrigin) return;
+            iframe.contentWindow.postMessage(templates, previewOrigin);
           }
           
           function resetTemplates() {
               const iframe = document.getElementById('iframeId');
-              iframe.contentWindow.postMessage({'before': {}, 'after': {}}, 'http://localhost:5173');
+              const previewOrigin = getPreviewOrigin();
+              if (!previewOrigin) return;
+              iframe.contentWindow.postMessage({'before': {}, 'after': {}}, previewOrigin);
           }
 
           function refresh() {
