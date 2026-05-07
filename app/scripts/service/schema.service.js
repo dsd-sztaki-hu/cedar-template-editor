@@ -877,11 +877,17 @@ define([
     //
 
     service.ensureDefaultDataverseValues = function (node) {
-      if (!service.schemaOf(node)._arp) {
-        service.schemaOf(node)._arp = {
+      if (!node) return;
+      
+      const isArrayField = node.type === 'array';
+
+      const targetSchema = (isArrayField && node.items) ? node.items : service.schemaOf(node);
+
+      if (!targetSchema._arp) {
+        targetSchema._arp = {
           "dataverse": {
           }
-        }
+        };
       }
     };
 

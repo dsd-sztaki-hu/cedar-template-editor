@@ -24,11 +24,25 @@
     <div class="options-wrapper">
       <div ng-init="initializeSelectionField()" class="multiple-container">
         <span ng-repeat="(index, value) in $root.schemaOf(field)._valueConstraints.literals">
-        	<div class="form-group floating-label-wrapper">
-            <input type="text" class="form-control"
-                id="placeholder-{{field['@id'].substring(field['@id'].lastIndexOf('/')+1)}}" placeholder="Option"
-                ng-disabled="!isEditable()"
-                aria-label="Option" ng-model="getLiterals()[index]['label']" with-floating-label>
+        	<div class="form-group pick-list-option-row">
+            <div class="pick-list-option-fields">
+              <div class="pick-list-option-col">
+                <div class="form-group floating-label-wrapper">
+                  <input type="text" class="form-control"
+                      id="placeholder-{{field['@id'].substring(field['@id'].lastIndexOf('/')+1)}}-{{index}}" placeholder="Option"
+                      ng-disabled="!isEditable()"
+                      aria-label="Option" ng-model="getLiterals()[index]['label']" with-floating-label>
+                </div>
+              </div>
+              <div class="pick-list-option-col pick-list-option-col--dv">
+                <div class="form-group floating-label-wrapper">
+                  <input type="text" class="form-control"
+                      id="dataverse-identifier-{{field['@id'].substring(field['@id'].lastIndexOf('/')+1)}}-{{index}}" placeholder="Dataverse Identifier"
+                      ng-disabled="!isEditable()"
+                      aria-label="Dataverse Identifier" ng-model="$root.schemaOf(field)['_arp']['dataverse']['identifiers'][index]" with-floating-label>
+                </div>
+              </div>
+            </div>
             <div class="checkbox checkbox-primary checkbox-circle">
               <input ng-click="cleanSelectedByDefault(index); $event.stopPropagation();"  type="checkbox" id="checkbox-{{field['@id'].substring(field['@id'].lastIndexOf('/')+1)}}-{{index}}"
                   name="checkbox-{{field['@id'].substring(field['@id'].lastIndexOf('/')+1)}}"

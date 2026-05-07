@@ -526,9 +526,10 @@ define([
       // Used just for text fields whose values have been constrained using controlled terms
       $scope.$watch("model", function () {
 
-
         $scope.addOption = function () {
-          return (dms.addOption($scope.field));
+          const result = dms.addOption($scope.field);
+          ensureExtDataverseIdentifiers();
+          return result;
         };
 
       }, true);
@@ -807,6 +808,7 @@ define([
       $scope.initializeSelectionField = function () {
         const inputType = schemaService.getInputType($scope.field);
         if (schemaService.isMultiAnswer($scope.field)) {
+          ensureExtDataverseIdentifiers();
           // If we are populating a template, we need to initialize the model with the default values (if they exist)
           // Note that $scope.isEditData = false means that we are populating the template
           if ($scope.isEditData === null || $scope.isEditData === false) {
@@ -1342,6 +1344,21 @@ define([
       // Check whether field's parent is a Template or a TemplateElement
       $scope.isEditingElement = function () {
         return $scope.parentElement["@type"] == "https://schema.metadatacenter.org/core/TemplateElement"
+      };
+
+      const ensureExtDataverseIdentifiers = function () {
+        if (!schemaService.isListType($scope.field)) {
+          return;
+        }
+
+        schemaService.ensureDefaultDataverseValues($scope.field);
+        const schema = dms.schemaOf($scope.field);
+        schema._arp.dataverse.identifiers = schema._arp.dataverse.identifiers || [];
+
+        const literals = dms.getLiterals($scope.field) || [];
+        while (schema._arp.dataverse.identifiers.length < literals.length) {
+          schema._arp.dataverse.identifiers.push('');
+        }
       };
 
 
