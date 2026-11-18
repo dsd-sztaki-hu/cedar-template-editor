@@ -1,7 +1,31 @@
 // We can't use modules and import the script here, rather we have to wait for it to be loaded via <script>
-// and then run the CookieConsent when DO is ready
+// and then run the CookieConsent when DO is ready.
+// Consent is stored in localStorage. A SameSite=Lax cc_cookie is omitted on the
+// Keycloak silent-check-sso cross-site redirect, which Firefox logs.
+var consentKey = 'cc_cookie';
+var existingConsent = document.cookie.match(new RegExp('(?:^|;\\s*)' + consentKey + '=([^;]+)'));
+if (existingConsent && !localStorage.getItem(consentKey)) {
+  try {
+    localStorage.setItem(consentKey, decodeURIComponent(existingConsent[1]));
+  } catch (e) {}
+}
+if (existingConsent) {
+  var expired = consentKey + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+  if (location.protocol === 'https:') {
+    expired += '; Secure';
+  }
+  document.cookie = expired;
+  if (location.hostname.indexOf('.') !== -1) {
+    document.cookie = expired + '; Domain=' + location.hostname;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   CookieConsent.run({
+    cookie: {
+      name: consentKey,
+      useLocalStorage: true
+    },
     guiOptions: {
       consentModal: {
         layout: "box",

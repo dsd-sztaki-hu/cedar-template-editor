@@ -1,0 +1,566 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "authorName",
+      "authorAffiliation",
+      "authorIdentifierScheme",
+      "authorIdentifier"
+    ],
+    "propertyLabels": {
+      "authorName": "authorName",
+      "authorAffiliation": "authorAffiliation",
+      "authorIdentifierScheme": "authorIdentifierScheme",
+      "authorIdentifier": "authorIdentifier"
+    },
+    "propertyDescriptions": {
+      "authorName": "The name of the author, such as the person's name or the name of an organization",
+      "authorAffiliation": "The name of the entity affiliated with the author, e.g. an organization's name",
+      "authorIdentifierScheme": "The type of identifier that uniquely identifies the author (e.g. ORCID, ISNI)",
+      "authorIdentifier": "Uniquely identifies the author when paired with an identifier type"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "authorName": {
+          "enum": [
+            "https://dataverse.org/schema/citation/authorName"
+          ]
+        },
+        "authorAffiliation": {
+          "enum": [
+            "https://dataverse.org/schema/citation/authorAffiliation"
+          ]
+        },
+        "authorIdentifierScheme": {
+          "enum": [
+            "http://purl.org/spar/datacite/AgentIdentifierScheme"
+          ]
+        },
+        "authorIdentifier": {
+          "enum": [
+            "http://purl.org/spar/datacite/AgentIdentifier"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "authorName": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": true
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "authorName",
+      "schema:description": "The name of the author, such as the person's name or the name of an organization",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "dbde41fe-60b2-332c-92cc-a76cea8d8795",
+      "title": "authorName element schema",
+      "description": "authorName element schema generated by the ARP",
+      "hunDescription": "A szerző család- és utóneve, vagy a szervezet neve.",
+      "skos:prefLabel": "Name",
+      "hunLabel": "Név",
+      "_arp": {
+        "dataverse": {
+          "watermark": "1) Family Name, Given Name or 2) Organization XYZ",
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": true
+        }
+      }
+    },
+    "authorAffiliation": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "authorAffiliation",
+      "schema:description": "The name of the entity affiliated with the author, e.g. an organization's name",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "108cbc23-9c2a-360b-a6a2-ef8934b29fe8",
+      "title": "authorAffiliation element schema",
+      "description": "authorAffiliation element schema generated by the ARP",
+      "hunDescription": "A szervezet neve, amelyhez a szerző kapcsolódik",
+      "skos:prefLabel": "Affiliation",
+      "hunLabel": "Intézmény",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Organization XYZ",
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": true
+        }
+      }
+    },
+    "authorIdentifierScheme": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "ORCID"
+          },
+          {
+            "label": "ROR"
+          },
+          {
+            "label": "ISNI"
+          },
+          {
+            "label": "LCNA"
+          },
+          {
+            "label": "GND"
+          },
+          {
+            "label": "DAI"
+          },
+          {
+            "label": "ResearcherID"
+          },
+          {
+            "label": "ScopusID"
+          },
+          {
+            "label": "VIAF"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "authorIdentifierScheme",
+      "schema:description": "The type of identifier that uniquely identifies the author (e.g. ORCID, ISNI)",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "976d7b3e-78fc-3bc7-a1c4-71c158dcb885",
+      "title": "authorIdentifierScheme element schema",
+      "description": "authorIdentifierScheme element schema generated by the ARP",
+      "hunDescription": "A szerzőazonosító neve (ORCID, ISNI).",
+      "skos:prefLabel": "Identifier Type",
+      "hunLabel": "Azonosító típusa",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "- #VALUE:",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "authorIdentifier": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "authorIdentifier",
+      "schema:description": "Uniquely identifies the author when paired with an identifier type",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "6a473b75-d891-34e3-8e78-45011c557569",
+      "title": "authorIdentifier element schema",
+      "description": "authorIdentifier element schema generated by the ARP",
+      "hunDescription": "A szerzőazonosító értéke.",
+      "skos:prefLabel": "Identifier",
+      "hunLabel": "Azonosító",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    }
+  },
+  "schema:name": "author",
+  "schema:description": "The entity, e.g. a person or organization, that created the Dataset",
+  "required": [
+    "@context",
+    "@id",
+    "authorName",
+    "authorAffiliation",
+    "authorIdentifierScheme",
+    "authorIdentifier"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.12.1",
+  "bibo:status": "bibo:published",
+  "@id": "https://repo.test/elements/165",
+  "title": "author element schema",
+  "description": "author element schema generated by the ARP",
+  "hunDescription": "A projekt készítéséért felelős személyek, szervezetek.",
+  "skos:prefLabel": "Author",
+  "hunLabel": "Szerző",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": true
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": true
+    }
+  },
+  "pav:derivedFrom": "https://repo.test/elements/114",
+  "schema:identifier": "author"
+}

@@ -1,0 +1,2216 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/Template",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "geographicCoverage",
+      "geographicUnit",
+      "geographicBoundingBox"
+    ],
+    "propertyLabels": {
+      "geographicCoverage": "geographicCoverage",
+      "geographicUnit": "geographicUnit",
+      "geographicBoundingBox": "geographicBoundingBox"
+    },
+    "propertyDescriptions": {
+      "geographicCoverage": "Information on the geographic coverage of the data. Includes the total geographic scope of the data.",
+      "geographicUnit": "Lowest level of geographic aggregation covered by the Dataset, e.g., village, county, region.",
+      "geographicBoundingBox": "The fundamental geometric description for any Dataset that models geography is the geographic bounding box. It describes the minimum box, defined by west and east longitudes and north and south latitudes, which includes the largest geographic extent of the  Dataset's geographic coverage. This element is used in the first pass of a coordinate-based search. Inclusion of this element in the codebook is recommended, but is required if the bound polygon box is included."
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "rdfs": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2000/01/rdf-schema#"
+          ]
+        },
+        "xsd": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2001/XMLSchema#"
+          ]
+        },
+        "pav": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://purl.org/pav/"
+          ]
+        },
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://schema.org/"
+          ]
+        },
+        "oslc": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://open-services.net/ns/core#"
+          ]
+        },
+        "skos": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2004/02/skos/core#"
+          ]
+        },
+        "rdfs:label": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:isBasedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "schema:name": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:description": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "pav:derivedFrom": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:createdOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "pav:createdBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:lastUpdatedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "oslc:modifiedBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "skos:notation": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "geographicCoverage": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicCoverage"
+          ]
+        },
+        "geographicUnit": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicUnit"
+          ]
+        },
+        "geographicBoundingBox": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicBoundingBox"
+          ]
+        }
+      },
+      "required": [
+        "xsd",
+        "pav",
+        "schema",
+        "oslc",
+        "schema:isBasedOn",
+        "schema:name",
+        "schema:description",
+        "pav:createdOn",
+        "pav:createdBy",
+        "pav:lastUpdatedOn",
+        "oslc:modifiedBy",
+        "geographicCoverage",
+        "geographicBoundingBox"
+      ],
+      "additionalProperties": false
+    },
+    "@id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "https://dataverse.org/schema/geospatial/"
+          ]
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "enum": [
+              "https://dataverse.org/schema/geospatial/"
+            ]
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "schema:isBasedOn": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schema:name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema:description": {
+      "type": "string"
+    },
+    "pav:derivedFrom": {
+      "type": "string",
+      "format": "uri"
+    },
+    "pav:createdOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "pav:createdBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "pav:lastUpdatedOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "oslc:modifiedBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "geographicCoverage": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+        "@context": {
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "pav": "http://purl.org/pav/",
+          "bibo": "http://purl.org/ontology/bibo/",
+          "oslc": "http://open-services.net/ns/core#",
+          "schema": "http://schema.org/",
+          "schema:name": {
+            "@type": "xsd:string"
+          },
+          "schema:description": {
+            "@type": "xsd:string"
+          },
+          "pav:createdOn": {
+            "@type": "xsd:dateTime"
+          },
+          "pav:createdBy": {
+            "@type": "@id"
+          },
+          "pav:lastUpdatedOn": {
+            "@type": "xsd:dateTime"
+          },
+          "oslc:modifiedBy": {
+            "@type": "@id"
+          }
+        },
+        "type": "object",
+        "_ui": {
+          "order": [
+            "country",
+            "state",
+            "city",
+            "otherGeographicCoverage"
+          ],
+          "propertyLabels": {
+            "country": "country",
+            "state": "state",
+            "city": "city",
+            "otherGeographicCoverage": "otherGeographicCoverage"
+          },
+          "propertyDescriptions": {
+            "country": "The country or nation that the Dataset is about.",
+            "state": "The state or province that the Dataset is about. Use GeoNames for correct spelling and avoid abbreviations.",
+            "city": "The name of the city that the Dataset is about. Use GeoNames for correct spelling and avoid abbreviations.",
+            "otherGeographicCoverage": "Other information on the geographic coverage of the data."
+          }
+        },
+        "properties": {
+          "@context": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/country"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/state"
+                ]
+              },
+              "city": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/city"
+                ]
+              },
+              "otherGeographicCoverage": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/otherGeographicCoverage"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": []
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "@type": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "country": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "list"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "multipleChoice": false,
+              "literals": [
+                {
+                  "label": "Afghanistan"
+                },
+                {
+                  "label": "Albania"
+                },
+                {
+                  "label": "Algeria"
+                },
+                {
+                  "label": "American Samoa"
+                },
+                {
+                  "label": "Andorra"
+                },
+                {
+                  "label": "Angola"
+                },
+                {
+                  "label": "Anguilla"
+                },
+                {
+                  "label": "Antarctica"
+                },
+                {
+                  "label": "Antigua and Barbuda"
+                },
+                {
+                  "label": "Argentina"
+                },
+                {
+                  "label": "Armenia"
+                },
+                {
+                  "label": "Aruba"
+                },
+                {
+                  "label": "Australia"
+                },
+                {
+                  "label": "Austria"
+                },
+                {
+                  "label": "Azerbaijan"
+                },
+                {
+                  "label": "Bahamas"
+                },
+                {
+                  "label": "Bahrain"
+                },
+                {
+                  "label": "Bangladesh"
+                },
+                {
+                  "label": "Barbados"
+                },
+                {
+                  "label": "Belarus"
+                },
+                {
+                  "label": "Belgium"
+                },
+                {
+                  "label": "Belize"
+                },
+                {
+                  "label": "Benin"
+                },
+                {
+                  "label": "Bermuda"
+                },
+                {
+                  "label": "Bhutan"
+                },
+                {
+                  "label": "Bolivia, Plurinational State of"
+                },
+                {
+                  "label": "Bonaire, Sint Eustatius and Saba"
+                },
+                {
+                  "label": "Bosnia and Herzegovina"
+                },
+                {
+                  "label": "Botswana"
+                },
+                {
+                  "label": "Bouvet Island"
+                },
+                {
+                  "label": "Brazil"
+                },
+                {
+                  "label": "British Indian Ocean Territory"
+                },
+                {
+                  "label": "Brunei Darussalam"
+                },
+                {
+                  "label": "Bulgaria"
+                },
+                {
+                  "label": "Burkina Faso"
+                },
+                {
+                  "label": "Burundi"
+                },
+                {
+                  "label": "Cambodia"
+                },
+                {
+                  "label": "Cameroon"
+                },
+                {
+                  "label": "Canada"
+                },
+                {
+                  "label": "Cape Verde"
+                },
+                {
+                  "label": "Cayman Islands"
+                },
+                {
+                  "label": "Central African Republic"
+                },
+                {
+                  "label": "Chad"
+                },
+                {
+                  "label": "Chile"
+                },
+                {
+                  "label": "China"
+                },
+                {
+                  "label": "Christmas Island"
+                },
+                {
+                  "label": "Cocos (Keeling) Islands"
+                },
+                {
+                  "label": "Colombia"
+                },
+                {
+                  "label": "Comoros"
+                },
+                {
+                  "label": "Congo"
+                },
+                {
+                  "label": "Congo, the Democratic Republic of the"
+                },
+                {
+                  "label": "Cook Islands"
+                },
+                {
+                  "label": "Costa Rica"
+                },
+                {
+                  "label": "Croatia"
+                },
+                {
+                  "label": "Cuba"
+                },
+                {
+                  "label": "Curaçao"
+                },
+                {
+                  "label": "Cyprus"
+                },
+                {
+                  "label": "Czech Republic"
+                },
+                {
+                  "label": "Côte d'Ivoire"
+                },
+                {
+                  "label": "Denmark"
+                },
+                {
+                  "label": "Djibouti"
+                },
+                {
+                  "label": "Dominica"
+                },
+                {
+                  "label": "Dominican Republic"
+                },
+                {
+                  "label": "Ecuador"
+                },
+                {
+                  "label": "Egypt"
+                },
+                {
+                  "label": "El Salvador"
+                },
+                {
+                  "label": "Equatorial Guinea"
+                },
+                {
+                  "label": "Eritrea"
+                },
+                {
+                  "label": "Estonia"
+                },
+                {
+                  "label": "Ethiopia"
+                },
+                {
+                  "label": "Falkland Islands (Malvinas)"
+                },
+                {
+                  "label": "Faroe Islands"
+                },
+                {
+                  "label": "Fiji"
+                },
+                {
+                  "label": "Finland"
+                },
+                {
+                  "label": "France"
+                },
+                {
+                  "label": "French Guiana"
+                },
+                {
+                  "label": "French Polynesia"
+                },
+                {
+                  "label": "French Southern Territories"
+                },
+                {
+                  "label": "Gabon"
+                },
+                {
+                  "label": "Gambia"
+                },
+                {
+                  "label": "Georgia"
+                },
+                {
+                  "label": "Germany"
+                },
+                {
+                  "label": "Ghana"
+                },
+                {
+                  "label": "Gibraltar"
+                },
+                {
+                  "label": "Greece"
+                },
+                {
+                  "label": "Greenland"
+                },
+                {
+                  "label": "Grenada"
+                },
+                {
+                  "label": "Guadeloupe"
+                },
+                {
+                  "label": "Guam"
+                },
+                {
+                  "label": "Guatemala"
+                },
+                {
+                  "label": "Guernsey"
+                },
+                {
+                  "label": "Guinea"
+                },
+                {
+                  "label": "Guinea-Bissau"
+                },
+                {
+                  "label": "Guyana"
+                },
+                {
+                  "label": "Haiti"
+                },
+                {
+                  "label": "Heard Island and Mcdonald Islands"
+                },
+                {
+                  "label": "Holy See (Vatican City State)"
+                },
+                {
+                  "label": "Honduras"
+                },
+                {
+                  "label": "Hong Kong"
+                },
+                {
+                  "label": "Hungary"
+                },
+                {
+                  "label": "Iceland"
+                },
+                {
+                  "label": "India"
+                },
+                {
+                  "label": "Indonesia"
+                },
+                {
+                  "label": "Iran, Islamic Republic of"
+                },
+                {
+                  "label": "Iraq"
+                },
+                {
+                  "label": "Ireland"
+                },
+                {
+                  "label": "Isle of Man"
+                },
+                {
+                  "label": "Israel"
+                },
+                {
+                  "label": "Italy"
+                },
+                {
+                  "label": "Jamaica"
+                },
+                {
+                  "label": "Japan"
+                },
+                {
+                  "label": "Jersey"
+                },
+                {
+                  "label": "Jordan"
+                },
+                {
+                  "label": "Kazakhstan"
+                },
+                {
+                  "label": "Kenya"
+                },
+                {
+                  "label": "Kiribati"
+                },
+                {
+                  "label": "Korea, Democratic People's Republic of"
+                },
+                {
+                  "label": "Korea, Republic of"
+                },
+                {
+                  "label": "Kuwait"
+                },
+                {
+                  "label": "Kyrgyzstan"
+                },
+                {
+                  "label": "Lao People's Democratic Republic"
+                },
+                {
+                  "label": "Latvia"
+                },
+                {
+                  "label": "Lebanon"
+                },
+                {
+                  "label": "Lesotho"
+                },
+                {
+                  "label": "Liberia"
+                },
+                {
+                  "label": "Libya"
+                },
+                {
+                  "label": "Liechtenstein"
+                },
+                {
+                  "label": "Lithuania"
+                },
+                {
+                  "label": "Luxembourg"
+                },
+                {
+                  "label": "Macao"
+                },
+                {
+                  "label": "Macedonia, the Former Yugoslav Republic of"
+                },
+                {
+                  "label": "Madagascar"
+                },
+                {
+                  "label": "Malawi"
+                },
+                {
+                  "label": "Malaysia"
+                },
+                {
+                  "label": "Maldives"
+                },
+                {
+                  "label": "Mali"
+                },
+                {
+                  "label": "Malta"
+                },
+                {
+                  "label": "Marshall Islands"
+                },
+                {
+                  "label": "Martinique"
+                },
+                {
+                  "label": "Mauritania"
+                },
+                {
+                  "label": "Mauritius"
+                },
+                {
+                  "label": "Mayotte"
+                },
+                {
+                  "label": "Mexico"
+                },
+                {
+                  "label": "Micronesia, Federated States of"
+                },
+                {
+                  "label": "Moldova, Republic of"
+                },
+                {
+                  "label": "Monaco"
+                },
+                {
+                  "label": "Mongolia"
+                },
+                {
+                  "label": "Montenegro"
+                },
+                {
+                  "label": "Montserrat"
+                },
+                {
+                  "label": "Morocco"
+                },
+                {
+                  "label": "Mozambique"
+                },
+                {
+                  "label": "Myanmar"
+                },
+                {
+                  "label": "Namibia"
+                },
+                {
+                  "label": "Nauru"
+                },
+                {
+                  "label": "Nepal"
+                },
+                {
+                  "label": "Netherlands"
+                },
+                {
+                  "label": "New Caledonia"
+                },
+                {
+                  "label": "New Zealand"
+                },
+                {
+                  "label": "Nicaragua"
+                },
+                {
+                  "label": "Niger"
+                },
+                {
+                  "label": "Nigeria"
+                },
+                {
+                  "label": "Niue"
+                },
+                {
+                  "label": "Norfolk Island"
+                },
+                {
+                  "label": "Northern Mariana Islands"
+                },
+                {
+                  "label": "Norway"
+                },
+                {
+                  "label": "Oman"
+                },
+                {
+                  "label": "Pakistan"
+                },
+                {
+                  "label": "Palau"
+                },
+                {
+                  "label": "Palestine, State of"
+                },
+                {
+                  "label": "Panama"
+                },
+                {
+                  "label": "Papua New Guinea"
+                },
+                {
+                  "label": "Paraguay"
+                },
+                {
+                  "label": "Peru"
+                },
+                {
+                  "label": "Philippines"
+                },
+                {
+                  "label": "Pitcairn"
+                },
+                {
+                  "label": "Poland"
+                },
+                {
+                  "label": "Portugal"
+                },
+                {
+                  "label": "Puerto Rico"
+                },
+                {
+                  "label": "Qatar"
+                },
+                {
+                  "label": "Romania"
+                },
+                {
+                  "label": "Russian Federation"
+                },
+                {
+                  "label": "Rwanda"
+                },
+                {
+                  "label": "Réunion"
+                },
+                {
+                  "label": "Saint Barthélemy"
+                },
+                {
+                  "label": "Saint Helena, Ascension and Tristan da Cunha"
+                },
+                {
+                  "label": "Saint Kitts and Nevis"
+                },
+                {
+                  "label": "Saint Lucia"
+                },
+                {
+                  "label": "Saint Martin (French part)"
+                },
+                {
+                  "label": "Saint Pierre and Miquelon"
+                },
+                {
+                  "label": "Saint Vincent and the Grenadines"
+                },
+                {
+                  "label": "Samoa"
+                },
+                {
+                  "label": "San Marino"
+                },
+                {
+                  "label": "Sao Tome and Principe"
+                },
+                {
+                  "label": "Saudi Arabia"
+                },
+                {
+                  "label": "Senegal"
+                },
+                {
+                  "label": "Serbia"
+                },
+                {
+                  "label": "Seychelles"
+                },
+                {
+                  "label": "Sierra Leone"
+                },
+                {
+                  "label": "Singapore"
+                },
+                {
+                  "label": "Sint Maarten (Dutch part)"
+                },
+                {
+                  "label": "Slovakia"
+                },
+                {
+                  "label": "Slovenia"
+                },
+                {
+                  "label": "Solomon Islands"
+                },
+                {
+                  "label": "Somalia"
+                },
+                {
+                  "label": "South Africa"
+                },
+                {
+                  "label": "South Georgia and the South Sandwich Islands"
+                },
+                {
+                  "label": "South Sudan"
+                },
+                {
+                  "label": "Spain"
+                },
+                {
+                  "label": "Sri Lanka"
+                },
+                {
+                  "label": "Sudan"
+                },
+                {
+                  "label": "Suriname"
+                },
+                {
+                  "label": "Svalbard and Jan Mayen"
+                },
+                {
+                  "label": "Swaziland"
+                },
+                {
+                  "label": "Sweden"
+                },
+                {
+                  "label": "Switzerland"
+                },
+                {
+                  "label": "Syrian Arab Republic"
+                },
+                {
+                  "label": "Taiwan, Province of China"
+                },
+                {
+                  "label": "Tajikistan"
+                },
+                {
+                  "label": "Tanzania, United Republic of"
+                },
+                {
+                  "label": "Thailand"
+                },
+                {
+                  "label": "Timor-Leste"
+                },
+                {
+                  "label": "Togo"
+                },
+                {
+                  "label": "Tokelau"
+                },
+                {
+                  "label": "Tonga"
+                },
+                {
+                  "label": "Trinidad and Tobago"
+                },
+                {
+                  "label": "Tunisia"
+                },
+                {
+                  "label": "Turkey"
+                },
+                {
+                  "label": "Turkmenistan"
+                },
+                {
+                  "label": "Turks and Caicos Islands"
+                },
+                {
+                  "label": "Tuvalu"
+                },
+                {
+                  "label": "Uganda"
+                },
+                {
+                  "label": "Ukraine"
+                },
+                {
+                  "label": "United Arab Emirates"
+                },
+                {
+                  "label": "United Kingdom"
+                },
+                {
+                  "label": "United States"
+                },
+                {
+                  "label": "United States Minor Outlying Islands"
+                },
+                {
+                  "label": "Uruguay"
+                },
+                {
+                  "label": "Uzbekistan"
+                },
+                {
+                  "label": "Vanuatu"
+                },
+                {
+                  "label": "Venezuela, Bolivarian Republic of"
+                },
+                {
+                  "label": "Viet Nam"
+                },
+                {
+                  "label": "Virgin Islands, British"
+                },
+                {
+                  "label": "Virgin Islands, U.S."
+                },
+                {
+                  "label": "Wallis and Futuna"
+                },
+                {
+                  "label": "Western Sahara"
+                },
+                {
+                  "label": "Yemen"
+                },
+                {
+                  "label": "Zambia"
+                },
+                {
+                  "label": "Zimbabwe"
+                },
+                {
+                  "label": "Åland Islands"
+                }
+              ]
+            },
+            "properties": {
+              "@type": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value"
+            ],
+            "schema:name": "country",
+            "schema:description": "The country or nation that the Dataset is about.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "08695312-795e-3f4d-a439-5ead28486e04",
+            "title": "country element schema",
+            "description": "country element schema generated by the ARP",
+            "hunDescription": "Ország vagy nemzet, amely az adatcsomaghoz kapcsolódik.",
+            "skos:prefLabel": "Country / Nation",
+            "hunLabel": "Ország / Nemzet",
+            "_arp": {
+              "dataverse": {
+                "displayFormat": "#VALUE,",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          },
+          "state": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "textfield"
+            },
+            "_valueConstraints": {
+              "requiredValue": false
+            },
+            "properties": {
+              "@type": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value"
+            ],
+            "schema:name": "state",
+            "schema:description": "The state or province that the Dataset is about. Use GeoNames for correct spelling and avoid abbreviations.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "a830f420-273e-3e74-825f-26fa9bd50a64",
+            "title": "state element schema",
+            "description": "state element schema generated by the ARP",
+            "hunDescription": "Álam vagy tartomány, amely az adatcsomaghoz kapcsolódik. Használja a GeoNames szolgáltatást a helyesíráshoz, és kerülje a rövidítéseket!",
+            "skos:prefLabel": "State / Province",
+            "hunLabel": "Állam / Tartomány",
+            "_arp": {
+              "dataverse": {
+                "displayFormat": "#VALUE,",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          },
+          "city": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "textfield"
+            },
+            "_valueConstraints": {
+              "requiredValue": false
+            },
+            "properties": {
+              "@type": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value"
+            ],
+            "schema:name": "city",
+            "schema:description": "The name of the city that the Dataset is about. Use GeoNames for correct spelling and avoid abbreviations.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "7b6a5fee-df0e-397f-9e11-b5fa9f83629d",
+            "title": "city element schema",
+            "description": "city element schema generated by the ARP",
+            "hunDescription": "A város neve, amely az adatcsomaghoz kapcsolódik. Használja a GeoNames szolgáltatást a helyesíráshoz, és kerülje a rövidítéseket!",
+            "skos:prefLabel": "City",
+            "hunLabel": "Város",
+            "_arp": {
+              "dataverse": {
+                "displayFormat": "#VALUE,",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          },
+          "otherGeographicCoverage": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "textfield"
+            },
+            "_valueConstraints": {
+              "requiredValue": false
+            },
+            "properties": {
+              "@type": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value"
+            ],
+            "schema:name": "otherGeographicCoverage",
+            "schema:description": "Other information on the geographic coverage of the data.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "f682e5ba-37af-3435-bb46-aab643e11dbe",
+            "title": "otherGeographicCoverage element schema",
+            "description": "otherGeographicCoverage element schema generated by the ARP",
+            "hunDescription": "Egyéb, az adatok földrajzi lefedettségével kapcsolatos információk.",
+            "skos:prefLabel": "Other",
+            "hunLabel": "Egyéb",
+            "_arp": {
+              "dataverse": {
+                "displayFormat": "#VALUE,",
+                "advancedSearchField": false,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          }
+        },
+        "schema:name": "geographicCoverage",
+        "schema:description": "Information on the geographic coverage of the data. Includes the total geographic scope of the data.",
+        "required": [
+          "@context",
+          "@id",
+          "country",
+          "state",
+          "city",
+          "otherGeographicCoverage"
+        ],
+        "pav:createdOn": null,
+        "pav:createdBy": null,
+        "pav:lastUpdatedOn": null,
+        "oslc:modifiedBy": null,
+        "schema:schemaVersion": "1.6.0",
+        "additionalProperties": false,
+        "pav:version": "6.9.0",
+        "bibo:status": "bibo:published",
+        "@id": "https://repo.test/elements/36",
+        "title": "geographicCoverage element schema",
+        "description": "geographicCoverage element schema generated by the ARP",
+        "schema:identifier": "geographicCoverage",
+        "hunDescription": "Az adatok földrajzi lefedettségére vonatkozó információk, beleértve a földrajzi kiterjedést.",
+        "skos:prefLabel": "Geographic Coverage",
+        "hunLabel": "Földrajzi lefedettség",
+        "minItems": 1,
+        "maxItems ": 0,
+        "_valueConstraints": {
+          "requiredValue": false
+        },
+        "_arp": {
+          "dataverse": {
+            "advancedSearchField": false,
+            "facetable": false,
+            "displayoncreate": false
+          }
+        }
+      }
+    },
+    "geographicUnit": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "geographicUnit",
+      "schema:description": "Lowest level of geographic aggregation covered by the Dataset, e.g., village, county, region.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "27b4dfc1-e432-3b11-a64f-21db0e4257ad",
+      "title": "geographicUnit element schema",
+      "description": "geographicUnit element schema generated by the ARP",
+      "hunDescription": "A legkisebb földrajzi egység, amelyet az adatcsomag lefed. Például falu, megye, régió",
+      "skos:prefLabel": "Geographic Unit",
+      "hunLabel": "Földrajzi egység",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "geographicBoundingBox": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+        "@context": {
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "pav": "http://purl.org/pav/",
+          "bibo": "http://purl.org/ontology/bibo/",
+          "oslc": "http://open-services.net/ns/core#",
+          "schema": "http://schema.org/",
+          "schema:name": {
+            "@type": "xsd:string"
+          },
+          "schema:description": {
+            "@type": "xsd:string"
+          },
+          "pav:createdOn": {
+            "@type": "xsd:dateTime"
+          },
+          "pav:createdBy": {
+            "@type": "@id"
+          },
+          "pav:lastUpdatedOn": {
+            "@type": "xsd:dateTime"
+          },
+          "oslc:modifiedBy": {
+            "@type": "@id"
+          }
+        },
+        "type": "object",
+        "_ui": {
+          "order": [
+            "westLongitude",
+            "eastLongitude",
+            "northLatitude",
+            "southLatitude"
+          ],
+          "propertyLabels": {
+            "westLongitude": "westLongitude",
+            "eastLongitude": "eastLongitude",
+            "northLatitude": "northLatitude",
+            "southLatitude": "southLatitude"
+          },
+          "propertyDescriptions": {
+            "westLongitude": "Westernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= West  Bounding Longitude Value <= 180.0.",
+            "eastLongitude": "Easternmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= East Bounding Longitude Value <= 180.0.",
+            "northLatitude": "Northernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= North Bounding Latitude Value <= 90.0.",
+            "southLatitude": "Southernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= South Bounding Latitude Value <= 90.0."
+          }
+        },
+        "properties": {
+          "@context": {
+            "type": "object",
+            "properties": {
+              "westLongitude": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/westLongitude"
+                ]
+              },
+              "eastLongitude": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/eastLongitude"
+                ]
+              },
+              "northLatitude": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/northLatitude"
+                ]
+              },
+              "southLatitude": {
+                "enum": [
+                  "https://dataverse.org/schema/geospatial/southLatitude"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": []
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "@type": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "westLongitude": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "westLongitude",
+            "schema:description": "Westernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= West  Bounding Longitude Value <= 180.0.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "b7d0f4fa-6e86-375f-afad-d5f9829361e1",
+            "title": "westLongitude element schema",
+            "description": "westLongitude element schema generated by the ARP",
+            "hunDescription": "Az adatcsomag földrajzi kiterjedésének legnyugatibb koordinátája. Az érvényes értékek halmaza decimális fokokban kifejezve: -180,0 <= Nyugati befoglaló hosszúsági érték <= 180,0.",
+            "skos:prefLabel": "Westernmost (Left) Longitude",
+            "hunLabel": "Legnyugatibb (bal) hosszúság",
+            "_arp": {
+              "dataverse": {
+                "advancedSearchField": false,
+                "facetable": false,
+                "displayoncreate": false
+              }
+            }
+          },
+          "eastLongitude": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "eastLongitude",
+            "schema:description": "Easternmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= East Bounding Longitude Value <= 180.0.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "2612bbc7-e1e7-35b5-bf44-28aec07b5adb",
+            "title": "eastLongitude element schema",
+            "description": "eastLongitude element schema generated by the ARP",
+            "hunDescription": "Az adatcsomag földrajzi kiterjedésének legkeletibb koordinátája. Az érvényes értékek halmaza decimális fokokban kifejezve: -180,0 <= Keleti befoglaló hosszúsági érték <= 180,0.",
+            "skos:prefLabel": "Easternmost (Right) Longitude",
+            "hunLabel": "Legkeletibb (jobb) hosszúság",
+            "_arp": {
+              "dataverse": {
+                "advancedSearchField": false,
+                "facetable": false,
+                "displayoncreate": false
+              }
+            }
+          },
+          "northLatitude": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "northLatitude",
+            "schema:description": "Northernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= North Bounding Latitude Value <= 90.0.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "d3166003-d509-34a5-923d-bc4cad574a6b",
+            "title": "northLatitude element schema",
+            "description": "northLatitude element schema generated by the ARP",
+            "hunDescription": "Az adatállomány földrajzi kiterjedését meghatározó legészakibb koordináta. Az érvényes értéktartomány, decimális fokban kifejezve, -90,0 <= Északi határszélesség <= 90,0.",
+            "skos:prefLabel": "Northernmost (Top) Latitude",
+            "hunLabel": "Legészakibb (Felső) Szélességi fok",
+            "_arp": {
+              "dataverse": {
+                "advancedSearchField": false,
+                "facetable": false,
+                "displayoncreate": false
+              }
+            }
+          },
+          "southLatitude": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "southLatitude",
+            "schema:description": "Southernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= South Bounding Latitude Value <= 90.0.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "bdf7941c-a973-3eb4-b2cd-4398c890cfa3",
+            "title": "southLatitude element schema",
+            "description": "southLatitude element schema generated by the ARP",
+            "hunDescription": "Az adatállomány földrajzi kiterjedését meghatározó legdélibb koordináta. Az érvényes értéktartomány, decimális fokban kifejezve, -90,0 <= Déli határszélesség <= 90,0.",
+            "skos:prefLabel": "Southernmost (Bottom) Latitude",
+            "hunLabel": "Legdélibb (Alsó) Szélességi fok",
+            "_arp": {
+              "dataverse": {
+                "advancedSearchField": false,
+                "facetable": false,
+                "displayoncreate": false
+              }
+            }
+          }
+        },
+        "schema:name": "geographicBoundingBox",
+        "schema:description": "The fundamental geometric description for any Dataset that models geography is the geographic bounding box. It describes the minimum box, defined by west and east longitudes and north and south latitudes, which includes the largest geographic extent of the  Dataset's geographic coverage. This element is used in the first pass of a coordinate-based search. Inclusion of this element in the codebook is recommended, but is required if the bound polygon box is included.",
+        "required": [
+          "@context",
+          "@id",
+          "westLongitude",
+          "eastLongitude",
+          "northLatitude",
+          "southLatitude"
+        ],
+        "pav:createdOn": null,
+        "pav:createdBy": null,
+        "pav:lastUpdatedOn": null,
+        "oslc:modifiedBy": null,
+        "schema:schemaVersion": "1.6.0",
+        "additionalProperties": false,
+        "pav:version": "6.9.0",
+        "bibo:status": "bibo:published",
+        "@id": "https://repo.test/elements/37",
+        "title": "geographicBoundingBox element schema",
+        "description": "geographicBoundingBox element schema generated by the ARP",
+        "schema:identifier": "geographicBoundingBox",
+        "hunDescription": "The fundamental geometric description for any Dataset that models geography is the geographic bounding box. It describes the minimum box, defined by west and east longitudes and north and south latitudes, which includes the largest geographic extent of the  Dataset's geographic coverage. This element is used in the first pass of a coordinate-based search. Inclusion of this element in the codebook is recommended, but is required if the bound polygon box is included. (magyarul)",
+        "skos:prefLabel": "Geographic Bounding Box",
+        "hunLabel": "Geographic Bounding Box (magyarul)",
+        "minItems": 1,
+        "maxItems ": 0,
+        "_valueConstraints": {
+          "requiredValue": false
+        },
+        "_arp": {
+          "dataverse": {
+            "advancedSearchField": false,
+            "facetable": false,
+            "displayoncreate": false
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "schema:isBasedOn",
+    "schema:name",
+    "schema:description",
+    "pav:createdOn",
+    "pav:createdBy",
+    "pav:lastUpdatedOn",
+    "oslc:modifiedBy",
+    "geographicCoverage",
+    "geographicUnit",
+    "geographicBoundingBox"
+  ],
+  "schema:name": "Geospatial Metadata",
+  "schema:description": "",
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.10.0",
+  "bibo:status": "bibo:published",
+  "title": "geospatial template schema",
+  "description": "geospatial template schema generated by ARP",
+  "hunName": "Földrajzi metaadatok",
+  "@id": "https://repo.test/templates/84",
+  "pav:derivedFrom": "https://repo.test/templates/38",
+  "schema:identifier": "geospatial"
+}

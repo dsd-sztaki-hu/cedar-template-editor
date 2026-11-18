@@ -74,5 +74,18 @@
         </a>
       </li>
     </div>
+    <div ng-if="canUpdatePublished && canUpdatePublished()">
+      <li ng-if="!isField" class="divider"></li>
+      <li ng-if="!isField" ng-style="{'pointer-events': arpMergeButtonDisabled() ? 'none' : 'auto', 'opacity': arpMergeButtonDisabled() ? '0.5' : '1'}">
+        <a ng-click="updatePublishedVersion()"
+           id="button-update-published"
+           uib-tooltip='{{"EDITOR.TOOLBAR.updatePublished" | translate}}'
+           tooltip-placement="left"
+           ng-style="{'pointer-events': arpMergeButtonDisabled() ? 'none' : 'auto', 'color': arpMergeButtonDisabled() ? 'grey' : 'inherit'}"
+        >
+          <i class="fa fa-retweet"></i>
+        </a>
+      </li>
+    </div>
   </ul>
 </div>

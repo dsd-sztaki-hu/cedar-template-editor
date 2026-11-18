@@ -1,0 +1,438 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "geographicSpatialResolutionValue",
+      "geographicSpatialResolutionType",
+      "geographicSpatialResolutionUnitOfMeasure"
+    ],
+    "propertyLabels": {
+      "geographicSpatialResolutionValue": "geographicSpatialResolutionValue",
+      "geographicSpatialResolutionType": "geographicSpatialResolutionType",
+      "geographicSpatialResolutionUnitOfMeasure": "geographicSpatialResolutionUnitOfMeasure"
+    },
+    "propertyDescriptions": {
+      "geographicSpatialResolutionValue": "The resource's spatial resolution, expressed as a value or as a brief textual description",
+      "geographicSpatialResolutionType": "Format in which the spatial resolution value is expressed",
+      "geographicSpatialResolutionUnitOfMeasure": "If the spatial resolution value is expressed as a distance, the unit of measure that corresponds to that value"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "geographicSpatialResolutionValue": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicSpatialResolutionValue"
+          ]
+        },
+        "geographicSpatialResolutionType": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicSpatialResolutionType"
+          ]
+        },
+        "geographicSpatialResolutionUnitOfMeasure": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicSpatialResolutionUnitOfMeasure"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "geographicSpatialResolutionValue": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "geographicSpatialResolutionValue",
+      "schema:description": "The resource's spatial resolution, expressed as a value or as a brief textual description",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "2017c7f1-90cd-3ddd-bd30-48b11d3db173",
+      "title": "geographicSpatialResolutionValue element schema",
+      "description": "geographicSpatialResolutionValue element schema generated by the ARP",
+      "skos:prefLabel": "Value",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "geographicSpatialResolutionType": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "equivalentScale"
+          },
+          {
+            "label": "distance"
+          },
+          {
+            "label": "vertical"
+          },
+          {
+            "label": "angularDistance"
+          },
+          {
+            "label": "levelOfDetail"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "geographicSpatialResolutionType",
+      "schema:description": "Format in which the spatial resolution value is expressed",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "56a49720-6453-3733-9b78-8b64d5cd7119",
+      "title": "geographicSpatialResolutionType element schema",
+      "description": "geographicSpatialResolutionType element schema generated by the ARP",
+      "skos:prefLabel": "Type",
+      "_arp": {
+        "dataverse": {
+          "watermark": "distance, vertical, angularDistance, levelOfDetail",
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": false,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "geographicSpatialResolutionUnitOfMeasure": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "geographicSpatialResolutionUnitOfMeasure",
+      "schema:description": "If the spatial resolution value is expressed as a distance, the unit of measure that corresponds to that value",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "006c6d7b-7bab-3f20-9983-71ffd350a0b0",
+      "title": "geographicSpatialResolutionUnitOfMeasure element schema",
+      "description": "geographicSpatialResolutionUnitOfMeasure element schema generated by the ARP",
+      "skos:prefLabel": "Spatial Resolution Unit of Measure",
+      "_arp": {
+        "dataverse": {
+          "watermark": "cm', 'm', 'km', etc.",
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    }
+  },
+  "schema:name": "geographicSpatialResolution",
+  "schema:description": "The density of spatial data in the resource, or the range of resolutions in which a Dataset may be used. NOTE: This element should be repeated when describing upper and lower range",
+  "required": [
+    "@context",
+    "@id",
+    "geographicSpatialResolutionValue",
+    "geographicSpatialResolutionType",
+    "geographicSpatialResolutionUnitOfMeasure"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.12.1",
+  "bibo:status": "bibo:published",
+  "title": "geographicSpatialResolution element schema",
+  "description": "geographicSpatialResolution element schema generated by the ARP",
+  "skos:prefLabel": "Spatial Resolution",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": false
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": false
+    }
+  },
+  "@id": "https://repo.test/elements/186",
+  "pav:derivedFrom": "https://repo.test/elements/144",
+  "schema:identifier": "geographicSpatialResolution"
+}

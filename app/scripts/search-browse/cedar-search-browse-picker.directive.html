@@ -281,6 +281,9 @@
                                                copy="dc.showCopyModal"
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
+                                               arp-publish-all="dc.arpPublishAll"
+                                               arp-bump-versions="dc.arpBumpVersions"
+                                               arp-dataverse-upgrade="dc.arpDataverseUpgrade"
                                                arp-zip-download="dc.showArpZipDownloadModal"
                                                arp-extract-resources="dc.showArpExtractResourcesModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
@@ -387,6 +390,9 @@
                                                copy="dc.showCopyModal"
                                                arp-copy="dc.showArpCopyModal"
                                                arp-delete="dc.arpDelete"
+                                               arp-publish-all="dc.arpPublishAll"
+                                               arp-bump-versions="dc.arpBumpVersions"
+                                               arp-dataverse-upgrade="dc.arpDataverseUpgrade"
                                                arp-zip-download="dc.showArpZipDownloadModal"
                                                arp-extract-resources="dc.showArpExtractResourcesModal"
                                                can-not-arp-delete="dc.canNotArpDelete"
@@ -562,6 +568,9 @@
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
+                                           arp-publish-all="dc.arpPublishAll"
+                                           arp-bump-versions="dc.arpBumpVersions"
+                                           arp-dataverse-upgrade="dc.arpDataverseUpgrade"
                                            arp-zip-download="dc.showArpZipDownloadModal"
                                            arp-extract-resources="dc.showArpExtractResourcesModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
@@ -730,6 +739,9 @@
                                            move="dc.showMoveModal" delete="dc.deleteResource" copy="dc.showCopyModal"
                                            arp-copy="dc.showArpCopyModal"
                                            arp-delete="dc.arpDelete"
+                                           arp-publish-all="dc.arpPublishAll"
+                                           arp-bump-versions="dc.arpBumpVersions"
+                                           arp-dataverse-upgrade="dc.arpDataverseUpgrade"
                                            arp-zip-download="dc.showArpZipDownloadModal"
                                            arp-extract-resources="dc.showArpExtractResourcesModal"
                                            can-not-arp-delete="dc.canNotArpDelete"
@@ -1189,6 +1201,22 @@
                        tabindex="-1" role="dialog" aria-labelledby="publishModalHeader"
                        data-keyboard="true" data-backdrop="static" move-resource="resource">
   </cedar-publish-modal>
+</section>
+
+<!-- ARP publish all modal -->
+<section>
+  <cedar-arp-publish-all-modal cedar-modal-show modal-visible="dc.arpPublishAllModalVisible" class="modal fade" id="arp-publish-all-modal"
+                               tabindex="-1" role="dialog" aria-labelledby="arpPublishAllModalHeader"
+                               data-keyboard="true" data-backdrop="static">
+  </cedar-arp-publish-all-modal>
+</section>
+
+<!-- ARP Dataverse upgrade modal -->
+<section>
+  <cedar-arp-dataverse-upgrade-modal cedar-modal-show modal-visible="dc.arpDataverseUpgradeModalVisible" class="modal fade" id="arp-dataverse-upgrade-modal"
+                                     tabindex="-1" role="dialog" aria-labelledby="arpDataverseUpgradeModalHeader"
+                                     data-keyboard="false" data-backdrop="static">
+  </cedar-arp-dataverse-upgrade-modal>
 </section>
 
 <!-- share modal -->

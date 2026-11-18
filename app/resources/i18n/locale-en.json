@@ -742,7 +742,8 @@
     "TOOLBAR": {
       "searchForMore": "Search for fields and elements",
       "mergeTemplates" : "Merge with the original version",
-      "openOriginal": "Open original version"
+      "openOriginal": "Open original version",
+      "updatePublished": "Update the published version"
     },
     "selectTimezone": "Select Timezone",
     "enterDecimalSeconds": "Enter Decimal Seconds",
@@ -949,6 +950,18 @@
         "false": "Diffs not seen yet"
       }
     },
+    "updatePublished": {
+      "success": "The published resources were updated and published again as version {{version}}.",
+      "updated": "Published version updated",
+      "confirmationTitle": "Update the published version of '{{title}}' as version {{version}}?",
+      "alert": "The published artifacts keep their identifiers and this version. New artifacts are added. This does not archive the current version.",
+      "confirm": "Update published version",
+      "statusError": "There was an error while updating the publication status!<br /><br />VIEW TECHNICAL DETAILS!",
+      "writeError": "There was an error while writing the updated artifact!<br /><br />VIEW TECHNICAL DETAILS!",
+      "rollbackError": "There was an error while restoring the published artifact!<br /><br />VIEW TECHNICAL DETAILS!",
+      "copyError": "There was an error while copying a new artifact into the published folder!<br /><br />VIEW TECHNICAL DETAILS!",
+      "createFolderError": "There was an error while creating a folder in the published tree!<br /><br />VIEW TECHNICAL DETAILS!"
+    },
     "recursiveMerge": {
       "success": "<b>{{title}}</b> has been merged into its published version.",
       "error": "There was an error during recursive merging the resources!<br /><br />VIEW TECHNICAL DETAILS!",
@@ -1012,9 +1025,102 @@
     "MENU": {
       "arpCopy": "ARP Copy to...",
       "arpDelete": "ARP Delete",
+      "arpPublishAll": "ARP Publish All",
+      "arpBumpVersions": "ARP Archive and Draft",
+      "arpDataverseUpgrade": "ARP Upgrade to Dataverse versions",
       "arpGoToOriginal": "ARP Go to original",
       "arpZipDownload": "ARP Download ZIP",
       "arpExtractResources": "ARP Extract Resources"
+    },
+    "publishAll": {
+      "title": "ARP Publish All",
+      "cannotPublish": "Cannot publish",
+      "publishedError": "ARP Publish All can run only when every resource in '{{folderName}}' and its child folders is unpublished.",
+      "publishedListTitle": "Already published resources",
+      "publishedListExplanation": "These resources in '{{folderName}}' and its child folders are already published.",
+      "inThisFolder": "In this folder",
+      "emptyError": "There are no templates, elements, or fields to publish in '{{folderName}}'.",
+      "explanation": "Every template, element, and field in '{{folderName}}' and its child folders will be published as version {{version}}.",
+      "success": "The resources in '{{folderName}}' were published as version {{version}}."
+    },
+    "bumpVersions": {
+      "cannotBump": "Cannot archive and draft",
+      "unpublishedError": "ARP Archive and Draft can run only when every resource in '{{folderName}}' and its child folders is published. Publish the folder first.",
+      "emptyError": "There are no templates, elements, or fields to archive in '{{folderName}}'.",
+      "confirmTitle": "Archive and draft '{{folderName}}'?",
+      "confirm": "The current resources will move into the Versions folder as version {{version}} and keep their identifiers. Draft copies will be created in '{{folderName}}'.",
+      "confirmButton": "Archive and draft",
+      "bumped": "Archived and drafted",
+      "success": "Versions in '{{folderName}}' were archived as {{version}}. Draft copies were created in the folder."
+    },
+    "dataverseUpgrade": {
+      "title": "ARP Upgrade to Dataverse versions",
+      "cannotUpgrade": "Cannot upgrade",
+      "explanation": {
+        "published": "For each target version, '{{folderName}}' is archived and drafted, the changes of the official Dataverse metadata blocks are merged into the drafts, and everything is published as that version. ARP changes are kept.",
+        "draft": "'{{folderName}}' holds drafts, so this continues a stopped run. Enter the version the drafts were made from as the current version. The first target version is not archived again."
+      },
+      "currentVersion": "Current Dataverse version of the folder",
+      "targetVersions": "Target Dataverse versions, oldest first",
+      "previewButton": "Preview",
+      "runButton": "Run",
+      "previewReport": "Preview: what the run will change",
+      "runReport": "Finished versions",
+      "versionTitle": "Version {{version}}",
+      "noChanges": "The official blocks of the templates in this folder did not change.",
+      "nothingToApply": "Everything is already applied.",
+      "updatedResources": "Standalone resources changed as well: {{names}}",
+      "missingTemplates": "Changed or new official blocks with no template in this folder (nothing is created for them): {{blocks}}",
+      "finished": "The folder is published as the last target version. The older versions are in the Versions folder.",
+      "stopped": "The run stopped. The reports below show the versions that are complete. After fixing the problem, open this action again with {{current}} as the current version.",
+      "step": {
+        "preview": "Loading the folder and the official metadata blocks...",
+        "run": "Starting...",
+        "archive": "Version {{version}}: archiving the folder and creating the drafts...",
+        "apply": "Version {{version}}: merging the official changes into the drafts...",
+        "validate": "Version {{version}}: validating the changed templates...",
+        "publish": "Version {{version}}: publishing the folder..."
+      },
+      "section": {
+        "applied": "Changes",
+        "keptArp": "Not applied, because ARP has its own value",
+        "reportOnly": "Official changes that are never applied. Check these by hand"
+      },
+      "change": {
+        "applied": {
+          "addedField": "New field {{name}} in {{parent}}",
+          "editedValue": "{{name}}: {{path}} changes from '{{from}}' to '{{to}}'",
+          "addedLiteral": "{{name}}: new value '{{label}}'",
+          "orderChanged": "The fields of {{parent}} get the official order"
+        },
+        "keptArp": {
+          "editedValue": "{{name}}: {{path}} stays '{{current}}'. The official value is now '{{to}}'",
+          "addedLiteral": "{{name}}: the value '{{label}}' is not added, the ARP field has no value list",
+          "orderChanged": "The fields of {{parent}} keep the ARP order",
+          "parentMissing": "The new field {{name}} is not added, its element {{parent}} is not in the template"
+        },
+        "reportOnly": {
+          "parentChanged": "{{name}} moved to another element",
+          "kindChanged": "{{name}} changed between field and element",
+          "multiplicityChanged": "{{name}} changed between single and multiple values",
+          "inputTypeChanged": "{{name}}: the input type changed from {{from}} to {{to}}",
+          "removedField": "{{name}} was removed",
+          "removedLiteral": "{{name}}: the value '{{label}}' was removed"
+        }
+      },
+      "error": {
+        "invalidVersion": "'{{version}}' is not a Dataverse version. Use versions like 6.10 or 6.12.1.",
+        "noTargets": "Enter at least one target version.",
+        "notAscending": "Version {{version}} is not newer than the version before it. List the target versions from oldest to newest, all newer than the current version.",
+        "mixed": "The folder must hold only published resources, or only drafts of a stopped run.",
+        "empty": "There are no templates, elements, or fields in the folder.",
+        "officialLoad": "Could not load the official metadata blocks of Dataverse {{tag}} from GitHub (status {{status}}). Check that this release exists.",
+        "convert": "Dataverse could not convert the official block {{block}} of {{tag}}. Check that the ARP Dataverse is running.",
+        "validation": "The template '{{name}}' did not pass the Dataverse validation. It was saved as a draft, so you can open and fix it.",
+        "backend": "A backend call failed. See the error message for the details.",
+        "save": "There was an error while saving an upgraded resource!<br /><br />VIEW TECHNICAL DETAILS!",
+        "create": "There was an error while creating the resource of a new field!<br /><br />VIEW TECHNICAL DETAILS!"
+      }
     },
     "extractResources": {
       "success": "The resources have been extracted.",

@@ -45,6 +45,7 @@ define([
         $scope.viewType = 'popup';
         $scope.arpMergeLoading = false;
         $scope.derivedFromPublished = true;
+        $scope.derivedFromStatusKnown = false;
         $scope.openOriginalVersionLoading = false;
         $scope.isInTheDataverseFolder = false;
 
@@ -67,9 +68,11 @@ define([
         $scope.canArpMerge= function() {
           if ($scope.form) {
             return arpService.isArpMergeButtonEnabled() &&
-                TemplateService.canArpExportTemplate() && 
-                $scope.form.hasOwnProperty('pav:derivedFrom')
-                && $scope.form.hasOwnProperty('_arpOriginalFolderId_')
+                TemplateService.canArpExportTemplate() &&
+                $scope.form.hasOwnProperty('pav:derivedFrom') &&
+                $scope.form.hasOwnProperty('_arpOriginalFolderId_') &&
+                $scope.derivedFromStatusKnown &&
+                !$scope.derivedFromPublished;
           } else {
             return false;
           }
@@ -139,6 +142,7 @@ define([
                 TemplateService.getTemplate($scope.form['pav:derivedFrom']),
                 function (response) {
                   $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
+                  $scope.derivedFromStatusKnown = true;
                 },
                 function (err) {});
           }
@@ -723,6 +727,32 @@ define([
 
         $scope.showArpMergeModal = function () {
           $scope.$broadcast('arpMergePreviewModalVisible', [$scope.form, QueryParamUtilsService.getFolderId(), CedarUser.getSort(), CedarUser.getHomeFolderId()]);
+        };
+
+        $scope.canUpdatePublished = function () {
+          if ($scope.form) {
+            return arpService.isArpUpdatePublishedButtonEnabled() &&
+                TemplateService.canArpExportTemplate() &&
+                $scope.form.hasOwnProperty('pav:derivedFrom') &&
+                $scope.form.hasOwnProperty('_arpOriginalFolderId_') &&
+                $scope.derivedFromStatusKnown &&
+                $scope.derivedFromPublished;
+          }
+          return false;
+        };
+
+        $scope.updatePublishedVersion = function () {
+          if ($scope.arpMergeButtonDisabled()) {
+            return;
+          }
+          $scope.$broadcast('arpMergePreviewModalVisible', [
+            $scope.form,
+            QueryParamUtilsService.getFolderId(),
+            CedarUser.getSort(),
+            CedarUser.getHomeFolderId(),
+            null,
+            'updatePublished'
+          ]);
         };
 
         $scope.hideFinder = function () {

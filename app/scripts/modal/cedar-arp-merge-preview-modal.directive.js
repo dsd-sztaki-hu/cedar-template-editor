@@ -51,6 +51,8 @@ define([
           vm.isDestinationSelected = isDestinationSelected;
           vm.copyDisabled = copyDisabled;
           vm.confirmRecursiveMerge = confirmRecursiveMerge;
+          vm.confirmUpdatePublished = confirmUpdatePublished;
+          vm.updatePublishedMode = false;
           vm.openDestination = openDestination;
           vm.getResourceIconClass = getResourceIconClass;
           vm.loadMore = loadMore;
@@ -370,6 +372,30 @@ define([
                 $translate.instant('ARP.merge.confirmationTitle', {title: vm.arpMergePreviewResource['schema:name'], version: vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2]}),
                 resourcesChecked ? 'ARP.recursiveMerge.alertTextKey' : 'ARP.recursiveMerge.alertTextKeyNotAllChecked',
                 'ARP.recursiveMerge.confirmTextKey'
+            );
+          }
+
+          function confirmUpdatePublished() {
+            const resourcesChecked = everyResourceChecked();
+            const version = vm.parts[0] + '.' + vm.parts[1] + '.' + vm.parts[2];
+            const originalFolderId = vm.arpMergePreviewResource['_arpOriginalFolderId_'];
+            UIMessageService.confirmedExecution(
+                async function () {
+                  $rootScope.$broadcast('arpMergeLoading');
+                  try {
+                    await arpService.updatePublishedFolder(vm.currentFolderId, originalFolderId, version);
+                    $location.url(FrontendUrlService.getFolderContents(originalFolderId));
+                    UIMessageService.flashSuccess('ARP.updatePublished.success', {version: version}, 'ARP.updatePublished.updated');
+                  } catch (error) {
+                    // The service already reported the failing request.
+                  } finally {
+                    $rootScope.$broadcast('arpMergeLoadingDone');
+                    $timeout(function () {});
+                  }
+                },
+                $translate.instant('ARP.updatePublished.confirmationTitle', {title: vm.arpMergePreviewResource['schema:name'], version: version}),
+                resourcesChecked ? 'ARP.updatePublished.alert' : 'ARP.recursiveMerge.alertTextKeyNotAllChecked',
+                'ARP.updatePublished.confirm'
             );
           }
 
@@ -1032,6 +1058,9 @@ define([
           }
 
           function canIncrement(index) {
+            if (vm.updatePublishedMode) {
+              return false;
+            }
             return vm.parts && (vm.parts.length > index) && vm.parts[index] < 1000;
           }
 
@@ -1042,6 +1071,9 @@ define([
           }
 
           function canDecrement(index) {
+            if (vm.updatePublishedMode) {
+              return false;
+            }
             if (vm.parts && vm.parts.length > index && vm.parts[index] > 0) {
               var value = vm.parts.slice();
               value[index] = value[index] > 0 ? value[index] - 1 : 0;
@@ -1050,6 +1082,9 @@ define([
           }
 
           function increment(index) {
+            if (vm.updatePublishedMode) {
+              return;
+            }
             if (vm.parts && vm.parts.length > index) {
               vm.parts[index] = vm.parts[index] < 1000 ? vm.parts[index] + 1 : vm.parts[index];
               for (var i=index+1; i<vm.parts.length; i++) {
@@ -1059,6 +1094,9 @@ define([
           }
 
           function decrement(index) {
+            if (vm.updatePublishedMode) {
+              return;
+            }
             if (vm.parts && vm.parts.length > index) {
               vm.parts[index] = vm.parts[index] > 0 ? vm.parts[index] - 1 : 0;
               if (getTotal(vm.parts) < vm.min) {
@@ -1068,6 +1106,10 @@ define([
           }
 
           function change(index, newValue, oldValue) {
+            if (vm.updatePublishedMode) {
+              vm.parts[index] = oldValue;
+              return;
+            }
             let value;
             if (isNaN(parseInt(newValue))) {
               value = parseInt(oldValue);
@@ -1094,7 +1136,19 @@ define([
             }
             return null;
           }
-          
+
+          function getCurrentVersion(resource) {
+            const currentVersion = getVersion(resource);
+            if (!currentVersion) {
+              return [0, 0, 0];
+            }
+            const parts = currentVersion.split(".");
+            if (parts.length === 3) {
+              return [parseInt(parts[0], 10), parseInt(parts[1], 10), parseInt(parts[2], 10)];
+            }
+            return null;
+          }
+
           //endregion
 
           $scope.$on('arpMergePreviewModalVisible', async function (event, params) {
@@ -1109,16 +1163,23 @@ define([
 
             if (resource) {
               vm.modalVisible = true;
+              vm.updatePublishedMode = params[5] === 'updatePublished';
               vm.arpMergePreviewResource = resource;
               vm.currentFolderId = currentFolderId;
               vm.sortOptionField = sortOptionField;
               vm.selectedDestination = null;
               vm.offset = 0;
-              vm.parts = getNextVersion(resource);
+              vm.parts = vm.updatePublishedMode ? getCurrentVersion(resource) : getNextVersion(resource);
               vm.min = getTotal(vm.parts);
               
               $timeout(async function() {
                 try {
+                  if (vm.updatePublishedMode && resource['pav:derivedFrom']) {
+                    const original = await arpService.getResourceContentById(resource['pav:derivedFrom'], getContentType(resource));
+                    const publishedVersion = (original && original['pav:version']) || getVersion(resource);
+                    vm.parts = getCurrentVersion({'pav:version': publishedVersion});
+                    vm.min = getTotal(vm.parts);
+                  }
                   await setPreviewCache(vm.currentFolderId, vm.arpMergePreviewResource['_arpOriginalFolderId_']);
                   getDestinationById(vm.currentFolderId);
                 } catch (error) {

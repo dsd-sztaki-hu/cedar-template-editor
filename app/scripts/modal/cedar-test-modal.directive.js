@@ -12,19 +12,6 @@ define([
 
       function cedarTestModalDirective(CedarUser) {
 
-        var directive = {
-          bindToController: {
-            testResource: '=',
-            modalVisible: '='
-          },
-          controller      : cedarTestModalController,
-          controllerAs    : 'test',
-          restrict        : 'E',
-          templateUrl     : 'scripts/modal/cedar-test-modal.directive.html'
-        };
-
-        return directive;
-
         cedarTestModalController.$inject = [
           '$scope',
           '$uibModal',
@@ -90,6 +77,17 @@ define([
             }
           });
         }
+
+        return {
+          bindToController: {
+            testResource: '=',
+            modalVisible: '='
+          },
+          controller      : cedarTestModalController,
+          controllerAs    : 'test',
+          restrict        : 'E',
+          templateUrl     : 'scripts/modal/cedar-test-modal.directive.html'
+        };
       }
     }
 );

@@ -1,0 +1,3114 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/Template",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "astroType",
+      "astroFacility",
+      "astroInstrument",
+      "astroObject",
+      "resolution:Spatial",
+      "resolution:Spectral",
+      "resolution:Temporal",
+      "coverage:Spectral:Bandpass",
+      "coverage:Spectral:CentralWavelength",
+      "coverage:Spectral:Wavelength",
+      "coverage:Temporal",
+      "coverage:Spatial",
+      "coverage:Depth",
+      "coverage:ObjectDensity",
+      "coverage:ObjectCount",
+      "coverage:SkyFraction",
+      "coverage:Polarization",
+      "redshiftType",
+      "resolution:Redshift",
+      "coverage:RedshiftValue"
+    ],
+    "propertyLabels": {
+      "astroType": "astroType",
+      "astroFacility": "astroFacility",
+      "astroInstrument": "astroInstrument",
+      "astroObject": "astroObject",
+      "resolution:Spatial": "resolution:Spatial",
+      "resolution:Spectral": "resolution:Spectral",
+      "resolution:Temporal": "resolution:Temporal",
+      "coverage:Spectral:Bandpass": "coverage:Spectral:Bandpass",
+      "coverage:Spectral:CentralWavelength": "coverage:Spectral:CentralWavelength",
+      "coverage:Spectral:Wavelength": "coverage:Spectral:Wavelength",
+      "coverage:Temporal": "coverage:Temporal",
+      "coverage:Spatial": "coverage:Spatial",
+      "coverage:Depth": "coverage:Depth",
+      "coverage:ObjectDensity": "coverage:ObjectDensity",
+      "coverage:ObjectCount": "coverage:ObjectCount",
+      "coverage:SkyFraction": "coverage:SkyFraction",
+      "coverage:Polarization": "coverage:Polarization",
+      "redshiftType": "redshiftType",
+      "resolution:Redshift": "resolution:Redshift",
+      "coverage:RedshiftValue": "coverage:RedshiftValue"
+    },
+    "propertyDescriptions": {
+      "astroType": "The nature or genre of the content of the files in the dataset.",
+      "astroFacility": "The observatory or facility where the data was obtained.",
+      "astroInstrument": "The instrument used to collect the data.",
+      "astroObject": "Astronomical Objects represented in the data (Given as SIMBAD recognizable names preferred).",
+      "resolution:Spatial": "The spatial (angular) resolution that is typical of the observations, in decimal degrees.",
+      "resolution:Spectral": "The spectral resolution that is typical of the observations, given as the ratio \\u03bb/\\u0394\\u03bb.",
+      "resolution:Temporal": "The temporal resolution that is typical of the observations, given in seconds.",
+      "coverage:Spectral:Bandpass": "Conventional bandpass name",
+      "coverage:Spectral:CentralWavelength": "The central wavelength of the spectral bandpass, in meters.",
+      "coverage:Spectral:Wavelength": "The minimum and maximum wavelength of the spectral bandpass.",
+      "coverage:Temporal": "Time period covered by the data.",
+      "coverage:Spatial": "The sky coverage of the data object.",
+      "coverage:Depth": "The (typical) depth coverage, or sensitivity, of the data object in Jy.",
+      "coverage:ObjectDensity": "The (typical) density of objects, catalog entries, telescope pointings, etc., on the sky, in number per square degree.",
+      "coverage:ObjectCount": "The total number of objects, catalog entries, etc., in the data object.",
+      "coverage:SkyFraction": "The fraction of the sky represented in the observations, ranging from 0 to 1.",
+      "coverage:Polarization": "The polarization coverage",
+      "redshiftType": "RedshiftType string C \"Redshift\"; or \"Optical\" or \"Radio\" definitions of Doppler velocity used in the data object.",
+      "resolution:Redshift": "The resolution in redshift (unitless) or Doppler velocity (km/s) in the data object.",
+      "coverage:RedshiftValue": "The value of the redshift (unitless) or Doppler velocity (km/s in the data object."
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "rdfs": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2000/01/rdf-schema#"
+          ]
+        },
+        "xsd": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2001/XMLSchema#"
+          ]
+        },
+        "pav": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://purl.org/pav/"
+          ]
+        },
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://schema.org/"
+          ]
+        },
+        "oslc": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://open-services.net/ns/core#"
+          ]
+        },
+        "skos": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2004/02/skos/core#"
+          ]
+        },
+        "rdfs:label": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:isBasedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "schema:name": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:description": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "pav:derivedFrom": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:createdOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "pav:createdBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:lastUpdatedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "oslc:modifiedBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "skos:notation": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "astroType": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/astroType"
+          ]
+        },
+        "astroFacility": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/astroFacility"
+          ]
+        },
+        "astroInstrument": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/astroInstrument"
+          ]
+        },
+        "astroObject": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/astroObject"
+          ]
+        },
+        "resolution:Spatial": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/resolution.Spatial"
+          ]
+        },
+        "resolution:Spectral": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/resolution.Spectral"
+          ]
+        },
+        "resolution:Temporal": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/resolution.Temporal"
+          ]
+        },
+        "coverage:Spectral:Bandpass": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Spectral.Bandpass"
+          ]
+        },
+        "coverage:Spectral:CentralWavelength": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Spectral.CentralWavelength"
+          ]
+        },
+        "coverage:Spectral:Wavelength": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Spectral.Wavelength"
+          ]
+        },
+        "coverage:Temporal": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Temporal"
+          ]
+        },
+        "coverage:Spatial": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Spatial"
+          ]
+        },
+        "coverage:Depth": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Depth"
+          ]
+        },
+        "coverage:ObjectDensity": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.ObjectDensity"
+          ]
+        },
+        "coverage:ObjectCount": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.ObjectCount"
+          ]
+        },
+        "coverage:SkyFraction": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.SkyFraction"
+          ]
+        },
+        "coverage:Polarization": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.Polarization"
+          ]
+        },
+        "redshiftType": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/redshiftType"
+          ]
+        },
+        "resolution:Redshift": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/resolution.Redshift"
+          ]
+        },
+        "coverage:RedshiftValue": {
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/coverage.RedshiftValue"
+          ]
+        }
+      },
+      "required": [
+        "xsd",
+        "pav",
+        "schema",
+        "oslc",
+        "schema:isBasedOn",
+        "schema:name",
+        "schema:description",
+        "pav:createdOn",
+        "pav:createdBy",
+        "pav:lastUpdatedOn",
+        "oslc:modifiedBy",
+        "coverage:Spectral:Wavelength",
+        "coverage:Temporal",
+        "coverage:RedshiftValue"
+      ],
+      "additionalProperties": false
+    },
+    "@id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "https://dataverse.org/schema/astrophysics/"
+          ]
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "enum": [
+              "https://dataverse.org/schema/astrophysics/"
+            ]
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "schema:isBasedOn": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schema:name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema:description": {
+      "type": "string"
+    },
+    "pav:derivedFrom": {
+      "type": "string",
+      "format": "uri"
+    },
+    "pav:createdOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "pav:createdBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "pav:lastUpdatedOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "oslc:modifiedBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "astroType": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": true,
+        "literals": [
+          {
+            "label": "Image"
+          },
+          {
+            "label": "Mosaic"
+          },
+          {
+            "label": "EventList"
+          },
+          {
+            "label": "Spectrum"
+          },
+          {
+            "label": "Cube"
+          },
+          {
+            "label": "Table"
+          },
+          {
+            "label": "Catalog"
+          },
+          {
+            "label": "LightCurve"
+          },
+          {
+            "label": "Simulation"
+          },
+          {
+            "label": "Figure"
+          },
+          {
+            "label": "Artwork"
+          },
+          {
+            "label": "Animation"
+          },
+          {
+            "label": "PrettyPicture"
+          },
+          {
+            "label": "Documentation"
+          },
+          {
+            "label": "Other"
+          },
+          {
+            "label": "Library"
+          },
+          {
+            "label": "Press Release"
+          },
+          {
+            "label": "Facsimile"
+          },
+          {
+            "label": "Historical"
+          },
+          {
+            "label": "Observation"
+          },
+          {
+            "label": "Object"
+          },
+          {
+            "label": "Value"
+          },
+          {
+            "label": "ValuePair"
+          },
+          {
+            "label": "Survey"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "astroType",
+      "schema:description": "The nature or genre of the content of the files in the dataset.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "51cbb52e-a937-3959-ba11-9f812644fb49",
+      "title": "astroType element schema",
+      "description": "astroType element schema generated by the ARP",
+      "hunDescription": "A fájlok tartalmának természete vagy fajtája az adatcsomagban.",
+      "skos:prefLabel": "Type",
+      "hunLabel": "Típus",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "astroFacility": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "astroFacility",
+      "schema:description": "The observatory or facility where the data was obtained.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "438ed1db-5eec-3230-aae6-b40a374074cf",
+      "title": "astroFacility element schema",
+      "description": "astroFacility element schema generated by the ARP",
+      "hunDescription": "Az obszervatórium vagy intézet, ahol az adatot gyűjtötték.",
+      "skos:prefLabel": "Facility",
+      "hunLabel": "Intézet",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "astroInstrument": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "astroInstrument",
+      "schema:description": "The instrument used to collect the data.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "1ffffa34-5de8-371d-8c1f-7da66e8291c7",
+      "title": "astroInstrument element schema",
+      "description": "astroInstrument element schema generated by the ARP",
+      "hunDescription": "Az adat gyűjtésére használt eszköz.",
+      "skos:prefLabel": "Instrument",
+      "hunLabel": "Eszköz",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "astroObject": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "astroObject",
+      "schema:description": "Astronomical Objects represented in the data (Given as SIMBAD recognizable names preferred).",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "1d2a4c8e-73a9-3d2d-b3f8-a5de24d303b7",
+      "title": "astroObject element schema",
+      "description": "astroObject element schema generated by the ARP",
+      "hunDescription": "Az adatcsomaghoz tartozó csillagászati objektumok (azonosítható SIMBAD név ajánlott).",
+      "skos:prefLabel": "Object",
+      "hunLabel": "Objektum",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "resolution:Spatial": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "resolution:Spatial",
+      "schema:description": "The spatial (angular) resolution that is typical of the observations, in decimal degrees.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "6a0e71f2-3584-37c1-829c-34fef8fc9835",
+      "title": "resolution:Spatial element schema",
+      "description": "resolution:Spatial element schema generated by the ARP",
+      "hunDescription": "A megfigyelésekre jellemző térbeli (szög) felbontás, decimális fokban.",
+      "skos:prefLabel": "Spatial Resolution",
+      "hunLabel": "Térbeli felbontás",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "resolution:Spectral": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "resolution:Spectral",
+      "schema:description": "The spectral resolution that is typical of the observations, given as the ratio \\u03bb/\\u0394\\u03bb.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "fd2eebcb-bc58-3244-82cc-17530bf69bbe",
+      "title": "resolution:Spectral element schema",
+      "description": "resolution:Spectral element schema generated by the ARP",
+      "hunDescription": "A megfigyelésekre jellemző spektrális felbontás, λ/Δλ arányként megadva.",
+      "skos:prefLabel": "Spectral Resolution",
+      "hunLabel": "Spektrális felbontás",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "resolution:Temporal": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "resolution:Temporal",
+      "schema:description": "The temporal resolution that is typical of the observations, given in seconds.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "7420079e-089c-3ee6-a339-ec16331f6012",
+      "title": "resolution:Temporal element schema",
+      "description": "resolution:Temporal element schema generated by the ARP",
+      "hunDescription": "A megfigyelésekre jellemző időbeli felbontás, másodpercben.",
+      "skos:prefLabel": "Time Resolution",
+      "hunLabel": "Időbeli felbontás",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:Spectral:Bandpass": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "coverage:Spectral:Bandpass",
+      "schema:description": "Conventional bandpass name",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "b193b2f4-f8cd-3f44-be1d-9e49b61264e0",
+      "title": "coverage:Spectral:Bandpass element schema",
+      "description": "coverage:Spectral:Bandpass element schema generated by the ARP",
+      "hunDescription": "Hagyományos sáváteresztő név",
+      "skos:prefLabel": "Bandpass",
+      "hunLabel": "Sáváteresztő",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:Spectral:CentralWavelength": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "coverage:Spectral:CentralWavelength",
+      "schema:description": "The central wavelength of the spectral bandpass, in meters.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "895d7387-8649-36bc-aeb1-a66d952785c1",
+      "title": "coverage:Spectral:CentralWavelength element schema",
+      "description": "coverage:Spectral:CentralWavelength element schema generated by the ARP",
+      "hunDescription": "A spektrális sáváteresztő központi hullámhossza, méterben.",
+      "skos:prefLabel": "Central Wavelength (m)",
+      "hunLabel": "Központi hullámhossz (m)",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "watermark": "Enter a floating-point number.",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:Spectral:Wavelength": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+        "@context": {
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "pav": "http://purl.org/pav/",
+          "bibo": "http://purl.org/ontology/bibo/",
+          "oslc": "http://open-services.net/ns/core#",
+          "schema": "http://schema.org/",
+          "schema:name": {
+            "@type": "xsd:string"
+          },
+          "schema:description": {
+            "@type": "xsd:string"
+          },
+          "pav:createdOn": {
+            "@type": "xsd:dateTime"
+          },
+          "pav:createdBy": {
+            "@type": "@id"
+          },
+          "pav:lastUpdatedOn": {
+            "@type": "xsd:dateTime"
+          },
+          "oslc:modifiedBy": {
+            "@type": "@id"
+          }
+        },
+        "type": "object",
+        "_ui": {
+          "order": [
+            "coverage:Spectral:MinimumWavelength",
+            "coverage:Spectral:MaximumWavelength"
+          ],
+          "propertyLabels": {
+            "coverage:Spectral:MinimumWavelength": "coverage:Spectral:MinimumWavelength",
+            "coverage:Spectral:MaximumWavelength": "coverage:Spectral:MaximumWavelength"
+          },
+          "propertyDescriptions": {
+            "coverage:Spectral:MinimumWavelength": "The minimum wavelength of the spectral bandpass, in meters.",
+            "coverage:Spectral:MaximumWavelength": "The maximum wavelength of the spectral bandpass, in meters."
+          }
+        },
+        "properties": {
+          "@context": {
+            "type": "object",
+            "properties": {
+              "coverage:Spectral:MinimumWavelength": {
+                "enum": [
+                  "https://dataverse.org/schema/astrophysics/coverage.Spectral.MinimumWavelength"
+                ]
+              },
+              "coverage:Spectral:MaximumWavelength": {
+                "enum": [
+                  "https://dataverse.org/schema/astrophysics/coverage.Spectral.MaximumWavelength"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": []
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "@type": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "coverage:Spectral:MinimumWavelength": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "coverage:Spectral:MinimumWavelength",
+            "schema:description": "The minimum wavelength of the spectral bandpass, in meters.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "a05ff729-989a-3e0d-bce8-850bcb55cae1",
+            "title": "coverage:Spectral:MinimumWavelength element schema",
+            "description": "coverage:Spectral:MinimumWavelength element schema generated by the ARP",
+            "hunDescription": "A spektrális sáváteresztő minimum hullámhossza, méterben.",
+            "skos:prefLabel": "Minimum (m)",
+            "hunLabel": "Minimum (m)",
+            "_arp": {
+              "dataverse": {
+                "watermark": "Enter a floating-point number.",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          },
+          "coverage:Spectral:MaximumWavelength": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "coverage:Spectral:MaximumWavelength",
+            "schema:description": "The maximum wavelength of the spectral bandpass, in meters.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "97edfc9b-9fd0-3f35-af79-57684900aee9",
+            "title": "coverage:Spectral:MaximumWavelength element schema",
+            "description": "coverage:Spectral:MaximumWavelength element schema generated by the ARP",
+            "hunDescription": "A spektrális sáváteresztő maximum hullámhossza, méterben.",
+            "skos:prefLabel": "Maximum (m)",
+            "hunLabel": "Maximum (m)",
+            "_arp": {
+              "dataverse": {
+                "watermark": "Enter a floating-point number.",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          }
+        },
+        "schema:name": "coverage:Spectral:Wavelength",
+        "schema:description": "The minimum and maximum wavelength of the spectral bandpass.",
+        "required": [
+          "@context",
+          "@id",
+          "coverage:Spectral:MinimumWavelength",
+          "coverage:Spectral:MaximumWavelength"
+        ],
+        "pav:createdOn": null,
+        "pav:createdBy": null,
+        "pav:lastUpdatedOn": null,
+        "oslc:modifiedBy": null,
+        "schema:schemaVersion": "1.6.0",
+        "additionalProperties": false,
+        "pav:version": "6.9.0",
+        "bibo:status": "bibo:published",
+        "@id": "https://repo.test/elements/9",
+        "title": "coverage:Spectral:Wavelength element schema",
+        "description": "coverage:Spectral:Wavelength element schema generated by the ARP",
+        "schema:identifier": "coverage:Spectral:Wavelength",
+        "hunDescription": "A spektrális sáváteresztő minimum és maximum hullámhossza.",
+        "skos:prefLabel": "Wavelength Range",
+        "hunLabel": "Hullámhossz tartomány",
+        "minItems": 1,
+        "maxItems ": 0,
+        "_valueConstraints": {
+          "requiredValue": false
+        },
+        "_arp": {
+          "dataverse": {
+            "watermark": "Enter a floating-point number.",
+            "advancedSearchField": false,
+            "facetable": false,
+            "displayoncreate": false
+          }
+        }
+      }
+    },
+    "coverage:Temporal": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+        "@context": {
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "pav": "http://purl.org/pav/",
+          "bibo": "http://purl.org/ontology/bibo/",
+          "oslc": "http://open-services.net/ns/core#",
+          "schema": "http://schema.org/",
+          "schema:name": {
+            "@type": "xsd:string"
+          },
+          "schema:description": {
+            "@type": "xsd:string"
+          },
+          "pav:createdOn": {
+            "@type": "xsd:dateTime"
+          },
+          "pav:createdBy": {
+            "@type": "@id"
+          },
+          "pav:lastUpdatedOn": {
+            "@type": "xsd:dateTime"
+          },
+          "oslc:modifiedBy": {
+            "@type": "@id"
+          }
+        },
+        "type": "object",
+        "_ui": {
+          "order": [
+            "coverage:Temporal:StartTime",
+            "coverage:Temporal:StopTime"
+          ],
+          "propertyLabels": {
+            "coverage:Temporal:StartTime": "coverage:Temporal:StartTime",
+            "coverage:Temporal:StopTime": "coverage:Temporal:StopTime"
+          },
+          "propertyDescriptions": {
+            "coverage:Temporal:StartTime": "Dataset Start Date",
+            "coverage:Temporal:StopTime": "Dataset End Date"
+          }
+        },
+        "properties": {
+          "@context": {
+            "type": "object",
+            "properties": {
+              "coverage:Temporal:StartTime": {
+                "enum": [
+                  "https://dataverse.org/schema/astrophysics/coverage.Temporal.StartTime"
+                ]
+              },
+              "coverage:Temporal:StopTime": {
+                "enum": [
+                  "https://dataverse.org/schema/astrophysics/coverage.Temporal.StopTime"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": []
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "@type": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "coverage:Temporal:StartTime": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "temporal",
+              "temporalGranularity": "day"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "temporalType": "xsd:date"
+            },
+            "properties": {
+              "@type": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value"
+            ],
+            "schema:name": "coverage:Temporal:StartTime",
+            "schema:description": "Dataset Start Date",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "4d9e9bbf-b34f-3c86-a336-cef808eecda2",
+            "title": "coverage:Temporal:StartTime element schema",
+            "description": "coverage:Temporal:StartTime element schema generated by the ARP",
+            "hunDescription": "Adatcsomag kezdődátuma",
+            "skos:prefLabel": "Start",
+            "hunLabel": "Kezdődátum",
+            "_arp": {
+              "dataverse": {
+                "watermark": "YYYY-MM-DD",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          },
+          "coverage:Temporal:StopTime": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "temporal",
+              "temporalGranularity": "day"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "temporalType": "xsd:date"
+            },
+            "properties": {
+              "@type": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value"
+            ],
+            "schema:name": "coverage:Temporal:StopTime",
+            "schema:description": "Dataset End Date",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "dba65e92-3910-3ff8-b284-5964937352f6",
+            "title": "coverage:Temporal:StopTime element schema",
+            "description": "coverage:Temporal:StopTime element schema generated by the ARP",
+            "hunDescription": "Adatcsomag végdátuma",
+            "skos:prefLabel": "End",
+            "hunLabel": "Végdátum",
+            "_arp": {
+              "dataverse": {
+                "watermark": "YYYY-MM-DD",
+                "advancedSearchField": true,
+                "facetable": true,
+                "displayoncreate": false
+              }
+            }
+          }
+        },
+        "schema:name": "coverage:Temporal",
+        "schema:description": "Time period covered by the data.",
+        "required": [
+          "@context",
+          "@id",
+          "coverage:Temporal:StartTime",
+          "coverage:Temporal:StopTime"
+        ],
+        "pav:createdOn": null,
+        "pav:createdBy": null,
+        "pav:lastUpdatedOn": null,
+        "oslc:modifiedBy": null,
+        "schema:schemaVersion": "1.6.0",
+        "additionalProperties": false,
+        "pav:version": "6.9.0",
+        "bibo:status": "bibo:published",
+        "@id": "https://repo.test/elements/10",
+        "title": "coverage:Temporal element schema",
+        "description": "coverage:Temporal element schema generated by the ARP",
+        "schema:identifier": "coverage:Temporal",
+        "hunDescription": "Az adatok által lefedett időperiódus.",
+        "skos:prefLabel": "Dataset Date Range",
+        "hunLabel": "Az adatcsomag időtartománya",
+        "minItems": 1,
+        "maxItems ": 0,
+        "_valueConstraints": {
+          "requiredValue": false
+        },
+        "_arp": {
+          "dataverse": {
+            "advancedSearchField": false,
+            "facetable": false,
+            "displayoncreate": false
+          }
+        }
+      }
+    },
+    "coverage:Spatial": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "coverage:Spatial",
+      "schema:description": "The sky coverage of the data object.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "925f4300-fa2b-3f10-a80a-6f53b1b424d2",
+      "title": "coverage:Spatial element schema",
+      "description": "coverage:Spatial element schema generated by the ARP",
+      "hunDescription": "Az ég ezen objektum általi lefedettsége.",
+      "skos:prefLabel": "Sky Coverage",
+      "hunLabel": "Égtakarás",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:Depth": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "coverage:Depth",
+      "schema:description": "The (typical) depth coverage, or sensitivity, of the data object in Jy.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "bd3be644-3e93-353e-8347-fbf226d33208",
+      "title": "coverage:Depth element schema",
+      "description": "coverage:Depth element schema generated by the ARP",
+      "hunDescription": "Az adat objektum (tipikus) mélységi lefedettsége vagy érzékenysége Jy-ben.",
+      "skos:prefLabel": "Depth Coverage",
+      "hunLabel": "Mélységi fedés",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Enter a floating-point number.",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:ObjectDensity": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "coverage:ObjectDensity",
+      "schema:description": "The (typical) density of objects, catalog entries, telescope pointings, etc., on the sky, in number per square degree.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "5ffe07fe-ae45-3c00-aa5a-58e0bd04128c",
+      "title": "coverage:ObjectDensity element schema",
+      "description": "coverage:ObjectDensity element schema generated by the ARP",
+      "hunDescription": "Az égbolton megjelenő tárgyak (tipikus) sűrűsége, katalógus bejegyzései, távcső mutatói stb., négyzetfokonkénti számban.",
+      "skos:prefLabel": "Object Density",
+      "hunLabel": "Objektum sűrűsége",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Enter a floating-point number.",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:ObjectCount": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "coverage:ObjectCount",
+      "schema:description": "The total number of objects, catalog entries, etc., in the data object.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "1c9bb5cb-d5c2-30da-9edd-5091f5551780",
+      "title": "coverage:ObjectCount element schema",
+      "description": "coverage:ObjectCount element schema generated by the ARP",
+      "hunDescription": "Objektumok és katalógus bejegyzések összesített száma az adatcsomagban.",
+      "skos:prefLabel": "Object Count",
+      "hunLabel": "Objektumok száma",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Enter an integer.",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:SkyFraction": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "coverage:SkyFraction",
+      "schema:description": "The fraction of the sky represented in the observations, ranging from 0 to 1.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "68498c01-a1b1-3d64-ad4b-4b628581cba8",
+      "title": "coverage:SkyFraction element schema",
+      "description": "coverage:SkyFraction element schema generated by the ARP",
+      "hunDescription": "Az ég megfigyelt szelete, 0 - 1 között.",
+      "skos:prefLabel": "Fraction of Sky",
+      "hunLabel": "Égrész",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Enter a floating-point number.",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:Polarization": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "coverage:Polarization",
+      "schema:description": "The polarization coverage",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "cb2c5474-7369-33dd-aba7-41c8e06a7b80",
+      "title": "coverage:Polarization element schema",
+      "description": "coverage:Polarization element schema generated by the ARP",
+      "hunDescription": "Polarizációs fedés",
+      "skos:prefLabel": "Polarization",
+      "hunLabel": "Polarizáció",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "redshiftType": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "redshiftType",
+      "schema:description": "RedshiftType string C \"Redshift\"; or \"Optical\" or \"Radio\" definitions of Doppler velocity used in the data object.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "93273b48-39a0-3b76-b407-369da35c4f5c",
+      "title": "redshiftType element schema",
+      "description": "redshiftType element schema generated by the ARP",
+      "hunDescription": "Az adatobjektumnál használt vöröseltolódás típus karkterlánc C \"vöröseltolódás\", \"optikai\" vagy \"radio\", amivel az adatobjektumok a Dopplersebességet definiálják.",
+      "skos:prefLabel": "RedshiftType",
+      "hunLabel": "Vöröseltolódás típusa",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "resolution:Redshift": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "resolution:Redshift",
+      "schema:description": "The resolution in redshift (unitless) or Doppler velocity (km/s) in the data object.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "6b623965-141d-3471-b740-4237fd4e1cc7",
+      "title": "resolution:Redshift element schema",
+      "description": "resolution:Redshift element schema generated by the ARP",
+      "hunDescription": "A felbontás vöröseltolódásban (mértékegység nélkül), vagy Dopplersebességben (km/s) az adatobjektumban.",
+      "skos:prefLabel": "Redshift Resolution",
+      "hunLabel": "Vöröseltolódás felbontása",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Enter a floating-point number.",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "coverage:RedshiftValue": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+        "@context": {
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "pav": "http://purl.org/pav/",
+          "bibo": "http://purl.org/ontology/bibo/",
+          "oslc": "http://open-services.net/ns/core#",
+          "schema": "http://schema.org/",
+          "schema:name": {
+            "@type": "xsd:string"
+          },
+          "schema:description": {
+            "@type": "xsd:string"
+          },
+          "pav:createdOn": {
+            "@type": "xsd:dateTime"
+          },
+          "pav:createdBy": {
+            "@type": "@id"
+          },
+          "pav:lastUpdatedOn": {
+            "@type": "xsd:dateTime"
+          },
+          "oslc:modifiedBy": {
+            "@type": "@id"
+          }
+        },
+        "type": "object",
+        "_ui": {
+          "order": [
+            "coverage:Redshift:MinimumValue",
+            "coverage:Redshift:MaximumValue"
+          ],
+          "propertyLabels": {
+            "coverage:Redshift:MinimumValue": "coverage:Redshift:MinimumValue",
+            "coverage:Redshift:MaximumValue": "coverage:Redshift:MaximumValue"
+          },
+          "propertyDescriptions": {
+            "coverage:Redshift:MinimumValue": "The minimum value of the redshift (unitless) or Doppler velocity (km/s in the data object.",
+            "coverage:Redshift:MaximumValue": "The maximum value of the redshift (unitless) or Doppler velocity (km/s in the data object."
+          }
+        },
+        "properties": {
+          "@context": {
+            "type": "object",
+            "properties": {
+              "coverage:Redshift:MinimumValue": {
+                "enum": [
+                  "https://dataverse.org/schema/astrophysics/coverage.Redshift.MinimumValue"
+                ]
+              },
+              "coverage:Redshift:MaximumValue": {
+                "enum": [
+                  "https://dataverse.org/schema/astrophysics/coverage.Redshift.MaximumValue"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": []
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "@type": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "coverage:Redshift:MinimumValue": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "coverage:Redshift:MinimumValue",
+            "schema:description": "The minimum value of the redshift (unitless) or Doppler velocity (km/s in the data object.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "01aabb05-a762-3dbc-8669-4e5285ff635a",
+            "title": "coverage:Redshift:MinimumValue element schema",
+            "description": "coverage:Redshift:MinimumValue element schema generated by the ARP",
+            "hunDescription": "A vöröseltolódás minimális értéke (mértékegység nélkül), vagy Dopplersebességben (km/s) az adatobjektumban.",
+            "skos:prefLabel": "Minimum",
+            "hunLabel": "Minimum",
+            "_arp": {
+              "dataverse": {
+                "watermark": "Enter a floating-point number.",
+                "advancedSearchField": false,
+                "facetable": false,
+                "displayoncreate": false
+              }
+            }
+          },
+          "coverage:Redshift:MaximumValue": {
+            "@type": "https://schema.metadatacenter.org/core/TemplateField",
+            "@context": {
+              "xsd": "http://www.w3.org/2001/XMLSchema#",
+              "pav": "http://purl.org/pav/",
+              "bibo": "http://purl.org/ontology/bibo/",
+              "oslc": "http://open-services.net/ns/core#",
+              "schema": "http://schema.org/",
+              "skos": "http://www.w3.org/2004/02/skos/core#",
+              "schema:name": {
+                "@type": "xsd:string"
+              },
+              "schema:description": {
+                "@type": "xsd:string"
+              },
+              "skos:prefLabel": {
+                "@type": "xsd:string"
+              },
+              "skos:altLabel": {
+                "@type": "xsd:string"
+              },
+              "pav:createdOn": {
+                "@type": "xsd:dateTime"
+              },
+              "pav:createdBy": {
+                "@type": "@id"
+              },
+              "pav:lastUpdatedOn": {
+                "@type": "xsd:dateTime"
+              },
+              "oslc:modifiedBy": {
+                "@type": "@id"
+              }
+            },
+            "type": "object",
+            "_ui": {
+              "inputType": "numeric"
+            },
+            "_valueConstraints": {
+              "requiredValue": false,
+              "numberType": "xsd:double"
+            },
+            "properties": {
+              "@type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "@value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "rdfs:label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "@value",
+              "@type"
+            ],
+            "schema:name": "coverage:Redshift:MaximumValue",
+            "schema:description": "The maximum value of the redshift (unitless) or Doppler velocity (km/s in the data object.",
+            "pav:createdOn": null,
+            "pav:createdBy": null,
+            "pav:lastUpdatedOn": null,
+            "oslc:modifiedBy": null,
+            "schema:schemaVersion": "1.6.0",
+            "additionalProperties": false,
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "@id": "06219b16-beeb-32cf-8cf4-c16dcd3e29b0",
+            "title": "coverage:Redshift:MaximumValue element schema",
+            "description": "coverage:Redshift:MaximumValue element schema generated by the ARP",
+            "hunDescription": "A vöröseltolódás maximális értéke (mértékegység nélkül), vagy Dopplersebességben (km/s) az adatobjektumban.",
+            "skos:prefLabel": "Maximum",
+            "hunLabel": "Maximum",
+            "_arp": {
+              "dataverse": {
+                "watermark": "Enter a floating-point number.",
+                "advancedSearchField": false,
+                "facetable": false,
+                "displayoncreate": false
+              }
+            }
+          }
+        },
+        "schema:name": "coverage:RedshiftValue",
+        "schema:description": "The value of the redshift (unitless) or Doppler velocity (km/s in the data object.",
+        "required": [
+          "@context",
+          "@id",
+          "coverage:Redshift:MinimumValue",
+          "coverage:Redshift:MaximumValue"
+        ],
+        "pav:createdOn": null,
+        "pav:createdBy": null,
+        "pav:lastUpdatedOn": null,
+        "oslc:modifiedBy": null,
+        "schema:schemaVersion": "1.6.0",
+        "additionalProperties": false,
+        "pav:version": "6.9.0",
+        "bibo:status": "bibo:published",
+        "@id": "https://repo.test/elements/11",
+        "title": "coverage:RedshiftValue element schema",
+        "description": "coverage:RedshiftValue element schema generated by the ARP",
+        "schema:identifier": "coverage:RedshiftValue",
+        "hunDescription": "A Vöröseltolódás értéke (mértékegység nélkül), vagy Dopplersebességben (km/s) az adatobjektumban.",
+        "skos:prefLabel": "Redshift Value",
+        "hunLabel": "Vöröseltolódás mértéke",
+        "minItems": 1,
+        "maxItems ": 0,
+        "_valueConstraints": {
+          "requiredValue": false
+        },
+        "_arp": {
+          "dataverse": {
+            "watermark": "Enter a floating-point number.",
+            "advancedSearchField": false,
+            "facetable": false,
+            "displayoncreate": false
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "schema:isBasedOn",
+    "schema:name",
+    "schema:description",
+    "pav:createdOn",
+    "pav:createdBy",
+    "pav:lastUpdatedOn",
+    "oslc:modifiedBy",
+    "astroType",
+    "astroFacility",
+    "astroInstrument",
+    "astroObject",
+    "resolution:Spatial",
+    "resolution:Spectral",
+    "resolution:Temporal",
+    "coverage:Spectral:Bandpass",
+    "coverage:Spectral:CentralWavelength",
+    "coverage:Spectral:Wavelength",
+    "coverage:Temporal",
+    "coverage:Spatial",
+    "coverage:Depth",
+    "coverage:ObjectDensity",
+    "coverage:ObjectCount",
+    "coverage:SkyFraction",
+    "coverage:Polarization",
+    "redshiftType",
+    "resolution:Redshift",
+    "coverage:RedshiftValue"
+  ],
+  "schema:name": "Astronomy and Astrophysics Metadata",
+  "schema:description": "",
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.12.1",
+  "bibo:status": "bibo:published",
+  "title": "astrophysics template schema",
+  "description": "astrophysics template schema generated by ARP",
+  "hunName": "Csillagászati és asztrofizikai metaadatok",
+  "@id": "https://repo.test/templates/154",
+  "pav:derivedFrom": "https://repo.test/templates/103",
+  "schema:identifier": "astrophysics"
+}

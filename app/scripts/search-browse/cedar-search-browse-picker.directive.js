@@ -31,7 +31,8 @@ define([
           'UIProgressService',
           'CONST',
           'MessagingService',
-          'arpService'
+          'arpService',
+          'arpDataverseUpgradeService'
         ];
 
         function cedarSearchBrowsePickerController($location, $timeout, $scope, $rootScope, $window, $translate, CedarUser,
@@ -39,7 +40,8 @@ define([
                                                    UIMessageService, UISettingsService, QueryParamUtilsService,
                                                    AuthorizedBackendService,
                                                    FrontendUrlService,
-                                                   UIProgressService, CONST, MessagingService, arpService) {
+                                                   UIProgressService, CONST, MessagingService, arpService,
+                                                   arpDataverseUpgradeService) {
           const vm = this;
 
           vm.breadcrumbName = breadcrumbName;
@@ -52,6 +54,9 @@ define([
           vm.totalCount = null;
           vm.deleteResource = deleteResource;
           vm.arpDelete = arpDelete;
+          vm.arpPublishAll = arpPublishAll;
+          vm.arpBumpVersions = arpBumpVersions;
+          vm.arpDataverseUpgrade = arpDataverseUpgrade;
           vm.hasDerivedFrom = false;
           vm.isArpCopyButtonEnabled = arpService.isArpCopyButtonEnabled();
           vm.isArpDownloadZipButtonEnabled = arpService.isArpDownloadZipButtonEnabled();
@@ -80,6 +85,8 @@ define([
           vm.arpCopyModalVisible = false;
           vm.moveModalVisible = false;
           vm.publishModalVisible = false;
+          vm.arpPublishAllModalVisible = false;
+          vm.arpDataverseUpgradeModalVisible = false;
           vm.shareModalVisible = false;
           vm.renameModalVisible = false;
           vm.newFolderModalVisible = false;
@@ -1798,6 +1805,105 @@ define([
                   'DASHBOARD.delete.confirm.' + r.resourceType,
                   'GENERIC.YesDeleteIt'
               );
+            }
+          }
+
+          async function arpPublishAll(resource) {
+            const folder = resource || getSelectedNode();
+            if (!folder || folder.resourceType !== CONST.resourceType.FOLDER) {
+              return;
+            }
+            try {
+              const inspection = await arpService.inspectFolderForPublishAll(folder['@id']);
+              if (inspection.blocked === 'published') {
+                UIMessageService.flashWarning('ARP.publishAll.publishedError',
+                    {folderName: folder['schema:name']},
+                    'ARP.publishAll.cannotPublish');
+                vm.arpPublishAllModalVisible = true;
+                $scope.$broadcast('arpPublishAllBlockedModalVisible', [folder, inspection.publishedResources]);
+                $scope.$applyAsync();
+                return;
+              }
+              if (inspection.blocked === 'empty') {
+                UIMessageService.flashWarning('ARP.publishAll.emptyError',
+                    {folderName: folder['schema:name']},
+                    'ARP.publishAll.cannotPublish');
+                return;
+              }
+              vm.arpPublishAllModalVisible = true;
+              $scope.$broadcast('arpPublishAllModalVisible', [folder, inspection.resources, inspection.minimumVersion]);
+              $scope.$applyAsync();
+            } catch (error) {
+              // getFolderContents already reports the backend error
+            }
+          }
+
+          async function arpBumpVersions(resource) {
+            const folder = resource || getSelectedNode();
+            if (!folder || folder.resourceType !== CONST.resourceType.FOLDER) {
+              return;
+            }
+            try {
+              const inspection = await arpService.inspectFolderForBump(folder['@id']);
+              if (inspection.blocked === 'unpublished') {
+                UIMessageService.flashWarning('ARP.bumpVersions.unpublishedError',
+                    {folderName: folder['schema:name']},
+                    'ARP.bumpVersions.cannotBump');
+                return;
+              }
+              if (inspection.blocked === 'empty') {
+                UIMessageService.flashWarning('ARP.bumpVersions.emptyError',
+                    {folderName: folder['schema:name']},
+                    'ARP.bumpVersions.cannotBump');
+                return;
+              }
+              UIMessageService.confirmedExecution(
+                  async function () {
+                    UIProgressService.start();
+                    try {
+                      await arpService.bumpVersions(folder['@id'], CedarUser.getHomeFolderId(), inspection);
+                      UIMessageService.flashSuccess('ARP.bumpVersions.success', {
+                        folderName: folder['schema:name'],
+                        version: inspection.highestVersion
+                      }, 'ARP.bumpVersions.bumped');
+                      $scope.$broadcast('refreshWorkspace', [folder]);
+                      $scope.$applyAsync();
+                    } catch (error) {
+                      // folder and draft calls already report the backend error
+                    } finally {
+                      UIProgressService.complete();
+                    }
+                  },
+                  $translate.instant('ARP.bumpVersions.confirmTitle', {folderName: folder['schema:name']}),
+                  $translate.instant('ARP.bumpVersions.confirm', {
+                    folderName: folder['schema:name'],
+                    version: inspection.highestVersion
+                  }),
+                  'ARP.bumpVersions.confirmButton'
+              );
+            } catch (error) {
+              // getFolderContents already reports the backend error
+            }
+          }
+
+          // Opens the modal that upgrades the folder to newer Dataverse versions
+          async function arpDataverseUpgrade(resource) {
+            const folder = resource || getSelectedNode();
+            if (!folder || folder.resourceType !== CONST.resourceType.FOLDER) {
+              return;
+            }
+            try {
+              const start = await arpDataverseUpgradeService.inspectStart(folder['@id']);
+              if (start.state === 'mixed' || start.state === 'empty') {
+                UIMessageService.flashWarning('ARP.dataverseUpgrade.error.' + start.state, {},
+                    'ARP.dataverseUpgrade.cannotUpgrade');
+                return;
+              }
+              vm.arpDataverseUpgradeModalVisible = true;
+              $scope.$broadcast('arpDataverseUpgradeModalVisible', [folder, start]);
+              $scope.$applyAsync();
+            } catch (error) {
+              // getAllFolderContents already reports the backend error
             }
           }
 

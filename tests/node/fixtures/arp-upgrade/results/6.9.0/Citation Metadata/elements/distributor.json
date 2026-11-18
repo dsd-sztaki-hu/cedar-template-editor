@@ -1,0 +1,635 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "distributorName",
+      "distributorAffiliation",
+      "distributorAbbreviation",
+      "distributorURL",
+      "distributorLogoURL"
+    ],
+    "propertyLabels": {
+      "distributorName": "distributorName",
+      "distributorAffiliation": "distributorAffiliation",
+      "distributorAbbreviation": "distributorAbbreviation",
+      "distributorURL": "distributorURL",
+      "distributorLogoURL": "distributorLogoURL"
+    },
+    "propertyDescriptions": {
+      "distributorName": "The name of the entity, e.g. the person's name or the name of an organization",
+      "distributorAffiliation": "The name of the entity affiliated with the distributor, e.g. an organization's name",
+      "distributorAbbreviation": "The distributor's abbreviated name (e.g. IQSS, ICPSR)",
+      "distributorURL": "The URL of the distributor's webpage",
+      "distributorLogoURL": "The URL of the distributor's logo image, used to show the image on the Dataset's page"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "distributorName": {
+          "enum": [
+            "https://dataverse.org/schema/citation/distributorName"
+          ]
+        },
+        "distributorAffiliation": {
+          "enum": [
+            "https://dataverse.org/schema/citation/distributorAffiliation"
+          ]
+        },
+        "distributorAbbreviation": {
+          "enum": [
+            "https://dataverse.org/schema/citation/distributorAbbreviation"
+          ]
+        },
+        "distributorURL": {
+          "enum": [
+            "https://dataverse.org/schema/citation/distributorURL"
+          ]
+        },
+        "distributorLogoURL": {
+          "enum": [
+            "https://dataverse.org/schema/citation/distributorLogoURL"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "distributorName": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "distributorName",
+      "schema:description": "The name of the entity, e.g. the person's name or the name of an organization",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "6d2c2980-c830-3c44-93c7-a6917d3ea63e",
+      "title": "distributorName element schema",
+      "description": "distributorName element schema generated by the ARP",
+      "hunDescription": "A terjesztő neve.",
+      "skos:prefLabel": "Name",
+      "hunLabel": "Terjesztő",
+      "_arp": {
+        "dataverse": {
+          "watermark": "1) FamilyName, GivenName or 2) Organization",
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "distributorAffiliation": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "distributorAffiliation",
+      "schema:description": "The name of the entity affiliated with the distributor, e.g. an organization's name",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "855c67dd-d049-3318-9761-d1018d9fa73d",
+      "title": "distributorAffiliation element schema",
+      "description": "distributorAffiliation element schema generated by the ARP",
+      "hunDescription": "A szervezet, amelyhez a terjesztő tartozik.",
+      "skos:prefLabel": "Affiliation",
+      "hunLabel": "Intézmény",
+      "_arp": {
+        "dataverse": {
+          "watermark": "Organization XYZ",
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "distributorAbbreviation": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "distributorAbbreviation",
+      "schema:description": "The distributor's abbreviated name (e.g. IQSS, ICPSR)",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "c5b32123-b221-308d-86c9-294dffce9f51",
+      "title": "distributorAbbreviation element schema",
+      "description": "distributorAbbreviation element schema generated by the ARP",
+      "hunDescription": "A terjesztőre vonatkozó közismert rövidítés. (pl. IQSS, ICPSR).",
+      "skos:prefLabel": "Abbreviated Name",
+      "hunLabel": "Rövidítés",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "distributorURL": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "link"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "schema:name": "distributorURL",
+      "schema:description": "The URL of the distributor's webpage",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "cd824cab-e727-3b82-8618-c855fef14870",
+      "title": "distributorURL element schema",
+      "description": "distributorURL element schema generated by the ARP",
+      "hunDescription": "A terjesztő URL-je a személy vagy szervezet internetes profiljára mutat, ha van ilyen. A készítő oldalának abszolút URL-jét kell beírni, például http://www.my.org.",
+      "skos:prefLabel": "URL",
+      "hunLabel": "URL",
+      "_arp": {
+        "dataverse": {
+          "watermark": "https://",
+          "displayFormat": "<a href=\"#VALUE\" target=\"_blank\" rel=\"noopener\">#VALUE</a>",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "distributorLogoURL": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "link"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "schema:name": "distributorLogoURL",
+      "schema:description": "The URL of the distributor's logo image, used to show the image on the Dataset's page",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "7fa080e3-b5c5-353a-9c51-79b22a5a7450",
+      "title": "distributorLogoURL element schema",
+      "description": "distributorLogoURL element schema generated by the ARP",
+      "hunDescription": "A terjesztő weben elérhető logójának URL-je. Abszolút URL-t kell ide írni, például http://www.my.org/images/logo.gif.",
+      "skos:prefLabel": "Logo URL",
+      "hunLabel": "Logó URL",
+      "_arp": {
+        "dataverse": {
+          "watermark": "https://",
+          "displayFormat": "<img src=\"#VALUE\" alt=\"#NAME\" class=\"metadata-logo\"/><br/>",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    }
+  },
+  "schema:name": "distributor",
+  "schema:description": "The entity, such as a person or organization, designated to generate copies of the Dataset, including any editions or revisions",
+  "required": [
+    "@context",
+    "@id",
+    "distributorName",
+    "distributorAffiliation",
+    "distributorAbbreviation",
+    "distributorURL",
+    "distributorLogoURL"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.9.0",
+  "bibo:status": "bibo:published",
+  "@id": "https://repo.test/elements/28",
+  "title": "distributor element schema",
+  "description": "distributor element schema generated by the ARP",
+  "schema:identifier": "distributor",
+  "hunDescription": "Az a szervezet, amelyet a szerző az általa készített anyagok sokszorosításával bízott meg, beleértve a szükséges módosításokat, javításokat.",
+  "skos:prefLabel": "Distributor",
+  "hunLabel": "Terjesztő",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": false
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": false
+    }
+  }
+}

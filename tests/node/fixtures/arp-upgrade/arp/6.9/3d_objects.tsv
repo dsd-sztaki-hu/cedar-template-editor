@@ -1,0 +1,45 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI
+	3dobjects		3D Objects Metadata	https://dataverse.org/schema/3dobjects/
+#datasetField	name	title	description	watermark	fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	3d3DTechnique	3D Technique	The technique used for capturing the 3D data		TEXT	0	#VALUE	true	true	false	true	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3d3DTechnique
+	3dEquipment	Equipment	The equipment used for capturing the 3D data		TEXT	1	#VALUE	true	false	false	false	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dEquipment
+	3dLightingSetup	Lighting Setup	The lighting used while capturing the 3D data		TEXT	2	#VALUE	true	true	false	true	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dLightingSetup
+	3dMasterFilePolygonCount	Master File Polygon Count	The high-resolution polygon count		TEXT	3	#VALUE	true	false	false	false	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dMasterFilePolygonCount
+	3dExportedFilePolygonCount	Exported File Polygon Count	The exported mesh polygon count		TEXT	4	#VALUE	true	false	true	false	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dExportedFilePolygonCount
+	3dExportedFileFormat	Exported File Format	The format of the exported mesh		TEXT	5	#VALUE	true	true	false	true	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dExportedFileFormat
+	3dAltText	Alt-Text	A physical description of the object modeled		TEXTBOX	6	#VALUE	false	false	false	false	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dAltText
+	3dMaterialComposition	Material Composition	The material used to create the object, e.g. stone		TEXT	7	#VALUE	true	false	true	true	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dMaterialComposition
+	3dObjectDimensions	Object Dimensions	The general measurements of the physical object		NONE	8	;	false	false	false	false	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dObjectDimensions
+	3dLength	Length	The rough length of the object		TEXT	9	Length: #VALUE	false	false	false	false	false	false	3dObjectDimensions	3dobjects	https://dataverse.org/schema/3dobjects/3dLength
+	3dWidth	Width	The rough width of the object		TEXT	10	Width: #VALUE	false	false	false	false	false	false	3dObjectDimensions	3dobjects	https://dataverse.org/schema/3dobjects/3dWidth
+	3dHeight	Height	The rough height of the object		TEXT	11	Height: #VALUE	false	false	false	false	false	false	3dObjectDimensions	3dobjects	https://dataverse.org/schema/3dobjects/3dHeight
+	3dWeight	Weight	The rough weight of the object		TEXT	12	Weight:#VALUE	false	false	false	false	false	false	3dObjectDimensions	3dobjects	https://dataverse.org/schema/3dobjects/3dWeight
+	3dUnit	Unit	The unit of measurement used for the object dimensions		TEXT	13	Unit: #VALUE	false	true	false	true	false	false	3dObjectDimensions	3dobjects	https://dataverse.org/schema/3dobjects/3dUnit
+	3dHandling	Instructions	Safety and special handling instructions for the object		TEXTBOX	14	#VALUE	false	false	false	false	false	false		3dobjects	https://dataverse.org/schema/3dobjects/3dHandling
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder
+	3d3DTechnique	Other		7
+	3d3DTechnique	Tomographic		6
+	3d3DTechnique	Structured Light		5
+	3d3DTechnique	RTI		4
+	3d3DTechnique	Photogrammetry		3
+	3d3DTechnique	Modelled		2
+	3d3DTechnique	Laser		1
+	3d3DTechnique	IR Scanner		0
+	3dLightingSetup	Other		12
+	3dLightingSetup	Fluorescent		11
+	3dLightingSetup	LED		10
+	3dLightingSetup	Lightbox		9
+	3dLightingSetup	Natural Light		8
+	3dExportedFileFormat	other		25
+	3dExportedFileFormat	.x3d		24
+	3dExportedFileFormat	.usdz		23
+	3dExportedFileFormat	.stl		22
+	3dExportedFileFormat	.obj		21
+	3dExportedFileFormat	.gltf		20
+	3dExportedFileFormat	.glb		19
+	3dExportedFileFormat	.fbx		18
+	3dUnit	lbs		17
+	3dUnit	ft		16
+	3dUnit	in		15
+	3dUnit	m		14
+	3dUnit	cm		13

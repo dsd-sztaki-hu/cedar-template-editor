@@ -1,0 +1,41 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI
+	journal		Journal Metadata	https://dataverse.org/schema/journal/
+#datasetField	name	title	description	watermark	fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	journalVolumeIssue	Journal	Indicates the volume, issue and date of a journal, which this Dataset is associated with.		NONE	0		false	false	true	false	false	false		journal	https://dataverse.org/schema/journal/journalVolumeIssue
+	journalVolume	Volume	The journal volume which this Dataset is associated with (e.g., Volume 4).		TEXT	1		true	false	false	true	false	false	journalVolumeIssue	journal	https://dataverse.org/schema/journal/journalVolume
+	journalIssue	Issue	The journal issue number which this Dataset is associated with (e.g., Number 2, Autumn).		TEXT	2		true	false	false	true	false	false	journalVolumeIssue	journal	https://dataverse.org/schema/journal/journalIssue
+	journalPubDate	Publication Date	The publication date for this journal volume/issue, which this Dataset is associated with (e.g., 1999).	YYYY or YYYY-MM or YYYY-MM-DD	DATE	3		true	false	false	true	false	false	journalVolumeIssue	journal	https://dataverse.org/schema/journal/journalPubDate
+	journalArticleType	Type of Article	Indicates what kind of article this is, for example, a research article, a commentary, a book or product review, a case report, a calendar, etc (based on JATS).		TEXT	4		true	true	false	true	false	false		journal	https://dataverse.org/schema/journal/journalArticleType
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder
+	journalArticleType	abstract		31
+	journalArticleType	addendum		30
+	journalArticleType	announcement		29
+	journalArticleType	article-commentary		28
+	journalArticleType	book review		27
+	journalArticleType	books received		26
+	journalArticleType	brief report		25
+	journalArticleType	calendar		24
+	journalArticleType	case report		23
+	journalArticleType	collection		22
+	journalArticleType	correction		21
+	journalArticleType	data paper		20
+	journalArticleType	discussion		19
+	journalArticleType	dissertation		18
+	journalArticleType	editorial		17
+	journalArticleType	in brief		16
+	journalArticleType	introduction		15
+	journalArticleType	letter		14
+	journalArticleType	meeting report		13
+	journalArticleType	news		12
+	journalArticleType	obituary		11
+	journalArticleType	oration		10
+	journalArticleType	partial retraction		9
+	journalArticleType	product review		8
+	journalArticleType	rapid communication		7
+	journalArticleType	reply		6
+	journalArticleType	reprint		5
+	journalArticleType	research article		4
+	journalArticleType	retraction		3
+	journalArticleType	review article		2
+	journalArticleType	translation		1
+	journalArticleType	other		0

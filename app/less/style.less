@@ -7376,6 +7376,7 @@ table.apiKey {
 #arp-copy-modal,
 #arp-zip-download-modal,
 #arp-extract-resources-modal,
+#arp-publish-all-modal,
 #arp-merge-preview-modal,
 #share-modal,
 #airr-submission-modal,
@@ -7683,7 +7684,28 @@ table.apiKey {
   }
 }
 
-#publish-modal {
+#arp-publish-all-modal {
+  .modal-content .modal-body {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .published-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 280px;
+    overflow-y: auto;
+
+    li {
+      padding: 8px 0;
+      border-top: 1px solid #ddd;
+    }
+  }
+}
+
+#publish-modal,
+#arp-publish-all-modal {
 
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {

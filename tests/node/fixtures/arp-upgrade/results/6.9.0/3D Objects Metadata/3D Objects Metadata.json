@@ -1,0 +1,2026 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/Template",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "3d3DTechnique",
+      "3dEquipment",
+      "3dLightingSetup",
+      "3dMasterFilePolygonCount",
+      "3dExportedFilePolygonCount",
+      "3dExportedFileFormat",
+      "3dAltText",
+      "3dMaterialComposition",
+      "3dObjectDimensions",
+      "3dHandling"
+    ],
+    "propertyLabels": {
+      "3d3DTechnique": "3d3DTechnique",
+      "3dEquipment": "3dEquipment",
+      "3dLightingSetup": "3dLightingSetup",
+      "3dMasterFilePolygonCount": "3dMasterFilePolygonCount",
+      "3dExportedFilePolygonCount": "3dExportedFilePolygonCount",
+      "3dExportedFileFormat": "3dExportedFileFormat",
+      "3dAltText": "3dAltText",
+      "3dMaterialComposition": "3dMaterialComposition",
+      "3dObjectDimensions": "3dObjectDimensions",
+      "3dHandling": "3dHandling"
+    },
+    "propertyDescriptions": {
+      "3d3DTechnique": "The technique used for capturing the 3D data",
+      "3dEquipment": "The equipment used for capturing the 3D data",
+      "3dLightingSetup": "The lighting used while capturing the 3D data",
+      "3dMasterFilePolygonCount": "The high-resolution polygon count",
+      "3dExportedFilePolygonCount": "The exported mesh polygon count",
+      "3dExportedFileFormat": "The format of the exported mesh",
+      "3dAltText": "A physical description of the object modeled",
+      "3dMaterialComposition": "The material used to create the object, e.g. stone",
+      "3dObjectDimensions": "The general measurements of the physical object",
+      "3dHandling": "Safety and special handling instructions for the object"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "rdfs": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2000/01/rdf-schema#"
+          ]
+        },
+        "xsd": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2001/XMLSchema#"
+          ]
+        },
+        "pav": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://purl.org/pav/"
+          ]
+        },
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://schema.org/"
+          ]
+        },
+        "oslc": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://open-services.net/ns/core#"
+          ]
+        },
+        "skos": {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://www.w3.org/2004/02/skos/core#"
+          ]
+        },
+        "rdfs:label": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:isBasedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "schema:name": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "schema:description": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "pav:derivedFrom": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:createdOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "pav:createdBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "pav:lastUpdatedOn": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:dateTime"
+              ]
+            }
+          }
+        },
+        "oslc:modifiedBy": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "@id"
+              ]
+            }
+          }
+        },
+        "skos:notation": {
+          "type": "object",
+          "properties": {
+            "@type": {
+              "type": "string",
+              "enum": [
+                "xsd:string"
+              ]
+            }
+          }
+        },
+        "3d3DTechnique": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3d3DTechnique"
+          ]
+        },
+        "3dEquipment": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dEquipment"
+          ]
+        },
+        "3dLightingSetup": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dLightingSetup"
+          ]
+        },
+        "3dMasterFilePolygonCount": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dMasterFilePolygonCount"
+          ]
+        },
+        "3dExportedFilePolygonCount": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dExportedFilePolygonCount"
+          ]
+        },
+        "3dExportedFileFormat": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dExportedFileFormat"
+          ]
+        },
+        "3dAltText": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dAltText"
+          ]
+        },
+        "3dMaterialComposition": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dMaterialComposition"
+          ]
+        },
+        "3dObjectDimensions": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dObjectDimensions"
+          ]
+        },
+        "3dHandling": {
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/3dHandling"
+          ]
+        }
+      },
+      "required": [
+        "xsd",
+        "pav",
+        "schema",
+        "oslc",
+        "schema:isBasedOn",
+        "schema:name",
+        "schema:description",
+        "pav:createdOn",
+        "pav:createdBy",
+        "pav:lastUpdatedOn",
+        "oslc:modifiedBy",
+        "3dObjectDimensions"
+      ],
+      "additionalProperties": false
+    },
+    "@id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "https://dataverse.org/schema/3dobjects/"
+          ]
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "enum": [
+              "https://dataverse.org/schema/3dobjects/"
+            ]
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "schema:isBasedOn": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schema:name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema:description": {
+      "type": "string"
+    },
+    "pav:derivedFrom": {
+      "type": "string",
+      "format": "uri"
+    },
+    "pav:createdOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "pav:createdBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "pav:lastUpdatedOn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "oslc:modifiedBy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "3d3DTechnique": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "Other"
+          },
+          {
+            "label": "Tomographic"
+          },
+          {
+            "label": "Structured Light"
+          },
+          {
+            "label": "RTI"
+          },
+          {
+            "label": "Photogrammetry"
+          },
+          {
+            "label": "Modelled"
+          },
+          {
+            "label": "Laser"
+          },
+          {
+            "label": "IR Scanner"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3d3DTechnique",
+      "schema:description": "The technique used for capturing the 3D data",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "2e62c4c4-f866-35e5-967e-1c5015754cda",
+      "title": "3d3DTechnique element schema",
+      "description": "3d3DTechnique element schema generated by the ARP",
+      "hunDescription": "A 3D adatok rögzítéséhez használt technika",
+      "skos:prefLabel": "3D Technique",
+      "hunLabel": "3D technika",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dEquipment": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dEquipment",
+      "schema:description": "The equipment used for capturing the 3D data",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "43657e32-489f-316b-b056-d1da27b31895",
+      "title": "3dEquipment element schema",
+      "description": "3dEquipment element schema generated by the ARP",
+      "hunDescription": "A 3D adatok rögzítéséhez használt felszerelés",
+      "skos:prefLabel": "Equipment",
+      "hunLabel": "Felszerelés",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dLightingSetup": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "Other"
+          },
+          {
+            "label": "Fluorescent"
+          },
+          {
+            "label": "LED"
+          },
+          {
+            "label": "Lightbox"
+          },
+          {
+            "label": "Natural Light"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dLightingSetup",
+      "schema:description": "The lighting used while capturing the 3D data",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "8494107f-b3f9-3e4c-b5e7-b4a006895a46",
+      "title": "3dLightingSetup element schema",
+      "description": "3dLightingSetup element schema generated by the ARP",
+      "hunDescription": "A 3D adatok rögzítése közben használt megvilágítás",
+      "skos:prefLabel": "Lighting Setup",
+      "hunLabel": "Világítási beállítás",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dMasterFilePolygonCount": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dMasterFilePolygonCount",
+      "schema:description": "The high-resolution polygon count",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "e1bc47b0-a3dd-319f-89a2-b89bddb7b524",
+      "title": "3dMasterFilePolygonCount element schema",
+      "description": "3dMasterFilePolygonCount element schema generated by the ARP",
+      "hunDescription": "A nagy felbontású poligonszám",
+      "skos:prefLabel": "Master File Polygon Count",
+      "hunLabel": "Mesterfájl poligonszáma",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dExportedFilePolygonCount": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dExportedFilePolygonCount",
+      "schema:description": "The exported mesh polygon count",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "36812ad6-f69d-3709-8def-f94ce745d2a6",
+      "title": "3dExportedFilePolygonCount element schema",
+      "description": "3dExportedFilePolygonCount element schema generated by the ARP",
+      "hunDescription": "Az exportált háló poligonszáma",
+      "skos:prefLabel": "Exported File Polygon Count",
+      "hunLabel": "Exportált fájl poligonszáma",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dExportedFileFormat": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "other"
+          },
+          {
+            "label": ".x3d"
+          },
+          {
+            "label": ".usdz"
+          },
+          {
+            "label": ".stl"
+          },
+          {
+            "label": ".obj"
+          },
+          {
+            "label": ".gltf"
+          },
+          {
+            "label": ".glb"
+          },
+          {
+            "label": ".fbx"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dExportedFileFormat",
+      "schema:description": "The format of the exported mesh",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "d7a5f703-2622-3a9e-8c92-6f7c7883c2ff",
+      "title": "3dExportedFileFormat element schema",
+      "description": "3dExportedFileFormat element schema generated by the ARP",
+      "hunDescription": "Az exportált háló formátuma",
+      "skos:prefLabel": "Exported File Format",
+      "hunLabel": "Exportált fájl formátuma",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dAltText": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textarea"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dAltText",
+      "schema:description": "A physical description of the object modeled",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "c746fb0f-3b66-33f3-b509-c75f5bfd6e4b",
+      "title": "3dAltText element schema",
+      "description": "3dAltText element schema generated by the ARP",
+      "hunDescription": "A modellezett objektum fizikai leírása",
+      "skos:prefLabel": "Alt-Text",
+      "hunLabel": "Alternatív szöveg",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dMaterialComposition": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dMaterialComposition",
+      "schema:description": "The material used to create the object, e.g. stone",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "39e85723-b641-3d17-bb1e-eabf52c306cc",
+      "title": "3dMaterialComposition element schema",
+      "description": "3dMaterialComposition element schema generated by the ARP",
+      "hunDescription": "Az objektum létrehozásához használt anyag, pl. kő",
+      "skos:prefLabel": "Material Composition",
+      "hunLabel": "Anyagösszetétel",
+      "minItems": 1,
+      "maxItems ": 0,
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dObjectDimensions": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "order": [
+          "3dLength",
+          "3dWidth",
+          "3dHeight",
+          "3dWeight",
+          "3dUnit"
+        ],
+        "propertyLabels": {
+          "3dLength": "3dLength",
+          "3dWidth": "3dWidth",
+          "3dHeight": "3dHeight",
+          "3dWeight": "3dWeight",
+          "3dUnit": "3dUnit"
+        },
+        "propertyDescriptions": {
+          "3dLength": "The rough length of the object",
+          "3dWidth": "The rough width of the object",
+          "3dHeight": "The rough height of the object",
+          "3dWeight": "The rough weight of the object",
+          "3dUnit": "The unit of measurement used for the object dimensions"
+        }
+      },
+      "properties": {
+        "@context": {
+          "type": "object",
+          "properties": {
+            "3dLength": {
+              "enum": [
+                "https://dataverse.org/schema/3dobjects/3dLength"
+              ]
+            },
+            "3dWidth": {
+              "enum": [
+                "https://dataverse.org/schema/3dobjects/3dWidth"
+              ]
+            },
+            "3dHeight": {
+              "enum": [
+                "https://dataverse.org/schema/3dobjects/3dHeight"
+              ]
+            },
+            "3dWeight": {
+              "enum": [
+                "https://dataverse.org/schema/3dobjects/3dWeight"
+              ]
+            },
+            "3dUnit": {
+              "enum": [
+                "https://dataverse.org/schema/3dobjects/3dUnit"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": []
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "3dLength": {
+          "@type": "https://schema.metadatacenter.org/core/TemplateField",
+          "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pav": "http://purl.org/pav/",
+            "bibo": "http://purl.org/ontology/bibo/",
+            "oslc": "http://open-services.net/ns/core#",
+            "schema": "http://schema.org/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "schema:name": {
+              "@type": "xsd:string"
+            },
+            "schema:description": {
+              "@type": "xsd:string"
+            },
+            "skos:prefLabel": {
+              "@type": "xsd:string"
+            },
+            "skos:altLabel": {
+              "@type": "xsd:string"
+            },
+            "pav:createdOn": {
+              "@type": "xsd:dateTime"
+            },
+            "pav:createdBy": {
+              "@type": "@id"
+            },
+            "pav:lastUpdatedOn": {
+              "@type": "xsd:dateTime"
+            },
+            "oslc:modifiedBy": {
+              "@type": "@id"
+            }
+          },
+          "type": "object",
+          "_ui": {
+            "inputType": "textfield"
+          },
+          "_valueConstraints": {
+            "requiredValue": false
+          },
+          "properties": {
+            "@type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              ]
+            },
+            "@value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rdfs:label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "@value"
+          ],
+          "schema:name": "3dLength",
+          "schema:description": "The rough length of the object",
+          "pav:createdOn": null,
+          "pav:createdBy": null,
+          "pav:lastUpdatedOn": null,
+          "oslc:modifiedBy": null,
+          "schema:schemaVersion": "1.6.0",
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "@id": "c0156d74-0532-3552-b87b-a465967be70f",
+          "title": "3dLength element schema",
+          "description": "3dLength element schema generated by the ARP",
+          "hunDescription": "Az objektum hozzávetőleges hossza",
+          "skos:prefLabel": "Length",
+          "hunLabel": "Hossz",
+          "_arp": {
+            "dataverse": {
+              "displayFormat": "Length: #VALUE",
+              "advancedSearchField": false,
+              "facetable": false,
+              "displayoncreate": false
+            }
+          }
+        },
+        "3dWidth": {
+          "@type": "https://schema.metadatacenter.org/core/TemplateField",
+          "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pav": "http://purl.org/pav/",
+            "bibo": "http://purl.org/ontology/bibo/",
+            "oslc": "http://open-services.net/ns/core#",
+            "schema": "http://schema.org/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "schema:name": {
+              "@type": "xsd:string"
+            },
+            "schema:description": {
+              "@type": "xsd:string"
+            },
+            "skos:prefLabel": {
+              "@type": "xsd:string"
+            },
+            "skos:altLabel": {
+              "@type": "xsd:string"
+            },
+            "pav:createdOn": {
+              "@type": "xsd:dateTime"
+            },
+            "pav:createdBy": {
+              "@type": "@id"
+            },
+            "pav:lastUpdatedOn": {
+              "@type": "xsd:dateTime"
+            },
+            "oslc:modifiedBy": {
+              "@type": "@id"
+            }
+          },
+          "type": "object",
+          "_ui": {
+            "inputType": "textfield"
+          },
+          "_valueConstraints": {
+            "requiredValue": false
+          },
+          "properties": {
+            "@type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              ]
+            },
+            "@value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rdfs:label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "@value"
+          ],
+          "schema:name": "3dWidth",
+          "schema:description": "The rough width of the object",
+          "pav:createdOn": null,
+          "pav:createdBy": null,
+          "pav:lastUpdatedOn": null,
+          "oslc:modifiedBy": null,
+          "schema:schemaVersion": "1.6.0",
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "@id": "ff2eb328-7853-3b42-8ecc-aa3811e247ed",
+          "title": "3dWidth element schema",
+          "description": "3dWidth element schema generated by the ARP",
+          "hunDescription": "Az objektum hozzávetőleges szélessége",
+          "skos:prefLabel": "Width",
+          "hunLabel": "Szélesség",
+          "_arp": {
+            "dataverse": {
+              "displayFormat": "Width: #VALUE",
+              "advancedSearchField": false,
+              "facetable": false,
+              "displayoncreate": false
+            }
+          }
+        },
+        "3dHeight": {
+          "@type": "https://schema.metadatacenter.org/core/TemplateField",
+          "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pav": "http://purl.org/pav/",
+            "bibo": "http://purl.org/ontology/bibo/",
+            "oslc": "http://open-services.net/ns/core#",
+            "schema": "http://schema.org/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "schema:name": {
+              "@type": "xsd:string"
+            },
+            "schema:description": {
+              "@type": "xsd:string"
+            },
+            "skos:prefLabel": {
+              "@type": "xsd:string"
+            },
+            "skos:altLabel": {
+              "@type": "xsd:string"
+            },
+            "pav:createdOn": {
+              "@type": "xsd:dateTime"
+            },
+            "pav:createdBy": {
+              "@type": "@id"
+            },
+            "pav:lastUpdatedOn": {
+              "@type": "xsd:dateTime"
+            },
+            "oslc:modifiedBy": {
+              "@type": "@id"
+            }
+          },
+          "type": "object",
+          "_ui": {
+            "inputType": "textfield"
+          },
+          "_valueConstraints": {
+            "requiredValue": false
+          },
+          "properties": {
+            "@type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              ]
+            },
+            "@value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rdfs:label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "@value"
+          ],
+          "schema:name": "3dHeight",
+          "schema:description": "The rough height of the object",
+          "pav:createdOn": null,
+          "pav:createdBy": null,
+          "pav:lastUpdatedOn": null,
+          "oslc:modifiedBy": null,
+          "schema:schemaVersion": "1.6.0",
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "@id": "d38ddbb1-fb6b-3e3f-a3b4-3e7318a6ac63",
+          "title": "3dHeight element schema",
+          "description": "3dHeight element schema generated by the ARP",
+          "hunDescription": "Az objektum hozzávetőleges magassága",
+          "skos:prefLabel": "Height",
+          "hunLabel": "Magasság",
+          "_arp": {
+            "dataverse": {
+              "displayFormat": "Height: #VALUE",
+              "advancedSearchField": false,
+              "facetable": false,
+              "displayoncreate": false
+            }
+          }
+        },
+        "3dWeight": {
+          "@type": "https://schema.metadatacenter.org/core/TemplateField",
+          "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pav": "http://purl.org/pav/",
+            "bibo": "http://purl.org/ontology/bibo/",
+            "oslc": "http://open-services.net/ns/core#",
+            "schema": "http://schema.org/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "schema:name": {
+              "@type": "xsd:string"
+            },
+            "schema:description": {
+              "@type": "xsd:string"
+            },
+            "skos:prefLabel": {
+              "@type": "xsd:string"
+            },
+            "skos:altLabel": {
+              "@type": "xsd:string"
+            },
+            "pav:createdOn": {
+              "@type": "xsd:dateTime"
+            },
+            "pav:createdBy": {
+              "@type": "@id"
+            },
+            "pav:lastUpdatedOn": {
+              "@type": "xsd:dateTime"
+            },
+            "oslc:modifiedBy": {
+              "@type": "@id"
+            }
+          },
+          "type": "object",
+          "_ui": {
+            "inputType": "textfield"
+          },
+          "_valueConstraints": {
+            "requiredValue": false
+          },
+          "properties": {
+            "@type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              ]
+            },
+            "@value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rdfs:label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "@value"
+          ],
+          "schema:name": "3dWeight",
+          "schema:description": "The rough weight of the object",
+          "pav:createdOn": null,
+          "pav:createdBy": null,
+          "pav:lastUpdatedOn": null,
+          "oslc:modifiedBy": null,
+          "schema:schemaVersion": "1.6.0",
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "@id": "77f3b033-85c1-3b1c-aff3-75fbe0a1ff7d",
+          "title": "3dWeight element schema",
+          "description": "3dWeight element schema generated by the ARP",
+          "hunDescription": "Az objektum hozzávetőleges tömege",
+          "skos:prefLabel": "Weight",
+          "hunLabel": "Tömeg",
+          "_arp": {
+            "dataverse": {
+              "displayFormat": "Weight:#VALUE",
+              "advancedSearchField": false,
+              "facetable": false,
+              "displayoncreate": false
+            }
+          }
+        },
+        "3dUnit": {
+          "@type": "https://schema.metadatacenter.org/core/TemplateField",
+          "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pav": "http://purl.org/pav/",
+            "bibo": "http://purl.org/ontology/bibo/",
+            "oslc": "http://open-services.net/ns/core#",
+            "schema": "http://schema.org/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "schema:name": {
+              "@type": "xsd:string"
+            },
+            "schema:description": {
+              "@type": "xsd:string"
+            },
+            "skos:prefLabel": {
+              "@type": "xsd:string"
+            },
+            "skos:altLabel": {
+              "@type": "xsd:string"
+            },
+            "pav:createdOn": {
+              "@type": "xsd:dateTime"
+            },
+            "pav:createdBy": {
+              "@type": "@id"
+            },
+            "pav:lastUpdatedOn": {
+              "@type": "xsd:dateTime"
+            },
+            "oslc:modifiedBy": {
+              "@type": "@id"
+            }
+          },
+          "type": "object",
+          "_ui": {
+            "inputType": "list"
+          },
+          "_valueConstraints": {
+            "requiredValue": false,
+            "multipleChoice": false,
+            "literals": [
+              {
+                "label": "lbs"
+              },
+              {
+                "label": "ft"
+              },
+              {
+                "label": "in"
+              },
+              {
+                "label": "m"
+              },
+              {
+                "label": "cm"
+              }
+            ]
+          },
+          "properties": {
+            "@type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              ]
+            },
+            "@value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rdfs:label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "@value"
+          ],
+          "schema:name": "3dUnit",
+          "schema:description": "The unit of measurement used for the object dimensions",
+          "pav:createdOn": null,
+          "pav:createdBy": null,
+          "pav:lastUpdatedOn": null,
+          "oslc:modifiedBy": null,
+          "schema:schemaVersion": "1.6.0",
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "@id": "10d1bb30-5a48-3e7d-9348-7c0bca6b5864",
+          "title": "3dUnit element schema",
+          "description": "3dUnit element schema generated by the ARP",
+          "hunDescription": "Az objektum méreteihez használt mértékegység",
+          "skos:prefLabel": "Unit",
+          "hunLabel": "Egység",
+          "_arp": {
+            "dataverse": {
+              "displayFormat": "Unit: #VALUE",
+              "advancedSearchField": false,
+              "facetable": true,
+              "displayoncreate": false
+            }
+          }
+        }
+      },
+      "schema:name": "3dObjectDimensions",
+      "schema:description": "The general measurements of the physical object",
+      "required": [
+        "@context",
+        "@id",
+        "3dLength",
+        "3dWidth",
+        "3dHeight",
+        "3dWeight",
+        "3dUnit"
+      ],
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "pav:version": "6.9.0",
+      "bibo:status": "bibo:published",
+      "@id": "https://repo.test/elements/5",
+      "title": "3dObjectDimensions element schema",
+      "description": "3dObjectDimensions element schema generated by the ARP",
+      "schema:identifier": "3dObjectDimensions",
+      "hunDescription": "A fizikai objektum általános méretei",
+      "skos:prefLabel": "Object Dimensions",
+      "hunLabel": "Objektum méretei",
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "_arp": {
+        "dataverse": {
+          "displayFormat": ";",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "3dHandling": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textarea"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "3dHandling",
+      "schema:description": "Safety and special handling instructions for the object",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "417d5f62-155b-386a-849d-2a443171611d",
+      "title": "3dHandling element schema",
+      "description": "3dHandling element schema generated by the ARP",
+      "hunDescription": "Biztonsági és különleges kezelési utasítások az objektumhoz",
+      "skos:prefLabel": "Instructions",
+      "hunLabel": "Utasítások",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "schema:isBasedOn",
+    "schema:name",
+    "schema:description",
+    "pav:createdOn",
+    "pav:createdBy",
+    "pav:lastUpdatedOn",
+    "oslc:modifiedBy",
+    "3d3DTechnique",
+    "3dEquipment",
+    "3dLightingSetup",
+    "3dMasterFilePolygonCount",
+    "3dExportedFilePolygonCount",
+    "3dExportedFileFormat",
+    "3dAltText",
+    "3dMaterialComposition",
+    "3dObjectDimensions",
+    "3dHandling"
+  ],
+  "schema:name": "3D Objects Metadata",
+  "schema:description": "",
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.9.0",
+  "bibo:status": "bibo:published",
+  "title": "3dobjects template schema",
+  "description": "3dobjects template schema generated by ARP",
+  "hunName": "3D objektumok metaadatai",
+  "schema:identifier": "3dobjects",
+  "@id": "https://repo.test/templates/6"
+}

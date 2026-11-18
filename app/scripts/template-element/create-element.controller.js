@@ -46,6 +46,8 @@ define([
     $scope.cannotWrite;
     $scope.lockReason = '';
     $scope.derivedFromPublished = true;
+    $scope.derivedFromStatusKnown = false;
+    $scope.arpMergeLoading = false;
 
 
     // This function watches for changes in the _ui.title field and autogenerates the schema title and description fields
@@ -118,6 +120,7 @@ define([
             TemplateElementService.getTemplateElement($scope.element['pav:derivedFrom']),
             function (response) {
               $scope.derivedFromPublished = response.data['bibo:status'] === 'bibo:published';
+              $scope.derivedFromStatusKnown = true;
             },
             function (err) {});
       }
@@ -483,6 +486,18 @@ define([
 
     $scope.invalidFieldStates = {};
     $scope.invalidElementStates = {};
+    $scope.$on('arpMergeModalVisible', function () {
+      $scope.arpMergeModalVisible = true;
+    });
+
+    $scope.$on('arpMergeLoading', function () {
+      $scope.arpMergeLoading = true;
+    });
+
+    $scope.$on('arpMergeLoadingDone', function () {
+      $scope.arpMergeLoading = false;
+    });
+
     $scope.$on('invalidFieldState', function (event, args) {
       if (args[2] != $scope.element["@id"]) {
         if (args[0] == 'add') {
@@ -752,12 +767,39 @@ define([
       $rootScope.$broadcast('arpMergeModalVisible', [$scope.element, 'element']);
     };
 
+    $scope.canUpdatePublished = function () {
+      if ($scope.element) {
+        return arpService.isArpUpdatePublishedButtonEnabled() &&
+            TemplateElementService.canArpMergeTemplateElement() &&
+            $scope.element.hasOwnProperty('pav:derivedFrom') &&
+            $scope.element.hasOwnProperty('_arpOriginalFolderId_') &&
+            $scope.derivedFromStatusKnown &&
+            $scope.derivedFromPublished;
+      }
+      return false;
+    };
+
+    $scope.updatePublishedVersion = function () {
+      if ($scope.arpMergeButtonDisabled()) {
+        return;
+      }
+      $scope.$broadcast('arpMergePreviewModalVisible', [
+        $scope.element,
+        QueryParamUtilsService.getFolderId(),
+        CedarUser.getSort(),
+        CedarUser.getHomeFolderId(),
+        null,
+        'updatePublished'
+      ]);
+    };
+
     $scope.canArpMerge = function() {
       if ($scope.element) {
         return arpService.isArpMergeButtonEnabled() &&
             TemplateElementService.canArpMergeTemplateElement() && 
             $scope.element.hasOwnProperty('pav:derivedFrom') &&
             $scope.element.hasOwnProperty('_arpOriginalFolderId_') &&
+            $scope.derivedFromStatusKnown &&
             !$scope.derivedFromPublished;
       } else {
         return false;

@@ -1,0 +1,486 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "westLongitude",
+      "eastLongitude",
+      "northLatitude",
+      "southLatitude"
+    ],
+    "propertyLabels": {
+      "westLongitude": "westLongitude",
+      "eastLongitude": "eastLongitude",
+      "northLatitude": "northLatitude",
+      "southLatitude": "southLatitude"
+    },
+    "propertyDescriptions": {
+      "westLongitude": "Westernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= West  Bounding Longitude Value <= 180.0.",
+      "eastLongitude": "Easternmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= East Bounding Longitude Value <= 180.0.",
+      "northLatitude": "Northernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= North Bounding Latitude Value <= 90.0.",
+      "southLatitude": "Southernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= South Bounding Latitude Value <= 90.0."
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "westLongitude": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/westLongitude"
+          ]
+        },
+        "eastLongitude": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/eastLongitude"
+          ]
+        },
+        "northLatitude": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/northLatitude"
+          ]
+        },
+        "southLatitude": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/southLatitude"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "westLongitude": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "westLongitude",
+      "schema:description": "Westernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= West  Bounding Longitude Value <= 180.0.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "b7d0f4fa-6e86-375f-afad-d5f9829361e1",
+      "title": "westLongitude element schema",
+      "description": "westLongitude element schema generated by the ARP",
+      "hunDescription": "Az adatcsomag földrajzi kiterjedésének legnyugatibb koordinátája. Az érvényes értékek halmaza decimális fokokban kifejezve: -180,0 <= Nyugati befoglaló hosszúsági érték <= 180,0.",
+      "skos:prefLabel": "Westernmost (Left) Longitude",
+      "hunLabel": "Legnyugatibb (bal) hosszúság",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "eastLongitude": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "eastLongitude",
+      "schema:description": "Easternmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -180.0 <= East Bounding Longitude Value <= 180.0.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "2612bbc7-e1e7-35b5-bf44-28aec07b5adb",
+      "title": "eastLongitude element schema",
+      "description": "eastLongitude element schema generated by the ARP",
+      "hunDescription": "Az adatcsomag földrajzi kiterjedésének legkeletibb koordinátája. Az érvényes értékek halmaza decimális fokokban kifejezve: -180,0 <= Keleti befoglaló hosszúsági érték <= 180,0.",
+      "skos:prefLabel": "Easternmost (Right) Longitude",
+      "hunLabel": "Legkeletibb (jobb) hosszúság",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "northLatitude": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "northLatitude",
+      "schema:description": "Northernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= North Bounding Latitude Value <= 90.0.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "d3166003-d509-34a5-923d-bc4cad574a6b",
+      "title": "northLatitude element schema",
+      "description": "northLatitude element schema generated by the ARP",
+      "hunDescription": "Az adatállomány földrajzi kiterjedését meghatározó legészakibb koordináta. Az érvényes értéktartomány, decimális fokban kifejezve, -90,0 <= Északi határszélesség <= 90,0.",
+      "skos:prefLabel": "Northernmost (Top) Latitude",
+      "hunLabel": "Legészakibb (Felső) Szélességi fok",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "southLatitude": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "southLatitude",
+      "schema:description": "Southernmost coordinate delimiting the geographic extent of the Dataset. A valid range of values,  expressed in decimal degrees, is -90.0 <= South Bounding Latitude Value <= 90.0.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "bdf7941c-a973-3eb4-b2cd-4398c890cfa3",
+      "title": "southLatitude element schema",
+      "description": "southLatitude element schema generated by the ARP",
+      "hunDescription": "Az adatállomány földrajzi kiterjedését meghatározó legdélibb koordináta. Az érvényes értéktartomány, decimális fokban kifejezve, -90,0 <= Déli határszélesség <= 90,0.",
+      "skos:prefLabel": "Southernmost (Bottom) Latitude",
+      "hunLabel": "Legdélibb (Alsó) Szélességi fok",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    }
+  },
+  "schema:name": "geographicBoundingBox",
+  "schema:description": "The fundamental geometric description for any Dataset that models geography is the geographic bounding box. It describes the minimum box, defined by west and east longitudes and north and south latitudes, which includes the largest geographic extent of the  Dataset's geographic coverage. This element is used in the first pass of a coordinate-based search. Inclusion of this element in the codebook is recommended, but is required if the bound polygon box is included.",
+  "required": [
+    "@context",
+    "@id",
+    "westLongitude",
+    "eastLongitude",
+    "northLatitude",
+    "southLatitude"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.11.0",
+  "bibo:status": "bibo:published",
+  "@id": "https://repo.test/elements/133",
+  "title": "geographicBoundingBox element schema",
+  "description": "geographicBoundingBox element schema generated by the ARP",
+  "hunDescription": "The fundamental geometric description for any Dataset that models geography is the geographic bounding box. It describes the minimum box, defined by west and east longitudes and north and south latitudes, which includes the largest geographic extent of the  Dataset's geographic coverage. This element is used in the first pass of a coordinate-based search. Inclusion of this element in the codebook is recommended, but is required if the bound polygon box is included. (magyarul)",
+  "skos:prefLabel": "Geographic Bounding Box",
+  "hunLabel": "Geographic Bounding Box (magyarul)",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": false
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": false
+    }
+  },
+  "pav:derivedFrom": "https://repo.test/elements/87",
+  "schema:identifier": "geographicBoundingBox"
+}

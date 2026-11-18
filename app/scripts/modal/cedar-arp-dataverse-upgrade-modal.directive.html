@@ -1,0 +1,72 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header" id="arpDataverseUpgradeModalHeader">
+      <button type="button" class="close" ng-click="upgrade.close()" ng-disabled="upgrade.busy === 'run'"
+          aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title"><span translate>ARP.dataverseUpgrade.title</span></h4>
+    </div>
+    <div class="modal-body">
+
+      <p ng-bind-html="'ARP.dataverseUpgrade.explanation.' + upgrade.startState | translate:{folderName: upgrade.folderName}"></p>
+
+      <div class="form-group">
+        <label for="arp-dataverse-upgrade-current" translate>ARP.dataverseUpgrade.currentVersion</label>
+        <input id="arp-dataverse-upgrade-current" class="form-control" type="text" placeholder="6.9"
+            ng-model="upgrade.currentVersion" ng-change="upgrade.inputChanged()"
+            ng-disabled="upgrade.busy || upgrade.closed">
+      </div>
+      <div class="form-group">
+        <label for="arp-dataverse-upgrade-targets" translate>ARP.dataverseUpgrade.targetVersions</label>
+        <input id="arp-dataverse-upgrade-targets" class="form-control" type="text" placeholder="6.10, 6.11, 6.12.1"
+            ng-model="upgrade.targetVersions" ng-change="upgrade.inputChanged()"
+            ng-disabled="upgrade.busy || upgrade.closed">
+      </div>
+
+      <div class="alert alert-info" ng-if="upgrade.progress" ng-bind-html="upgrade.progress"></div>
+      <div class="alert alert-danger" ng-if="upgrade.error" ng-bind-html="upgrade.error"></div>
+      <div class="alert alert-warning" ng-if="upgrade.stopped" ng-bind-html="upgrade.stopped"></div>
+      <div class="alert alert-success" ng-if="upgrade.finished" translate>ARP.dataverseUpgrade.finished</div>
+
+      <div ng-if="upgrade.reports.length">
+        <h4>{{ upgrade.reportTitle | translate }}</h4>
+        <div style="max-height: 360px; overflow-y: auto">
+          <div ng-repeat="report in upgrade.reports" style="padding-bottom: 12px">
+            <h5><b>{{ 'ARP.dataverseUpgrade.versionTitle' | translate:{version: report.version} }}</b></h5>
+            <div ng-if="!report.blocks.length" translate>ARP.dataverseUpgrade.noChanges</div>
+
+            <div ng-repeat="block in report.blocks">
+              <div><b>{{block.title}}</b></div>
+              <div ng-if="!block.sections.length" translate>ARP.dataverseUpgrade.nothingToApply</div>
+              <div ng-repeat="section in block.sections">
+                <div><i>{{ section.title | translate }}</i></div>
+                <ul>
+                  <li ng-repeat="line in section.lines track by $index" ng-bind-html="line"></li>
+                </ul>
+              </div>
+              <div ng-if="block.updatedResources"
+                  ng-bind-html="'ARP.dataverseUpgrade.updatedResources' | translate:{names: block.updatedResources}"></div>
+            </div>
+
+            <div ng-if="report.missingTemplates"
+                ng-bind-html="'ARP.dataverseUpgrade.missingTemplates' | translate:{blocks: report.missingTemplates}"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer actions">
+      <div class="clear-save">
+        <button ng-if="!upgrade.closed" ng-click="upgrade.run()" ng-disabled="upgrade.busy || !upgrade.previewed"
+            type="button" class="btn btn-save confirm" translate>
+          ARP.dataverseUpgrade.runButton
+        </button>
+        <button ng-if="!upgrade.closed" ng-click="upgrade.preview()" ng-disabled="upgrade.busy"
+            type="button" class="btn btn-clear" translate>
+          ARP.dataverseUpgrade.previewButton
+        </button>
+        <button type="button" class="btn btn-clear" ng-click="upgrade.close()" ng-disabled="upgrade.busy === 'run'"
+            translate>GENERIC.Close</button>
+      </div>
+    </div>
+  </div>
+</div>

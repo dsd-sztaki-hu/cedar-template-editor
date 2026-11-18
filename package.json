@@ -8,6 +8,10 @@
   "main": "app/scripts/app.js",
   "scripts": {
     "test": "node_modules/karma/bin/karma start karma.conf.js --browsers Chrome --single-run",
+    "test:arp-upgrade": "node tests/node/arp-dataverse-upgrade.test.js",
+    "arp-upgrade:dry-run": "node tests/node/arp-upgrade-dry-run.js",
+    "arp-upgrade:post-check": "node tests/node/arp-upgrade-post-check.js",
+    "arp-upgrade:local-copy": "node tests/node/arp-upgrade-local-copy.js",
     "protractor": "node_modules/protractor/bin/protractor protractor.config.js",
     "webdrivermanager:update": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome=110.0.5481.77",
     "webdrivermanager:clean": "node node_modules/protractor/bin/webdriver-manager clean",

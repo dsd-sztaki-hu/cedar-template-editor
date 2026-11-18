@@ -1,0 +1,21 @@
+Checked-in copies of the metadata-block TSVs used by tests/node/arp-dataverse-upgrade.test.js.
+
+official/v6.9, v6.10, v6.11 and v6.12.1
+  IQSS/dataverse, scripts/api/data/metadatablocks, at those tags.
+
+arp/6.9
+  The live ARP blocks as CEDAR holds them, exported on 2026-11-18 from
+  https://repo.researchdata.hu/api/arp/convertMdbToTsv/<block>. These are the
+  6.9.0 templates the upgrade starts from. Kept byte for byte, including
+  language values that are stored corrupted in CEDAR. To export them again:
+
+    for p in "citation citation" "geospatial geospatial" "socialscience social_science" \
+             "astrophysics astrophysics" "biomedical biomedical" "journal journals" "3dobjects 3d_objects"; do
+      set -- $p
+      curl -sf -o "$2.tsv" "https://repo.researchdata.hu/api/arp/convertMdbToTsv/$1"
+    done
+
+results/
+  Written by tests/node/arp-dataverse-upgrade.test.js on each run.
+  6.9.0, 6.10.0 and 6.11.0 are the archived versions. 6.12.1 is the published folder.
+  Each version has one folder per template, with the template JSON and elements/ and fields/.

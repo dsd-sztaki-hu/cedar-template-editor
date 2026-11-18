@@ -34,7 +34,7 @@
           </div>
 
           <div class="col-sm-1 pull-right">
-            <button class="close" type="button" ng-click="dc.arpMergePreviewModalVisible=false;arpmergepreview.hideModal()" aria-label="Close"><span
+            <button class="close" type="button" ng-click="arpmergepreview.hideModal()" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
           </div>
 
@@ -105,7 +105,7 @@
 
         </div>
         <div class="modal-footer actions">
-          <div class="col-sm-5" style="display: flex; flex-direction: row; align-items: center">
+          <div class="col-sm-5" ng-if="!arpmergepreview.updatePublishedMode" style="display: flex; flex-direction: row; align-items: center">
             <label style="text-align: left; float: left; margin-right: 10px;">New Version:</label>
             <div class="version-number">
               <input name="major" id="version-major" ng-model="arpmergepreview.parts[0]"
@@ -143,14 +143,21 @@
                ng-if="arpmergepreview.showUpdatedResourcesInfo()"
                data-toggle="tooltip"><i class="fa fa-info-circle"></i>
           </div>
-          <div class="clear-save">
-            <button ng-disabled="arpmergepreview.copyDisabled()" ng-click="arpmergepreview.confirmRecursiveMerge();dc.arpMergePreviewModalVisible=false;arpmergepreview.hideModal()"
+          <div class="clear-save" ng-if="!arpmergepreview.updatePublishedMode">
+            <button ng-disabled="arpmergepreview.copyDisabled()" ng-click="arpmergepreview.confirmRecursiveMerge();arpmergepreview.hideModal()"
                     type="button"
                     class="btn btn-save confirm"> ARP Merge
             </button>
           </div>
+          <div class="clear-save" ng-if="arpmergepreview.updatePublishedMode">
+            <button ng-disabled="arpmergepreview.copyDisabled()" ng-click="arpmergepreview.confirmUpdatePublished();arpmergepreview.hideModal()"
+                    type="button"
+                    class="btn btn-save confirm" translate="">
+              ARP.updatePublished.confirm
+            </button>
+          </div>
           <div class="clear-save">
-            <button type="button" class="btn btn-clear" ng-click="arpmergepreview.arpMergePreviewModalVisible=false;arpmergepreview.refresh();arpmergepreview.hideModal()" translate="">
+            <button type="button" class="btn btn-clear" ng-click="arpmergepreview.refresh();arpmergepreview.hideModal()" translate="">
               Cancel
             </button>
           </div>

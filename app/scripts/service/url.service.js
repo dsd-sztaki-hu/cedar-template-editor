@@ -21,9 +21,11 @@ define([
     let messagingService = null;
     let impexService = null;
     let arpService = null;
+    let arpUnpublishService = null;
     let arpDvCollection = null;
     let arpFileElementId = null;
     let arpDatasetElementId = null;
+    let dataverseMdbRepo = null;
     const paging = function (page, size, defaultPage, defaultSize, pageString, sizeString) {
       const p = page > 0 ? page : defaultPage;
       const s = size > 0 ? size : defaultSize;
@@ -45,9 +47,11 @@ define([
       messagingService = config.messagingRestAPI;
       impexService = config.impexRestAPI;
       arpService = config.arpAPI;
+      arpUnpublishService = config.arpUnpublishAPI;
       arpDvCollection = config.arpDvCollection;
       arpFileElementId = config.arpFileElementId;
       arpDatasetElementId = config.arpDatasetElementId;
+      dataverseMdbRepo = config.dataverseMdbRepo;
     };
 
     //TODO: now the dataverse collection is stored in the conf, add option to modify it
@@ -70,6 +74,24 @@ define([
 
     service.arpValidateResourceJson = function () {
       return arpService + "/checkCedarTemplate";
+    };
+
+    service.arpUpdatePublicationStatus = function () {
+      return arpUnpublishService + "/status";
+    };
+
+    service.arpConvertTsvToCedarTemplate = function () {
+      return arpService + "/convertTsvToCedarTemplate";
+    };
+
+    // The official metadata block TSVs of a Dataverse release tag, e.g. "v6.11"
+    service.dataverseMdbBaseUrl = function (tag) {
+      return "https://raw.githubusercontent.com/" + dataverseMdbRepo + "/" + tag + "/scripts/api/data/metadatablocks";
+    };
+
+    // Lists the files behind dataverseMdbBaseUrl
+    service.dataverseMdbListUrl = function (tag) {
+      return "https://api.github.com/repos/" + dataverseMdbRepo + "/contents/scripts/api/data/metadatablocks?ref=" + tag;
     };
 
     service.base = function () {

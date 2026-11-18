@@ -1,0 +1,531 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "geographicDimensionNameType",
+      "geographicDimensionSize",
+      "geographicResolution",
+      "geographicResolutionUnitOfMeasure"
+    ],
+    "propertyLabels": {
+      "geographicDimensionNameType": "geographicDimensionNameType",
+      "geographicDimensionSize": "geographicDimensionSize",
+      "geographicResolution": "geographicResolution",
+      "geographicResolutionUnitOfMeasure": "geographicResolutionUnitOfMeasure"
+    },
+    "propertyDescriptions": {
+      "geographicDimensionNameType": "Raster/grid data only: Name/type for one of the spatial-temporal axis represented in the Dataset",
+      "geographicDimensionSize": "Number of elements along the axis",
+      "geographicResolution": "A decimal value representing a dimension's degree of detail, i.e. the size of the area that corresponds to a single data element along a Dataset's axis.",
+      "geographicResolutionUnitOfMeasure": "Resolution unit of measure for the dimension resolution value"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "geographicDimensionNameType": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicDimensionNameType"
+          ]
+        },
+        "geographicDimensionSize": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicDimensionSize"
+          ]
+        },
+        "geographicResolution": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicResolution"
+          ]
+        },
+        "geographicResolutionUnitOfMeasure": {
+          "enum": [
+            "https://dataverse.org/schema/geospatial/geographicResolutionUnitOfMeasure"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "geographicDimensionNameType": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "row"
+          },
+          {
+            "label": "column"
+          },
+          {
+            "label": "vertical"
+          },
+          {
+            "label": "track"
+          },
+          {
+            "label": "crossTrack"
+          },
+          {
+            "label": "line"
+          },
+          {
+            "label": "sample"
+          },
+          {
+            "label": "time"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "geographicDimensionNameType",
+      "schema:description": "Raster/grid data only: Name/type for one of the spatial-temporal axis represented in the Dataset",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "9fdbec6e-3547-3438-b98f-6c6a0bfde615",
+      "title": "geographicDimensionNameType element schema",
+      "description": "geographicDimensionNameType element schema generated by the ARP",
+      "skos:prefLabel": "Raster Dimension (Axis) Name",
+      "_arp": {
+        "dataverse": {
+          "watermark": "row, column, vertical, track, crossTrack, line, sample, or time",
+          "displayFormat": "#VALUE",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "geographicDimensionSize": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:int"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "geographicDimensionSize",
+      "schema:description": "Number of elements along the axis",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "5eaf25af-be89-3fc4-a941-522a72f9f3c1",
+      "title": "geographicDimensionSize element schema",
+      "description": "geographicDimensionSize element schema generated by the ARP",
+      "skos:prefLabel": "Raster Dimension (Axis) Size",
+      "_arp": {
+        "dataverse": {
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "geographicResolution": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "numeric"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "numberType": "xsd:double"
+      },
+      "properties": {
+        "@type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value",
+        "@type"
+      ],
+      "schema:name": "geographicResolution",
+      "schema:description": "A decimal value representing a dimension's degree of detail, i.e. the size of the area that corresponds to a single data element along a Dataset's axis.",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "df41509e-d554-3152-aedb-fa57240c01b6",
+      "title": "geographicResolution element schema",
+      "description": "geographicResolution element schema generated by the ARP",
+      "skos:prefLabel": "Raster Dimension (Axis) Resolution",
+      "_arp": {
+        "dataverse": {
+          "watermark": "enter a decimal value",
+          "displayFormat": "#VALUE",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    },
+    "geographicResolutionUnitOfMeasure": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "geographicResolutionUnitOfMeasure",
+      "schema:description": "Resolution unit of measure for the dimension resolution value",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "7dab3841-15d2-3e50-8919-03b9b4024122",
+      "title": "geographicResolutionUnitOfMeasure element schema",
+      "description": "geographicResolutionUnitOfMeasure element schema generated by the ARP",
+      "skos:prefLabel": "Raster Dimension (Axis) Resolution Unit of Measure",
+      "_arp": {
+        "dataverse": {
+          "watermark": "cm', 'm', 'km', etc.",
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": false
+        }
+      }
+    }
+  },
+  "schema:name": "geographicAxisDimensionProperties",
+  "schema:description": "Raster/grid data only: Information about spatial-temporal axis properties (dimensions).  NOTE: A raster Dataset will usually have 2+ dimensions. Repeat this field to describe all dimensions represented in the Dataset",
+  "required": [
+    "@context",
+    "@id",
+    "geographicDimensionNameType",
+    "geographicDimensionSize",
+    "geographicResolution",
+    "geographicResolutionUnitOfMeasure"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.12.1",
+  "bibo:status": "bibo:published",
+  "title": "geographicAxisDimensionProperties element schema",
+  "description": "geographicAxisDimensionProperties element schema generated by the ARP",
+  "skos:prefLabel": "Raster Dimension (Axis) Properties",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": false
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": false
+    }
+  },
+  "@id": "https://repo.test/elements/188",
+  "pav:derivedFrom": "https://repo.test/elements/146",
+  "schema:identifier": "geographicAxisDimensionProperties"
+}

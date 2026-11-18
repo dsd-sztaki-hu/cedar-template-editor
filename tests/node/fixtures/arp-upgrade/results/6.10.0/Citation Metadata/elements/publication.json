@@ -1,0 +1,719 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "publicationCitation",
+      "publicationIDType",
+      "publicationIDNumber",
+      "publicationURL",
+      "publicationRelationType"
+    ],
+    "propertyLabels": {
+      "publicationCitation": "publicationCitation",
+      "publicationIDType": "publicationIDType",
+      "publicationIDNumber": "publicationIDNumber",
+      "publicationURL": "publicationURL",
+      "publicationRelationType": "publicationRelationType"
+    },
+    "propertyDescriptions": {
+      "publicationCitation": "The full bibliographic citation for the related publication",
+      "publicationIDType": "The type of identifier that uniquely identifies a related publication",
+      "publicationIDNumber": "The identifier for a related publication",
+      "publicationURL": "The URL form of the identifier entered in the Identifier field, e.g. the DOI URL if a DOI was entered in the Identifier field. Used to display what was entered in the ID Type and ID Number fields as a link. If what was entered in the Identifier field has no URL form, the URL of the publication webpage is used, e.g. a journal article webpage",
+      "publicationRelationType": "The nature of the relationship between this Dataset and the related publication"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "publicationCitation": {
+          "enum": [
+            "http://purl.org/dc/terms/bibliographicCitation"
+          ]
+        },
+        "publicationIDType": {
+          "enum": [
+            "http://purl.org/spar/datacite/ResourceIdentifierScheme"
+          ]
+        },
+        "publicationIDNumber": {
+          "enum": [
+            "http://purl.org/spar/datacite/ResourceIdentifier"
+          ]
+        },
+        "publicationURL": {
+          "enum": [
+            "https://schema.org/distribution"
+          ]
+        },
+        "publicationRelationType": {
+          "enum": [
+            "http://datacite.org/schema/kernel-4/simpleTypes#relationType"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "publicationCitation": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textarea"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "publicationCitation",
+      "schema:description": "The full bibliographic citation for the related publication",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "376c5e5a-4012-362e-91a4-08ec182cefe5",
+      "title": "publicationCitation element schema",
+      "description": "publicationCitation element schema generated by the ARP",
+      "hunDescription": "A teljes bibliográfiai idézet ehhez a közleményhez.",
+      "skos:prefLabel": "Citation",
+      "hunLabel": "Idézés kapcsolat",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "publicationIDType": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "ark"
+          },
+          {
+            "label": "arXiv"
+          },
+          {
+            "label": "bibcode"
+          },
+          {
+            "label": "cstr"
+          },
+          {
+            "label": "doi"
+          },
+          {
+            "label": "ean13"
+          },
+          {
+            "label": "eissn"
+          },
+          {
+            "label": "handle"
+          },
+          {
+            "label": "isbn"
+          },
+          {
+            "label": "istc"
+          },
+          {
+            "label": "lissn"
+          },
+          {
+            "label": "lsid"
+          },
+          {
+            "label": "pmid"
+          },
+          {
+            "label": "purl"
+          },
+          {
+            "label": "upc"
+          },
+          {
+            "label": "url"
+          },
+          {
+            "label": "urn"
+          },
+          {
+            "label": "DASH-NRS"
+          },
+          {
+            "label": "issn"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "publicationIDType",
+      "schema:description": "The type of identifier that uniquely identifies a related publication",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "8da107cb-7fec-3119-b8a8-987b65cfab4a",
+      "title": "publicationIDType element schema",
+      "description": "publicationIDType element schema generated by the ARP",
+      "hunDescription": "A közleményhez tartozó digitális azonosító típusa. (pl. DOI)",
+      "skos:prefLabel": "Identifier Type",
+      "hunLabel": "Azonosító típusa",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE:",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "publicationIDNumber": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "publicationIDNumber",
+      "schema:description": "The identifier for a related publication",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "5c1ee371-8117-3e37-bd07-474799f9add9",
+      "title": "publicationIDNumber element schema",
+      "description": "publicationIDNumber element schema generated by the ARP",
+      "hunDescription": "A közleményhez tartozó digitális azonosító értéke.",
+      "skos:prefLabel": "Identifier",
+      "hunLabel": "Azonosító értéke",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "publicationURL": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "link"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "schema:name": "publicationURL",
+      "schema:description": "The URL form of the identifier entered in the Identifier field, e.g. the DOI URL if a DOI was entered in the Identifier field. Used to display what was entered in the ID Type and ID Number fields as a link. If what was entered in the Identifier field has no URL form, the URL of the publication webpage is used, e.g. a journal article webpage",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "81c38bfd-4842-3ec8-9114-4183c985b680",
+      "title": "publicationURL element schema",
+      "description": "publicationURL element schema generated by the ARP",
+      "hunDescription": "Hivatkozás a közlemény weboldalára (pl. folyóiratcikk oldala, archive rekord vagy egyéb).",
+      "skos:prefLabel": "URL",
+      "hunLabel": "URL",
+      "_arp": {
+        "dataverse": {
+          "watermark": "https://",
+          "displayFormat": "<a href=\"#VALUE\" target=\"_blank\" rel=\"noopener\">#VALUE</a>",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "publicationRelationType": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "list"
+      },
+      "_valueConstraints": {
+        "requiredValue": false,
+        "multipleChoice": false,
+        "literals": [
+          {
+            "label": "IsCitedBy"
+          },
+          {
+            "label": "Cites"
+          },
+          {
+            "label": "IsSupplementTo"
+          },
+          {
+            "label": "IsSupplementedBy"
+          },
+          {
+            "label": "IsReferencedBy"
+          },
+          {
+            "label": "References"
+          }
+        ]
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "publicationRelationType",
+      "schema:description": "The nature of the relationship between this Dataset and the related publication",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "d654490a-cf4e-318e-a238-16fc12e6c2c4",
+      "title": "publicationRelationType element schema",
+      "description": "publicationRelationType element schema generated by the ARP",
+      "hunDescription": "The nature of the relationship between this Dataset and the related publication",
+      "skos:prefLabel": "Relation Type",
+      "hunLabel": "Relation Type",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE:",
+          "advancedSearchField": true,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    }
+  },
+  "schema:name": "publication",
+  "schema:description": "The article or report that uses the data in the Dataset. The full list of related publications will be displayed on the metadata tab",
+  "required": [
+    "@context",
+    "@id",
+    "publicationCitation",
+    "publicationIDType",
+    "publicationIDNumber",
+    "publicationURL",
+    "publicationRelationType"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.10.0",
+  "bibo:status": "bibo:published",
+  "@id": "https://repo.test/elements/74",
+  "title": "publication element schema",
+  "description": "publication element schema generated by the ARP",
+  "hunDescription": "Közlemények, amelyek ennek az adatcsomagnak az adatait használják. A metaadat fülön a kapcsolódó publikációk teljes listája megjelenítésre kerül.",
+  "skos:prefLabel": "Related Publication",
+  "hunLabel": "Kapcsolódó közlemények",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": false
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": true
+    }
+  },
+  "pav:derivedFrom": "https://repo.test/elements/24",
+  "schema:identifier": "publication"
+}

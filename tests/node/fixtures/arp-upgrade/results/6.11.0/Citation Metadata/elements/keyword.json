@@ -1,0 +1,526 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "@type": "https://schema.metadatacenter.org/core/TemplateElement",
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "oslc": "http://open-services.net/ns/core#",
+    "schema": "http://schema.org/",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    }
+  },
+  "type": "object",
+  "_ui": {
+    "order": [
+      "keywordValue",
+      "keywordVocabulary",
+      "keywordVocabularyURI",
+      "keywordTermURI"
+    ],
+    "propertyLabels": {
+      "keywordValue": "keywordValue",
+      "keywordVocabulary": "keywordVocabulary",
+      "keywordVocabularyURI": "keywordVocabularyURI",
+      "keywordTermURI": "keywordTermURI"
+    },
+    "propertyDescriptions": {
+      "keywordValue": "A key term that describes important aspects of the Dataset",
+      "keywordVocabulary": "The controlled vocabulary used for the keyword term (e.g. LCSH, MeSH)",
+      "keywordVocabularyURI": "The URL where one can access information about the term's controlled vocabulary",
+      "keywordTermURI": "A URI that points to the web presence of the Keyword Term"
+    }
+  },
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "keywordValue": {
+          "enum": [
+            "https://dataverse.org/schema/citation/keywordValue"
+          ]
+        },
+        "keywordVocabulary": {
+          "enum": [
+            "https://dataverse.org/schema/citation/keywordVocabulary"
+          ]
+        },
+        "keywordVocabularyURI": {
+          "enum": [
+            "https://dataverse.org/schema/citation/keywordVocabularyURI"
+          ]
+        },
+        "keywordTermURI": {
+          "enum": [
+            "https://dataverse.org/schema/citation/keywordTermURI"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "@id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "@type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "keywordValue": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "keywordValue",
+      "schema:description": "A key term that describes important aspects of the Dataset",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "29a1757b-6be4-3b8e-a1a8-4d83b3371616",
+      "title": "keywordValue element schema",
+      "description": "keywordValue element schema generated by the ARP",
+      "hunDescription": "Kulcskifejezések, amelyek az adatcsomag fontosabb aspektusait írják le. Kulcsszóindexek építésére, osztályzási és visszakeresési célra használhatók. Szókészlet felhasználható. A szókészlet paraméter használható a szókészlet megadására, mint LCSH, MeSH, vagy egyebek. A szókészlet URL paraméterben megadható a szókészlet elérési útja.",
+      "skos:prefLabel": "Term",
+      "hunLabel": "Érték",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "#VALUE",
+          "advancedSearchField": true,
+          "facetable": true,
+          "displayoncreate": true
+        }
+      }
+    },
+    "keywordVocabulary": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "textfield"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "@value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "@value"
+      ],
+      "schema:name": "keywordVocabulary",
+      "schema:description": "The controlled vocabulary used for the keyword term (e.g. LCSH, MeSH)",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "142a817a-d77b-3294-9c49-6997eb022810",
+      "title": "keywordVocabulary element schema",
+      "description": "keywordVocabulary element schema generated by the ARP",
+      "hunDescription": "A használt kulcsszó készlet megadására, mint LCSH, MeSH, vagy egyebek.",
+      "skos:prefLabel": "Controlled Vocabulary Name",
+      "hunLabel": "Szókészlet",
+      "_arp": {
+        "dataverse": {
+          "displayFormat": "(#VALUE)",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "keywordVocabularyURI": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "link"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "schema:name": "keywordVocabularyURI",
+      "schema:description": "The URL where one can access information about the term's controlled vocabulary",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "d68c6c9e-20a5-35d9-ae9a-c98c970b37b8",
+      "title": "keywordVocabularyURI element schema",
+      "description": "keywordVocabularyURI element schema generated by the ARP",
+      "hunDescription": "A szókészlet elérési útját adja meg.",
+      "skos:prefLabel": "Controlled Vocabulary URL",
+      "hunLabel": "Szókészlet URL-je",
+      "_arp": {
+        "dataverse": {
+          "watermark": "https://",
+          "displayFormat": "<a href=\"#VALUE\" target=\"_blank\" rel=\"noopener\">#VALUE</a>",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    },
+    "keywordTermURI": {
+      "@type": "https://schema.metadatacenter.org/core/TemplateField",
+      "@context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "pav": "http://purl.org/pav/",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "oslc": "http://open-services.net/ns/core#",
+        "schema": "http://schema.org/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "schema:name": {
+          "@type": "xsd:string"
+        },
+        "schema:description": {
+          "@type": "xsd:string"
+        },
+        "skos:prefLabel": {
+          "@type": "xsd:string"
+        },
+        "skos:altLabel": {
+          "@type": "xsd:string"
+        },
+        "pav:createdOn": {
+          "@type": "xsd:dateTime"
+        },
+        "pav:createdBy": {
+          "@type": "@id"
+        },
+        "pav:lastUpdatedOn": {
+          "@type": "xsd:dateTime"
+        },
+        "oslc:modifiedBy": {
+          "@type": "@id"
+        }
+      },
+      "type": "object",
+      "_ui": {
+        "inputType": "link"
+      },
+      "_valueConstraints": {
+        "requiredValue": false
+      },
+      "properties": {
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "format": "uri"
+              },
+              "uniqueItems": true
+            }
+          ]
+        },
+        "rdfs:label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "schema:name": "keywordTermURI",
+      "schema:description": "A URI that points to the web presence of the Keyword Term",
+      "pav:createdOn": null,
+      "pav:createdBy": null,
+      "pav:lastUpdatedOn": null,
+      "oslc:modifiedBy": null,
+      "schema:schemaVersion": "1.6.0",
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "@id": "5273840f-9056-350f-85ac-0c53ce6df11a",
+      "title": "keywordTermURI element schema",
+      "description": "keywordTermURI element schema generated by the ARP",
+      "hunDescription": "A URI that points to the web presence of the Keyword Term",
+      "skos:prefLabel": "Term URI",
+      "hunLabel": "Term URI",
+      "_arp": {
+        "dataverse": {
+          "watermark": "https://",
+          "displayFormat": "<a href=\"#VALUE\" target=\"_blank\" rel=\"noopener\">#VALUE</a>",
+          "advancedSearchField": false,
+          "facetable": false,
+          "displayoncreate": true
+        }
+      }
+    }
+  },
+  "schema:name": "keyword",
+  "schema:description": "A key term that describes an important aspect of the Dataset and information about any controlled vocabulary used",
+  "required": [
+    "@context",
+    "@id",
+    "keywordValue",
+    "keywordVocabulary",
+    "keywordVocabularyURI",
+    "keywordTermURI"
+  ],
+  "pav:createdOn": null,
+  "pav:createdBy": null,
+  "pav:lastUpdatedOn": null,
+  "oslc:modifiedBy": null,
+  "schema:schemaVersion": "1.6.0",
+  "additionalProperties": false,
+  "pav:version": "6.11.0",
+  "bibo:status": "bibo:published",
+  "@id": "https://repo.test/elements/118",
+  "title": "keyword element schema",
+  "description": "keyword element schema generated by the ARP",
+  "hunDescription": "Kulcskifejezések, amelyek az adatcsomag legfontosabb jellemzőire utalnak.",
+  "skos:prefLabel": "Keyword",
+  "hunLabel": "Kulcsszó",
+  "minItems": 1,
+  "maxItems ": 0,
+  "_valueConstraints": {
+    "requiredValue": false
+  },
+  "_arp": {
+    "dataverse": {
+      "advancedSearchField": false,
+      "facetable": false,
+      "displayoncreate": true
+    }
+  },
+  "pav:derivedFrom": "https://repo.test/elements/72",
+  "schema:identifier": "keyword"
+}

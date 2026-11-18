@@ -16,6 +16,8 @@
   "dataciteDOIBase": "dataciteDOIBaseUrl",
   "downloadBase": "downloadBaseUrl",
   "arpAPI": "CEDAR_FRONTEND_ARP_API_URL",
+  "arpUnpublishAPI": "CEDAR_FRONTEND_ARP_UNPUBLISH_API_URL",
   "arpDvCollection": "CEDAR_FRONTEND_ARP_DV_COLLECTION",
-  "jsonDiffPreviewUrl": "CEDAR_FRONTEND_JSON_DIFF_PREVIEW_URL"
+  "jsonDiffPreviewUrl": "CEDAR_FRONTEND_JSON_DIFF_PREVIEW_URL",
+  "dataverseMdbRepo": "IQSS/dataverse"
 }
