@@ -45,15 +45,15 @@ define([
           };
 
           vm.run = async function () {
-            const versions = [vm.currentVersion].concat(targets());
             begin('run');
             try {
               await arpDataverseUpgradeService.run(vm.folder, vm.currentVersion, targets(), showProgress);
               vm.finished = true;
             } catch (error) {
               showError(error);
-              // Every report stands for one finished version, so this is the version the folder is at now
-              vm.stopped = $translate.instant(TEXTS + 'stopped', {current: versions[vm.reports.length]});
+              // Every report stands for one finished version, so the last one is the version the folder is at now
+              const last = vm.reports[vm.reports.length - 1];
+              vm.stopped = $translate.instant(TEXTS + 'stopped', {current: last ? last.version : vm.currentVersion});
             }
             vm.closed = true;
             $scope.$broadcast('refreshWorkspace', [vm.folder]);

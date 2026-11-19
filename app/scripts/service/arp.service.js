@@ -33,6 +33,7 @@ define([
             publishAll: publishAll,
             inspectFolderForBump: inspectFolderForBump,
             bumpVersions: bumpVersions,
+            findVersionFolder: findVersionFolder,
             validateResource: validateResource,
             omitDeep: omitDeep,
             getResourceContentById: getResourceContentById,
@@ -614,6 +615,20 @@ define([
             const versionFolderId = await buildVersionFolder(pathNames, versionsFolderId);
             await moveNodes(inspection.tree, versionFolderId);
             await createDraftNodes(inspection.tree, folderId);
+        }
+
+        // The folder bumpVersions archives a version of the folder into: <home>/Versions/<path from Public>/<version>.
+        // Returns its id, or null when it does not exist. Creates nothing.
+        async function findVersionFolder(folderId, homeFolderId, version) {
+            let current = await findChildFolder(homeFolderId, 'Versions');
+            const pathNames = (await getPublicPath(folderId)).concat(version);
+            for (const folderName of pathNames) {
+                if (!current) {
+                    return null;
+                }
+                current = await findChildFolder(current['@id'], folderName);
+            }
+            return current ? current['@id'] : null;
         }
 
         async function ensureVersionsFolder(homeFolderId) {

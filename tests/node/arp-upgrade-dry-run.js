@@ -13,8 +13,9 @@
 // publish. The official metadata blocks come from GitHub, and the TSV converter
 // and the template check are the live ARP ones, as in the UI.
 //
-// If the folder holds drafts, the run first does what "Publish All" with the
-// starting version does in the UI.
+// If the folder holds drafts, the upgrade publishes them as the starting version
+// first, keeping only the ISO 639-2 languages in citation, and archives that
+// version like the later ones. That is what the upgrade dialog does too.
 //
 // Options (all optional):
 //   --folder /Public/Dataverse    path below the home folder, or a folder @id
@@ -238,21 +239,6 @@ async function main() {
         });
     }
 
-    // The starting state: all drafts (Publish All comes first) or all published as the starting version
-    const ids = store.tree(root);
-    const statuses = ids.map(function (id) { return store.resources[id].json['bibo:status']; });
-    if (statuses.every(function (status) { return status === 'bibo:draft'; })) {
-        const inspection = await store.arpService.inspectFolderForPublishAll(root);
-        await store.arpService.publishAll(inspection.resources, from);
-        console.log('The folder holds drafts: simulated Publish All as ' + from + ' (' + inspection.resources.length + ' resources)');
-    } else {
-        check(ids.every(function (id) {
-            const json = store.resources[id].json;
-            return json['bibo:status'] === 'bibo:published' && json['pav:version'] === from;
-        }), 'every resource is a draft, or published as ' + from + '; found ' + JSON.stringify(stateOf(store, root)));
-    }
-    store.writes.count = 0;
-
     // The official blocks and the templates they belong to
     const officialDir = options['official-dir'] ? path.resolve(options['official-dir']) : path.join(work, 'official');
     if (!options['official-dir']) {
@@ -261,33 +247,6 @@ async function main() {
     const official = loadOfficial(officialDir, tags);
     serveOfficial(official);
     const convertTsv = createConverter(CONVERT_URL);
-
-    const before = {};
-    const templates = checks.templatesIn(root);
-    store.tree(root).forEach(function (id) {
-        const json = store.resources[id].json;
-        if (typeOf(json) === 'template') {
-            check(!!json['schema:identifier'], 'template ' + json['schema:name'] + ' has a schema:identifier');
-        }
-    });
-    Object.keys(templates).filter(Boolean).forEach(function (block) {
-        if (official[tags[0]][block]) {
-            before[block] = copy(templates[block].json);
-        } else {
-            console.log('Template ' + templates[block].json['schema:name'] + ' (' + block + ') is not an official ' +
-                tags[0] + ' block, the upgrade leaves it alone');
-        }
-    });
-    const blockNames = Object.keys(before).sort();
-    console.log('Templates of official blocks: ' + blockNames.join(', '));
-
-    const officialFrom = {};
-    const officialNewest = {};
-    for (const block of blockNames) {
-        officialFrom[block] = await convertTsv(official[tags[0]][block].tsv);
-        officialNewest[block] = official[tags[tags.length - 1]][block] ?
-            await convertTsv(official[tags[tags.length - 1]][block].tsv) : officialFrom[block];
-    }
 
     // The UI's upgrade service, on the copy. Changed templates are checked by the live ARP check.
     const validations = {passed: 0, failed: []};
@@ -342,6 +301,50 @@ async function main() {
         {showArpError: function () {}}, {getHomeFolderId: function () { return 'home'; }}, CONST
     ]);
 
+    // The starting state: drafts the upgrade publishes as the starting version first, or all published as it.
+    // Versions/... was checked above, so drafts here are never a stopped run.
+    const ids = store.tree(root);
+    const start = await service.startOf(root, from);
+    if (start.state === 'unpublished') {
+        console.log('The folder holds drafts: the upgrade publishes them as ' + from + ' first, then archives ' + from);
+    } else {
+        check(start.state === 'published' && ids.every(function (id) {
+            return store.resources[id].json['pav:version'] === from;
+        }), 'every resource is a draft, or published as ' + from + '; found ' + JSON.stringify(stateOf(store, root)));
+    }
+
+    const before = {};
+    const templates = checks.templatesIn(root);
+    store.tree(root).forEach(function (id) {
+        const json = store.resources[id].json;
+        if (typeOf(json) === 'template') {
+            check(!!json['schema:identifier'], 'template ' + json['schema:name'] + ' has a schema:identifier');
+        }
+    });
+    Object.keys(templates).filter(Boolean).forEach(function (block) {
+        if (official[tags[0]][block]) {
+            // Drafts are published as the starting version with only the values ARP offers
+            before[block] = start.state === 'unpublished' ?
+                checks.restrictedCopy(templates[block].json, service.restrictedValues(block, official[tags[0]][block].tsv)) :
+                copy(templates[block].json);
+        } else {
+            console.log('Template ' + templates[block].json['schema:name'] + ' (' + block + ') is not an official ' +
+                tags[0] + ' block, the upgrade leaves it alone');
+        }
+    });
+    const blockNames = Object.keys(before).sort();
+    console.log('Templates of official blocks: ' + blockNames.join(', '));
+
+    const officialFrom = {};
+    const officialNewest = {};
+    for (const block of blockNames) {
+        // As the upgrade sees them: without the values ARP does not offer
+        officialFrom[block] = await convertTsv(service.restrictOfficialTsv(block, official[tags[0]][block].tsv));
+        officialNewest[block] = official[tags[tags.length - 1]][block] ? await convertTsv(
+            service.restrictOfficialTsv(block, official[tags[tags.length - 1]][block].tsv)) : officialFrom[block];
+    }
+
+
     const preview = await service.preview(root, from, targets);
     check(store.writes.count === 0, 'preview writes nothing');
     fs.writeFileSync(path.join(work, 'preview.json'), JSON.stringify(preview, null, 2) + '\n');
@@ -369,8 +372,13 @@ async function main() {
         (validations.failed.length ? ', failed: ' + validations.failed.join(' | ') : ''));
 
     checks.checkRun({
+        startedFromDrafts: start.state === 'unpublished',
         home: 'home', root: root, blockNames: blockNames, before: before, preview: preview,
-        official69: officialFrom, officialLatest: officialNewest, version: newest, archived: archived
+        official69: officialFrom, officialLatest: officialNewest, version: newest, archived: archived,
+        restrictedValues: function (block, version) {
+            const tsv = official[tagOf(version)] && official[tagOf(version)][block];
+            return tsv ? service.restrictedValues(block, tsv.tsv) : {};
+        }
     });
 
     saveResults(store, 'home', root, path.join(work, 'results'), newest);

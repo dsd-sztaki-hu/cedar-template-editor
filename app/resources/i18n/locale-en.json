@@ -1057,8 +1057,8 @@
       "title": "ARP Upgrade to Dataverse versions",
       "cannotUpgrade": "Cannot upgrade",
       "explanation": {
-        "published": "For each target version, '{{folderName}}' is archived and drafted, the changes of the official Dataverse metadata blocks are merged into the drafts, and everything is published as that version. ARP changes are kept.",
-        "draft": "'{{folderName}}' holds drafts, so this continues a stopped run. Enter the version the drafts were made from as the current version. The first target version is not archived again."
+        "published": "For each target version, '{{folderName}}' is archived and drafted, the changes of the official Dataverse metadata blocks are merged into the drafts, and everything is published as that version. ARP changes are kept, and citation only keeps the ISO 639-2 languages.",
+        "draft": "'{{folderName}}' holds drafts. If the current version is not in the Versions folder yet, the run first keeps only the ISO 639-2 languages in citation and publishes the drafts as the current version. Then, for each target version, it archives the folder, merges the official changes and publishes it as that version. If the current version is in Versions already, an earlier run stopped and this continues it: enter the version the drafts were made from as the current version. It is not archived again."
       },
       "currentVersion": "Current Dataverse version of the folder",
       "targetVersions": "Target Dataverse versions, oldest first",
@@ -1071,10 +1071,11 @@
       "nothingToApply": "Everything is already applied.",
       "updatedResources": "Standalone resources changed as well: {{names}}",
       "missingTemplates": "Changed or new official blocks with no template in this folder (nothing is created for them): {{blocks}}",
-      "finished": "The folder is published as the last target version. The older versions are in the Versions folder.",
+      "finished": "The folder is published as the last target version. The older versions, the starting version too, are in the Versions folder.",
       "stopped": "The run stopped. The reports below show the versions that are complete. After fixing the problem, open this action again with {{current}} as the current version.",
       "step": {
         "preview": "Loading the folder and the official metadata blocks...",
+        "restrict": "Version {{version}}: keeping only the ISO 639-2 languages in the drafts...",
         "run": "Starting...",
         "archive": "Version {{version}}: archiving the folder and creating the drafts...",
         "apply": "Version {{version}}: merging the official changes into the drafts...",
@@ -1091,7 +1092,8 @@
           "addedField": "New field {{name}} in {{parent}}",
           "editedValue": "{{name}}: {{path}} changes from '{{from}}' to '{{to}}'",
           "addedLiteral": "{{name}}: new value '{{label}}'",
-          "orderChanged": "The fields of {{parent}} get the official order"
+          "orderChanged": "The fields of {{parent}} get the official order",
+          "restrictedLiterals": "{{name}}: only the ISO 639-2 values are kept, {{removed}} removed, {{kept}} left"
         },
         "keptArp": {
           "editedValue": "{{name}}: {{path}} stays '{{current}}'. The official value is now '{{to}}'",

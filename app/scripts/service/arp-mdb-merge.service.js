@@ -32,6 +32,7 @@ define([
         return {
             diffOfficial: diffOfficial,
             applyDiff: applyDiff,
+            restrictLiterals: restrictLiterals,
             isEmptyDiff: isEmptyDiff,
             blockUriOf: blockUriOf,
             resolveTermUris: resolveTermUris,
@@ -400,6 +401,29 @@ define([
                 insertAfter(literals, {label: added.label}, predecessor);
                 result.applied.push({kind: 'addedLiteral', name: name, label: added.label});
             });
+        }
+
+        // Keeps only the allowed values of the field with the given name, in the order the resource has them.
+        // Returns the labels that were removed and the number of values left.
+        function restrictLiterals(resource, fieldName, allowedLabels) {
+            const result = {removed: [], kept: 0};
+            const allowed = new Set(allowedLabels);
+            const rootName = resource['@type'] === TEMPLATE ? null : resource['schema:name'];
+            walk(resource, rootName, null, function (node, name) {
+                const literals = getPath(node, '_valueConstraints.literals');
+                if (name !== fieldName || !Array.isArray(literals)) {
+                    return;
+                }
+                node._valueConstraints.literals = literals.filter(function (literal) {
+                    if (allowed.has(literal.label)) {
+                        return true;
+                    }
+                    result.removed.push(literal.label);
+                    return false;
+                });
+                result.kept += node._valueConstraints.literals.length;
+            });
+            return result;
         }
 
         function addFields(container, name, diff, blockUri, result) {

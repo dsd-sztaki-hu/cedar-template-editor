@@ -345,6 +345,13 @@ function createChecks(store, merge) {
         const at = function (version) {
             return preview.find(function (report) { return report.version === version; });
         };
+        const v69 = at('6.9.0');
+        if (v69) {
+            const citation = v69.blocks.find(function (block) { return block.block === 'citation'; });
+            check(citation && citation.applied.some(function (change) {
+                return change.kind === 'restrictedLiterals' && change.name === 'language';
+            }), '6.9.0 keeps only the allowed citation languages');
+        }
         const v610 = at('6.10.0');
         const v611 = at('6.11.0');
         const v612 = at('6.12.1');
@@ -396,6 +403,42 @@ function createChecks(store, merge) {
         });
         check(live.filter(function (json) { return typeOf(json) === 'template'; }).length === options.templates,
             'the folder still has the ' + options.templates + ' ARP templates');
+
+        if (options.restrictedValues) {
+            const counts = options.archived.filter(function (version) {
+                return names.includes(version);
+            }).reduce(function (found, version) {
+                return found.concat(checkRestricted(version, archived[version], options.restrictedValues));
+            }, []).concat(checkRestricted(options.version, root, options.restrictedValues));
+            console.log('Restricted values: ' + counts.join(', '));
+        }
+    }
+
+    // Every version offers exactly the vocabulary values ARP keeps of the official block of that version,
+    // e.g. the ISO 639-2 languages in citation. restrictedValues(block, version) gives {field: [labels]}.
+    function checkRestricted(version, folderId, restrictedValues) {
+        const counts = [];
+        store.tree(folderId).map(function (id) {
+            return store.resources[id].json;
+        }).filter(function (json) {
+            return typeOf(json) === 'template';
+        }).forEach(function (template) {
+            const block = template['schema:identifier'];
+            const values = restrictedValues(block, version);
+            Object.keys(values).forEach(function (field) {
+                const node = flatten(template)[field];
+                const labels = node ? labelsOf(node.node) : [];
+                const allowed = values[field];
+                const extra = labels.filter(function (label) { return !allowed.includes(label); });
+                const missing = allowed.filter(function (label) { return !labels.includes(label); });
+                check(extra.length === 0 && missing.length === 0 && new Set(labels).size === labels.length,
+                    version + ' ' + block + ' ' + field + ' has the ' + allowed.length + ' allowed values, found ' +
+                    labels.length + (extra.length ? ', not allowed: ' + extra.slice(0, 5).join(' | ') : '') +
+                    (missing.length ? ', missing: ' + missing.slice(0, 5).join(' | ') : ''));
+                counts.push(block + ' ' + field + ' ' + version + ': ' + labels.length);
+            });
+        });
+        return counts;
     }
 
     // Every template the folder had before the run, by block name
@@ -410,8 +453,31 @@ function createChecks(store, merge) {
         return found;
     }
 
+    // The template as the upgrade publishes its starting version from drafts: without the values ARP does not
+    // offer. values is {field: [labels]}, as restrictedValues of the upgrade service gives it.
+    function restrictedCopy(template, values) {
+        const result = copy(template);
+        Object.keys(values).forEach(function (field) {
+            merge.restrictLiterals(result, field, values[field]);
+        });
+        return result;
+    }
+
+    // When the run started from drafts, the archived starting version is those drafts, only restricted
+    function checkStartVersion(home, root, before, version) {
+        const archived = store.versionFolders(home, root)[version];
+        const found = archived ? templatesIn(archived) : {};
+        Object.keys(before).forEach(function (block) {
+            check(found[block] && same(withoutIdentity(found[block].json), withoutIdentity(before[block])),
+                'archived ' + version + ' ' + block + ' is the draft as it was, with only the allowed values');
+        });
+    }
+
     // The checks after service.run: every block, the blocks the preview listed as missing, and the folder
     function checkRun(options) {
+        if (options.startedFromDrafts) {
+            checkStartVersion(options.home, options.root, options.before, options.archived[0]);
+        }
         const result = templatesIn(options.root);
         options.blockNames.forEach(function (block) {
             check(!!result[block], block + ' template is still in the folder');
@@ -429,12 +495,13 @@ function createChecks(store, merge) {
         checkFolder(options.home, options.root, {
             version: options.version,
             archived: options.archived,
-            templates: options.blockNames.length
+            templates: options.blockNames.length,
+            restrictedValues: options.restrictedValues
         });
     }
 
     return {
-        result: result, check: check, flatten: flatten, templatesIn: templatesIn,
+        result: result, check: check, flatten: flatten, templatesIn: templatesIn, restrictedCopy: restrictedCopy,
         checkBlock: checkBlock, checkPreview: checkPreview, checkFolder: checkFolder, checkRun: checkRun
     };
 }

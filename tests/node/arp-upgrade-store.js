@@ -344,6 +344,9 @@ function createStore() {
             return {blocked: null, highestVersion: highest};
         },
         // Same place as arpService.bumpVersions: <home>/Versions/<path from Public>/<highest version>
+        findVersionFolder: async function (folderId, home, version) {
+            return versionFolders(home, folderId)[version] || null;
+        },
         bumpVersions: async function (folderId, home, inspection) {
             writes.count++;
             const versions = childFolder(home, 'Versions') || newFolder(home, 'Versions');
@@ -383,6 +386,7 @@ function createStore() {
 
 // The folder layout of the ARP Dataverse templates: one folder per template, its elements as
 // standalone resources in elements/. Fields stay embedded with the id the converter gave them.
+// Everything is a draft that was never published, as on live before the upgrade.
 function buildFolder(store, merge, templates, parent) {
     const root = store.newFolder(parent || 'home', 'Dataverse');
     templates.forEach(function (template) {
@@ -396,16 +400,16 @@ function buildFolder(store, merge, templates, parent) {
                     return;
                 }
                 standalones(node);
-                node['pav:version'] = '6.9.0';
-                node['bibo:status'] = 'bibo:published';
+                node['pav:version'] = '0.0.1';
+                node['bibo:status'] = 'bibo:draft';
                 elements = elements || store.newFolder(folder, 'elements');
                 node['@id'] = store.put(elements, copy(node));
             });
         }
 
         standalones(template);
-        template['pav:version'] = '6.9.0';
-        template['bibo:status'] = 'bibo:published';
+        template['pav:version'] = '0.0.1';
+        template['bibo:status'] = 'bibo:draft';
         store.put(folder, template);
     });
     return root;

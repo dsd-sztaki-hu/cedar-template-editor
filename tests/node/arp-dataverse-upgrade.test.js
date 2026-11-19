@@ -16,6 +16,10 @@
 // immediately if that converter is not running. GitHub is not contacted: the
 // upgrade service's listing and file requests are answered from these files.
 //
+// The ARP templates are put into the in-memory CEDAR as drafts that were never
+// published, as on live. The upgrade first publishes them as 6.9.0, with only
+// the values ARP offers, and archives 6.9.0 like the later versions.
+//
 // What a passing run checked, for every block:
 //
 // - Every live ARP field is still present. A field the official block later
@@ -27,6 +31,12 @@
 //   value stays. Compared values are the label, description, required flag,
 //   multiple-choice flag, input type and the _arp.dataverse properties.
 //   Value lists keep every ARP label and gain labels the official block added.
+//   The official blocks are compared without the values ARP does not offer.
+// - In every version, 6.9.0 included, the citation language field has exactly
+//   the ISO 639-2 languages of that version's official block (422 values), and
+//   the archived 6.9.0 is the drafts with only that change.
+// - A run that stopped after archiving 6.9.0 continues on a second run: the
+//   drafts are not published as 6.9.0 again.
 // - Each field that official v6.12.1 added is present and uses the block's
 //   term URI. A new field stays embedded, as ARP keeps its fields. A new
 //   element has one standalone resource under elements/. The template embeds
@@ -43,8 +53,10 @@
 //
 // How to read the output. One line per block, then a summary:
 //
+//   Run: 6.9.0 (citation language 7516 removed, 422 kept), 6.10.0, 6.11.0, 6.12.1
 //   citation: 84 ARP fields, 0 new official fields
 //   geospatial: 11 ARP fields, 27 new official fields
+//   Restricted values: citation language 6.9.0: 422, ... 6.12.1: 422
 //   All checks passed
 //
 // "ARP fields" is the number of fields on the ARP 6.9 template. "new official
@@ -79,6 +91,7 @@ const CONVERT_URL = process.env.ARP_CONVERT_URL || 'http://localhost:8080/api/ar
 
 const OFFICIAL_TAGS = ['v6.9', 'v6.10', 'v6.11', 'v6.12.1'];
 const TARGETS = ['6.10', '6.11', '6.12.1'];
+const TAG_OF_VERSION = {'6.9.0': 'v6.9', '6.10.0': 'v6.10', '6.11.0': 'v6.11', '6.12.1': 'v6.12.1'};
 
 async function main() {
     if (typeof fetch !== 'function') {
@@ -117,10 +130,13 @@ async function main() {
             return CONVERT_URL;
         }
     };
-    const service = loadService(path.join(SERVICE_DIR, 'arp-dataverse-upgrade.service.js'), [
-        store.arpService, merge, UrlService, HttpBuilderService, AuthorizedBackendService,
-        {showArpError: function () {}}, {getHomeFolderId: function () { return 'home'; }}, CONST
-    ]);
+    const serviceFor = function (cedar) {
+        return loadService(path.join(SERVICE_DIR, 'arp-dataverse-upgrade.service.js'), [
+            cedar.arpService, merge, UrlService, HttpBuilderService, AuthorizedBackendService,
+            {showArpError: function () {}}, {getHomeFolderId: function () { return 'home'; }}, CONST
+        ]);
+    };
+    const service = serviceFor(store);
 
     const arpBlocks = {};
     readTsvDir(path.join(FIXTURES, 'arp', '6.9')).forEach(function (entry) {
@@ -134,36 +150,89 @@ async function main() {
     const official612 = {};
     for (const block of blockNames) {
         arpTemplates[block] = await convertTsv(arpBlocks[block]);
-        official69[block] = await convertTsv(official['v6.9'][block].tsv);
-        official612[block] = await convertTsv(official['v6.12.1'][block].tsv);
+        // As the upgrade sees them: without the values ARP does not offer
+        official69[block] = await convertTsv(service.restrictOfficialTsv(block, official['v6.9'][block].tsv));
+        official612[block] = await convertTsv(service.restrictOfficialTsv(block, official['v6.12.1'][block].tsv));
     }
 
-    // The same place as on the ARP CEDAR: <home>/Public/Dataverse
+    // The same place as on the ARP CEDAR: <home>/Public/Dataverse, as drafts that were never published.
+    // The upgrade publishes them as 6.9.0 first, with only the values ARP offers.
     const root = buildFolder(store, merge, blockNames.map(function (block) { return arpTemplates[block]; }),
         store.newFolder('home', 'Public'));
+    check((await service.startOf(root, '6.9.0')).state === 'unpublished', 'never published drafts start as unpublished');
     const before = {};
     const templates = checks.templatesIn(root);
     Object.keys(templates).forEach(function (block) {
-        before[block] = copy(templates[block].json);
+        before[block] = checks.restrictedCopy(templates[block].json,
+            service.restrictedValues(block, official['v6.9'][block].tsv));
     });
 
     const preview = await service.preview(root, '6.9.0', TARGETS);
     check(store.writes.count === 0, 'preview writes nothing');
+    check(preview.map(function (report) { return report.version; }).join(',') === '6.9.0,6.10.0,6.11.0,6.12.1',
+        'the preview starts with 6.9.0');
     checks.checkPreview(preview);
 
-    await service.run({'@id': root, 'schema:name': 'Dataverse'}, '6.9.0', TARGETS);
+    const reports = await service.run({'@id': root, 'schema:name': 'Dataverse'}, '6.9.0', TARGETS);
+    console.log('Run: ' + reports.map(function (report) {
+        const restricted = [];
+        report.blocks.forEach(function (block) {
+            block.applied.forEach(function (change) {
+                if (change.kind === 'restrictedLiterals') {
+                    restricted.push(block.block + ' ' + change.name + ' ' + change.removed + ' removed, ' +
+                        change.kept + ' kept');
+                }
+            });
+        });
+        return report.version + (restricted.length ? ' (' + restricted.join('; ') + ')' : '');
+    }).join(', '));
+    check(reports[0].version === '6.9.0' && reports[0].blocks.some(function (block) {
+        return block.block === 'citation';
+    }), 'the run starts by publishing 6.9.0 with only the allowed citation languages');
     checks.checkRun({
+        startedFromDrafts: true,
         home: 'home', root: root, blockNames: blockNames, before: before, preview: preview,
-        official69: official69, officialLatest: official612, version: '6.12.1', archived: ['6.9.0', '6.10.0', '6.11.0']
+        official69: official69, officialLatest: official612, version: '6.12.1', archived: ['6.9.0', '6.10.0', '6.11.0'],
+        restrictedValues: function (block, version) {
+            const tsv = official[TAG_OF_VERSION[version]][block];
+            return tsv ? service.restrictedValues(block, tsv.tsv) : {};
+        }
     });
     const results = path.join(FIXTURES, 'results');
     saveResults(store, 'home', root, results, '6.12.1');
     console.log('Wrote the generated versions to ' + path.relative(process.cwd(), results));
 
+    await checkStoppedRun(serviceFor, merge, check, blockNames.map(function (block) {
+        return arpTemplates[block];
+    }));
+
     if (checks.result.failed) {
         stop(checks.result.failed + ' checks failed');
     }
     console.log('All checks passed');
+}
+
+// A run that stopped after archiving 6.9.0 leaves drafts too. Running again with 6.9.0 must continue
+// that run: the drafts are not published as 6.9.0 again, and Versions keeps the one 6.9.0.
+async function checkStoppedRun(serviceFor, merge, check, arpTemplates) {
+    const cedar = createStore();
+    const service = serviceFor(cedar);
+    const root = buildFolder(cedar, merge, copy(arpTemplates), cedar.newFolder('home', 'Public'));
+    await cedar.arpService.publishAll((await cedar.arpService.inspectFolderForPublishAll(root)).resources, '6.9.0');
+    await cedar.arpService.bumpVersions(root, 'home', await cedar.arpService.inspectFolderForBump(root));
+    const archived = cedar.versionFolders('home', root)['6.9.0'];
+    const archivedCount = cedar.tree(archived).length;
+
+    check((await service.startOf(root, '6.9.0')).state === 'draft', 'stopped run: drafts with 6.9.0 in Versions continue');
+    const reports = await service.run({'@id': root, 'schema:name': 'Dataverse'}, '6.9.0', ['6.10']);
+    check(reports.map(function (report) { return report.version; }).join(',') === '6.10.0',
+        'stopped run: only 6.10.0 is made');
+    check(Object.keys(cedar.versionFolders('home', root)).join(',') === '6.9.0' &&
+        cedar.tree(archived).length === archivedCount, 'stopped run: Versions still holds the one 6.9.0');
+    check(cedar.tree(root).every(function (id) {
+        const json = cedar.resources[id].json;
+        return json['bibo:status'] === 'bibo:published' && json['pav:version'] === '6.10.0';
+    }), 'stopped run: the folder is published as 6.10.0');
 }
 
 main().catch(function (error) {
